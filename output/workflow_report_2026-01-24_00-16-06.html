@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QwebsiteAutomationBot Report - 2026-01-24 00:16</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --purple: #8b5cf6;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-tab: #334155;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+        }
+
+        .meta-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .meta-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        .meta-card .label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-card .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Tab Styles */
+        .tabs-container {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: var(--bg-tab);
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.6rem 0.8rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background: var(--bg-card);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-btn .icon {
+            font-size: 1rem;
+        }
+
+        .tab-btn .badge {
+            font-size: 0.6rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            margin-left: 0.5rem;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Styles */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-header .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .icon-payment { background: rgba(16, 185, 129, 0.2); }
+        .icon-order { background: rgba(59, 130, 246, 0.2); }
+        .icon-user { background: rgba(139, 92, 246, 0.2); }
+        .icon-log { background: rgba(239, 68, 68, 0.2); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card .label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .stat-success .number { color: var(--success); }
+        .stat-warning .number { color: var(--warning); }
+        .stat-danger .number { color: var(--danger); }
+        .stat-info .number { color: var(--info); }
+        .stat-purple .number { color: var(--purple); }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .badge-info { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+        .badge-purple { background: rgba(139, 92, 246, 0.2); color: var(--purple); }
+        .badge-disabled { background: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(255,255,255,0.05);
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .id-cell {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+            color: var(--primary);
+        }
+
+        .id-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            background: var(--surface);
+            border-radius: 0.5rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+            color: var(--success);
+            border: 1px solid var(--border);
+        }
+
+        .emergency-alert {
+            background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+        .emergency-alert h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+        }
+        .emergency-alert p {
+            margin: 0.25rem 0;
+            font-size: 1rem;
+        }
+        .emergency-alert .threshold {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .usage-bar-container {
+            margin: 1.5rem 0;
+        }
+        .usage-bar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .usage-label {
+            font-weight: 600;
+        }
+        .usage-stats {
+            color: var(--text-muted);
+        }
+        .usage-bar-track {
+            background: var(--surface);
+            border-radius: 10px;
+            height: 24px;
+            overflow: hidden;
+        }
+        .usage-bar-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .status-pending { color: var(--warning); }
+        .status-paid { color: var(--info); }
+        .status-completed { color: var(--success); }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .list-group {
+            list-style: none;
+        }
+
+        .list-group li {
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .list-group li .icon {
+            font-size: 1.25rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .process-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .flow-arrow {
+            color: var(--text-muted);
+            font-size: 1.5rem;
+        }
+
+        .subsection {
+            margin-top: 1.5rem;
+        }
+
+        .subsection h4 {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.75rem; }
+            .tab-content { padding: 1.5rem; }
+            .tab-btn { min-width: 80px; padding: 0.5rem 0.5rem; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 QwebsiteAutomationBot Report</h1>
+            <p class="subtitle">Workflow Execution Summary</p>
+        </div>
+
+        <div class="meta-info">
+            <div class="meta-card">
+                <div class="label">📅 Report Generated</div>
+                <div class="value">2026-01-24 00:16:06</div>
+            </div>
+            <div class="meta-card">
+                <div class="label">⏱️ Duration</div>
+                <div class="value">263.43 seconds</div>
+            </div>
+            <div class="meta-card">
+                <div class="label">📊 Spreadsheet</div>
+                <div class="value"><a href="https://docs.google.com/spreadsheets/d/1wNrE75TQzg4Qkyj0enRvdKw1QSFq1NhU3ZGqbhnzX1E"
+                    target="_blank" style="color: var(--primary);">View Sheet</a></div>
+            </div>
+        </div>
+
+        
+        <div class="step-status-section" style="background: var(--bg-card); border-radius: 1rem;
+            padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                    📋 Step Execution Status
+                </h2>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <span style="font-size: 1.5rem;">✅</span>
+                    <span style="font-weight: 700; font-size: 1.1rem; color: var(--success);">
+                        ALL PASSED
+                    </span>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 0.75rem; margin-bottom: 1.5rem;">
+                <div style="background: var(--bg-tab); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">7</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Passed</div>
+                </div>
+                <div style="background: var(--bg-tab); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--danger);">0</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Failed</div>
+                </div>
+                <div style="background: var(--bg-tab); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-muted);">0</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Skipped</div>
+                </div>
+                <div style="background: var(--bg-tab); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">100%</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Pass Rate</div>
+                </div>
+            </div>
+
+            <div class="step-list">
+                
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--success);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">✅</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Payment Update</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Update payment status in Google Sheet</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;"><span>Note: <strong>No IDs to process</strong></span></div>
+                        
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--success);">Passed</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">0.0s</div>
+                    </div>
+                </div>
+            
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--success);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">✅</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Order Management</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Sync orders between API and Sheet</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;"><span>Orders: <strong>3</strong></span> | <span>Updated: <strong>0</strong></span> | <span>New: <strong>0</strong></span></div>
+                        
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--success);">Passed</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">1m 26.6s</div>
+                    </div>
+                </div>
+            
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--success);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">✅</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">User Management</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Manage and approve users</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;"><span>Users: <strong>21</strong></span> | <span>Approved: <strong>0</strong></span></div>
+                        
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--success);">Passed</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">29.2s</div>
+                    </div>
+                </div>
+            
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--success);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">✅</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Advertisement Management</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Manage and approve advertisements</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;"><span>Ads: <strong>46</strong></span> | <span>Approved: <strong>0</strong></span></div>
+                        
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--success);">Passed</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">33.3s</div>
+                    </div>
+                </div>
+            
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--success);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">✅</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Signup ID Management</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Monitor signup ID usage</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;"><span>Total: <strong>232</strong></span> | <span>Available: <strong>227</strong></span></div>
+                        
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--success);">Passed</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">35.2s</div>
+                    </div>
+                </div>
+            
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--success);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">✅</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Data Analysis</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Export and analyze platform data</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;"><span>Status: <strong>completed</strong></span> | <span>Jobs: <strong>6</strong></span></div>
+                        
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--success);">Passed</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">1m 19.1s</div>
+                    </div>
+                </div>
+            
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--success);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">✅</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Business Report</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Generate business intelligence report</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;"><span>Source: <strong>DataAnalysis</strong></span> | <span>Report: <strong>Generated</strong></span></div>
+                        
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--success);">Passed</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">N/A</div>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="openTab(event, 'tab-payment')">
+                    <span class="icon">💳</span>
+                    <span>Update Payment</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-order')">
+                    <span class="icon">📦</span>
+                    <span>Order Management</span>
+                    <span class="badge badge-success">ENABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-user')">
+                    <span class="icon">👥</span>
+                    <span>User Management</span>
+                    <span class="badge badge-success">ENABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-advertisement')">
+                    <span class="icon">📺</span>
+                    <span>Advertisement</span>
+                    <span class="badge badge-success">ENABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-signup-id')">
+                    <span class="icon">🎟️</span>
+                    <span>Signup IDs</span>
+                    <span class="badge badge-success">227 available</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-data-analysis')">
+                    <span class="icon">📊</span>
+                    <span>Data Export</span>
+                    <span class="badge badge-success">ENABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-logs')">
+                    <span class="icon">📋</span>
+                    <span>Logs</span>
+                    <span class="badge badge-warning">1</span>
+                </button>
+            </div>
+
+            <div id="tab-payment" class="tab-content active">
+                
+                <div class="section-header">
+                    <span class="icon icon-payment">💳</span>
+                    <span>Update Payment Process</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </div>
+                <div class="empty-state">
+                    <div class="icon">⏸️</div>
+                    <p>This process was not enabled for this run</p>
+                </div>
+            </div>
+
+            <div id="tab-order" class="tab-content">
+                
+                <div class="section-header">
+                    <span class="icon icon-order">📦</span>
+                    <span>Order Management Process</span>
+                    <span class="badge badge-success">ENABLED</span>
+                </div>
+
+                <div class="process-flow">
+                    <div class="flow-step">📥 API Pending</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">📋 Compare IDs</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">🔄 Update API</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">📝 Update Sheet</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card stat-info">
+                        <div class="number">3</div>
+                        <div class="label">API Pending Orders</div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="number">22</div>
+                        <div class="label">Sheet Orders</div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="number">3</div>
+                        <div class="label">Matching Orders</div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="number">0</div>
+                        <div class="label">New Orders Added</div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="number">0</div>
+                        <div class="label">Updated to Completed</div>
+                    </div>
+                    <div class="stat-card stat-warning">
+                        <div class="number">0</div>
+                        <div class="label">Duplicates Removed</div>
+                    </div>
+                </div>
+
+                
+            <div class="subsection">
+                <h4>📊 Sheet Status Breakdown</h4>
+                <ul class="list-group"><li><span class="icon">📊</span> <span class="status-completed">completed</span>: 19</li><li><span class="icon">📊</span> <span class="status-pending">pending</span>: 3</li></ul>
+            </div>
+                
+                
+                
+                
+            <div class="subsection">
+                <h4>💰 Doctor Debts (Pending Orders)</h4>
+                <p style="color: #666; margin-bottom: 15px;">
+                    Doctors with outstanding payments from pending orders.
+                    Total: <strong style="color: #e74c3c;">₨1,981,881.82</strong> across
+                    <strong>18</strong> pending orders from
+                    <strong>4</strong> doctors.
+                    <br><em style="font-size: 12px;">Click on a doctor to see their pending orders.</em>
+                </p>
+                
+                <div class="doctor-debt-card" style="border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden;">
+                    <div class="doctor-header" onclick="toggleDoctorOrders('doctor-orders-0')"
+                         style="padding: 15px; background: #f8f9fa; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="toggle-icon" id="icon-doctor-orders-0"
+                                  style="margin-right: 10px;">▶</span>
+                            <strong style="font-size: 16px;">🩺 testing doctor 1</strong>
+                            <span style="color: #666; margin-left: 10px;">qwebsiteuser2@gmail.com</span>
+                        </div>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <span class="badge badge-error" style="font-size: 14px;">
+                                ₨623,265.21</span>
+                            <span style="color: #666;">3 order(s)</span>
+                        </div>
+                    </div>
+                    <div id="doctor-orders-0" class="doctor-orders" style="display: none; padding: 15px; background: white;">
+                        <table style="width: 100%; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #f1f3f4;">
+                                    <th style="padding: 8px;">Order #</th>
+                                    <th style="padding: 8px;">Product</th>
+                                    <th style="padding: 8px; text-align: center;">Qty</th>
+                                    <th style="padding: 8px; text-align: right;">Total</th>
+                                    <th style="padding: 8px; text-align: right;">Remaining</th>
+                                    <th style="padding: 8px;">Payment Method</th>
+                                    <th style="padding: 8px;">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                    <tr>
+                        <td><code>ORD-1759049335</code></td>
+                        <td>Medical Gloves - Latex Free</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: right;">₨51.98</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨51.98</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-21</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049334</code></td>
+                        <td>Blood Pressure Monitor</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">₨500,000.00</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨500,000.00</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-21</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049295</code></td>
+                        <td>test</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">₨123,213.23</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨123,213.23</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-21</td>
+                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="doctor-debt-card" style="border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden;">
+                    <div class="doctor-header" onclick="toggleDoctorOrders('doctor-orders-1')"
+                         style="padding: 15px; background: #f8f9fa; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="toggle-icon" id="icon-doctor-orders-1"
+                                  style="margin-right: 10px;">▶</span>
+                            <strong style="font-size: 16px;">🩺 testing user 2</strong>
+                            <span style="color: #666; margin-left: 10px;">qwebsiteuser1@gmail.com</span>
+                        </div>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <span class="badge badge-error" style="font-size: 14px;">
+                                ₨610,923.95</span>
+                            <span style="color: #666;">5 order(s)</span>
+                        </div>
+                    </div>
+                    <div id="doctor-orders-1" class="doctor-orders" style="display: none; padding: 15px; background: white;">
+                        <table style="width: 100%; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #f1f3f4;">
+                                    <th style="padding: 8px;">Order #</th>
+                                    <th style="padding: 8px;">Product</th>
+                                    <th style="padding: 8px; text-align: center;">Qty</th>
+                                    <th style="padding: 8px; text-align: right;">Total</th>
+                                    <th style="padding: 8px; text-align: right;">Remaining</th>
+                                    <th style="padding: 8px;">Payment Method</th>
+                                    <th style="padding: 8px;">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                    <tr>
+                        <td><code>ORD-1759049256</code></td>
+                        <td>checking product thirteen</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: right;">₨24,646.46</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨24,646.46</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-19</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049250</code></td>
+                        <td>Checking product Twelev</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">₨12,312.12</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨12,312.12</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-19</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049249</code></td>
+                        <td>checking product thirteen</td>
+                        <td style="text-align: center;">6</td>
+                        <td style="text-align: right;">₨73,939.38</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨73,939.38</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-19</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049248</code></td>
+                        <td>Medical Gloves - Latex Free</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">₨25.99</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨25.99</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-19</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049247</code></td>
+                        <td>Blood Pressure Monitor</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">₨500,000.00</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨500,000.00</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-19</td>
+                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="doctor-debt-card" style="border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden;">
+                    <div class="doctor-header" onclick="toggleDoctorOrders('doctor-orders-2')"
+                         style="padding: 15px; background: #f8f9fa; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="toggle-icon" id="icon-doctor-orders-2"
+                                  style="margin-right: 10px;">▶</span>
+                            <strong style="font-size: 16px;">🩺 Viewer Administrator</strong>
+                            <span style="color: #666; margin-left: 10px;">muhammadqasimshabbir3@gmail.com</span>
+                        </div>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <span class="badge badge-error" style="font-size: 14px;">
+                                ₨500,946.72</span>
+                            <span style="color: #666;">7 order(s)</span>
+                        </div>
+                    </div>
+                    <div id="doctor-orders-2" class="doctor-orders" style="display: none; padding: 15px; background: white;">
+                        <table style="width: 100%; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #f1f3f4;">
+                                    <th style="padding: 8px;">Order #</th>
+                                    <th style="padding: 8px;">Product</th>
+                                    <th style="padding: 8px; text-align: center;">Qty</th>
+                                    <th style="padding: 8px; text-align: right;">Total</th>
+                                    <th style="padding: 8px; text-align: right;">Remaining</th>
+                                    <th style="padding: 8px;">Payment Method</th>
+                                    <th style="padding: 8px;">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                    <tr>
+                        <td><code>ORD-1759049516</code></td>
+                        <td>Surgical Masks - N95</td>
+                        <td style="text-align: center;">5</td>
+                        <td style="text-align: right;">₨227.75</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨227.75</strong></td>
+                        <td>payfast_online</td>
+                        <td>2026-01-22</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049515</code></td>
+                        <td>sfds</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: right;">₨2.00</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨2.00</strong></td>
+                        <td>payfast_online</td>
+                        <td>2026-01-22</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049514</code></td>
+                        <td>Digital Thermometer</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: right;">₨319.50</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨319.50</strong></td>
+                        <td>payfast_online</td>
+                        <td>2026-01-22</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049457</code></td>
+                        <td>Blood Pressure Monitor</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">₨500,000.00</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨500,000.00</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-28</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049456</code></td>
+                        <td>Medical Gloves - Latex Free</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">₨25.99</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨25.99</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-28</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049453</code></td>
+                        <td>Digital Thermometer</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: right;">₨319.50</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨319.50</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-28</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049452</code></td>
+                        <td>Medical Gloves - Latex Free</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: right;">₨51.98</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨51.98</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-28</td>
+                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="doctor-debt-card" style="border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden;">
+                    <div class="doctor-header" onclick="toggleDoctorOrders('doctor-orders-3')"
+                         style="padding: 15px; background: #f8f9fa; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span class="toggle-icon" id="icon-doctor-orders-3"
+                                  style="margin-right: 10px;">▶</span>
+                            <strong style="font-size: 16px;">🩺 Doctor Qasim 1 </strong>
+                            <span style="color: #666; margin-left: 10px;">muhammadqasimshabbir825@gmail.com</span>
+                        </div>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <span class="badge badge-error" style="font-size: 14px;">
+                                ₨246,745.94</span>
+                            <span style="color: #666;">3 order(s)</span>
+                        </div>
+                    </div>
+                    <div id="doctor-orders-3" class="doctor-orders" style="display: none; padding: 15px; background: white;">
+                        <table style="width: 100%; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #f1f3f4;">
+                                    <th style="padding: 8px;">Order #</th>
+                                    <th style="padding: 8px;">Product</th>
+                                    <th style="padding: 8px; text-align: center;">Qty</th>
+                                    <th style="padding: 8px; text-align: right;">Total</th>
+                                    <th style="padding: 8px; text-align: right;">Remaining</th>
+                                    <th style="padding: 8px;">Payment Method</th>
+                                    <th style="padding: 8px;">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                    <tr>
+                        <td><code>ORD-1759049474</code></td>
+                        <td>TESTING PRODUCT </td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">₨123,213.21</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨123,213.21</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-28</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049473</code></td>
+                        <td>test</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: right;">₨123,213.23</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨123,213.23</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-28</td>
+                    </tr>
+                    <tr>
+                        <td><code>ORD-1759049462</code></td>
+                        <td>Digital Thermometer</td>
+                        <td style="text-align: center;">2</td>
+                        <td style="text-align: right;">₨319.50</td>
+                        <td style="text-align: right; color: #e74c3c;"><strong>₨319.50</strong></td>
+                        <td>payfast_online</td>
+                        <td>2025-12-28</td>
+                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                function toggleDoctorOrders(id) {
+                    var element = document.getElementById(id);
+                    var icon = document.getElementById('icon-' + id);
+                    if (element.style.display === 'none') {
+                        element.style.display = 'block';
+                        icon.textContent = '▼';
+                    } else {
+                        element.style.display = 'none';
+                        icon.textContent = '▶';
+                    }
+                }
+            </script>
+        
+            </div>
+
+            <div id="tab-user" class="tab-content">
+                
+                <div class="section-header">
+                    <span class="icon icon-user">👥</span>
+                    <span>User Management Process</span>
+                    <span class="badge badge-success">ENABLED</span>
+                </div>
+
+                <div class="process-flow">
+                    <div class="flow-step">📥 Fetch Users</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">🔍 Check is_approved</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">✅ Approve Doctors</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">📊 Generate Report</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card stat-purple">
+                        <div class="number">21</div>
+                        <div class="label">Total Users</div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="number">21</div>
+                        <div class="label">Approved</div>
+                    </div>
+                    <div class="stat-card stat-warning">
+                        <div class="number">0</div>
+                        <div class="label">Unapproved</div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="number">2</div>
+                        <div class="label">Admins</div>
+                    </div>
+                    <div class="stat-card stat-danger">
+                        <div class="number">6</div>
+                        <div class="label">Deactivated</div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="number">0</div>
+                        <div class="label">Approved This Run</div>
+                    </div>
+                </div>
+
+                
+            <div class="subsection">
+                <h4>👥 User Types</h4>
+                <ul class="list-group"><li><span class="icon">🩺</span> <strong>doctor</strong>: 19</li><li><span class="icon">👔</span> <strong>employee</strong>: 1</li><li><span class="icon">👤</span> <strong>regular_user</strong>: 1</li></ul>
+            </div>
+                
+            <div class="subsection">
+                <h4>🏅 Tier Distribution</h4>
+                <ul class="list-group"><li><span class="icon">📊</span> <strong>Lead Starter</strong>: 14</li><li><span class="icon">🏆</span> <strong>Platinum Lead</strong>: 3</li><li><span class="icon">💎</span> <strong>Diamond Lead</strong>: 2</li><li><span class="icon">📊</span> <strong>Lead Contributor</strong>: 1</li><li><span class="icon">⭐</span> <strong>Expert Contributor</strong>: 1</li></ul>
+            </div>
+                
+                
+                
+            <div class="subsection">
+                <h4>📋 All Users (21)</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Tier</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td class="id-cell">e671f0b9...</td>
+                    <td>chaudharyabubakar702@gmail.com</td>
+                    <td>abubakar</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">3a430758...</td>
+                    <td>muhammadqasimshabbirshabbir@gmail.com</td>
+                    <td>Dr Workspace gmail</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">55c535de...</td>
+                    <td>qwebsiteuser1@gmail.com</td>
+                    <td>testing user 2</td>
+                    <td>doctor</td>
+                    <td>Diamond Lead</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">b2fee914...</td>
+                    <td>qwebsiteuser2@gmail.com</td>
+                    <td>testing doctor 1</td>
+                    <td>doctor</td>
+                    <td>Platinum Lead</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">6e260f18...</td>
+                    <td>nighatshabbirn@gmail.com</td>
+                    <td>NighatShabbir</td>
+                    <td>employee</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">1f852cfc...</td>
+                    <td>www.asimnees@gmail.com</td>
+                    <td>MuhammadAsimShabbir</td>
+                    <td>regular_user</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">f14556e6...</td>
+                    <td>payfast.test.customer@gmail.com</td>
+                    <td>PayFast Test Customer</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">04321ada...</td>
+                    <td>testuser.payfast@gmail.com</td>
+                    <td>Dr. Test User</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">5d2f7ebf...</td>
+                    <td>regular.user@test.com</td>
+                    <td>Dr. Regular User</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">d6656277...</td>
+                    <td>custom.admin@test.com</td>
+                    <td>Dr. Custom Admin</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> <span class="badge badge-purple">Admin</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">ec7d4d31...</td>
+                    <td>viewer.admin@test.com</td>
+                    <td>Dr. Viewer Admin</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">23239f79...</td>
+                    <td>muhammadqasimshabbir3@gmail.com</td>
+                    <td>Viewer Administrator</td>
+                    <td>doctor</td>
+                    <td>Platinum Lead</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">233ee34d...</td>
+                    <td>clinic4@example.com</td>
+                    <td>Dr. Hassan Ali</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> <span class="badge badge-danger">Deactivated</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">571ef39c...</td>
+                    <td>clinic5@example.com</td>
+                    <td>Dr. Aisha Malik</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> <span class="badge badge-danger">Deactivated</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">5bd3e62e...</td>
+                    <td>clinic2@example.com</td>
+                    <td>Dr. Ali Khan</td>
+                    <td>doctor</td>
+                    <td>Lead Contributor</td>
+                    <td><span class="badge badge-success">Approved</span> <span class="badge badge-danger">Deactivated</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">c9e600cb...</td>
+                    <td>clinic1@example.com</td>
+                    <td>Dr. Sarah Ahmed</td>
+                    <td>doctor</td>
+                    <td>Expert Contributor</td>
+                    <td><span class="badge badge-success">Approved</span> <span class="badge badge-danger">Deactivated</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">06c0d2bf...</td>
+                    <td>clinic3@example.com</td>
+                    <td>Dr. Fatima Sheikh</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">70b530d6...</td>
+                    <td>testdoctor@example.com</td>
+                    <td>Dr. Test</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> <span class="badge badge-danger">Deactivated</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">9dac914e...</td>
+                    <td>newdoctor@example.com</td>
+                    <td>Dr. New Test</td>
+                    <td>doctor</td>
+                    <td>Lead Starter</td>
+                    <td><span class="badge badge-success">Approved</span> <span class="badge badge-danger">Deactivated</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">07ee87ab...</td>
+                    <td>muhammadqasimshabbir825@gmail.com</td>
+                    <td>Doctor Qasim 1 </td>
+                    <td>doctor</td>
+                    <td>Platinum Lead</td>
+                    <td><span class="badge badge-success">Approved</span> </td>
+                </tr>
+                <tr>
+                    <td class="id-cell">8215e70c...</td>
+                    <td>asadkhanbloch4949@gmail.com</td>
+                    <td>Full Administrator</td>
+                    <td>doctor</td>
+                    <td>Diamond Lead</td>
+                    <td><span class="badge badge-success">Approved</span> <span class="badge badge-purple">Admin</span> </td>
+                </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+            </div>
+
+            <div id="tab-advertisement" class="tab-content">
+                
+                <div class="section-header">
+                    <span class="icon icon-ad">📺</span>
+                    <span>Advertisement Management Process</span>
+                    <span class="badge badge-success">ENABLED</span>
+                </div>
+
+                <div class="process-flow">
+                    <div class="flow-step">📥 Fetch Ads</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">💰 Update Payments</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">🔍 Filter Pending</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">✅ Approve Ads</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">📝 Write to Sheet</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card stat-purple">
+                        <div class="number">46</div>
+                        <div class="label">Total Fetched</div>
+                    </div>
+                    <div class="stat-card stat-warning">
+                        <div class="number">0</div>
+                        <div class="label">Pending Found</div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="number">0</div>
+                        <div class="label">API Approved</div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="number">0</div>
+                        <div class="label">Sheet → Active</div>
+                    </div>
+                    <div class="stat-card stat-secondary">
+                        <div class="number">0</div>
+                        <div class="label">Sheet → Paid</div>
+                    </div>
+                    <div class="stat-card stat-danger">
+                        <div class="number">0</div>
+                        <div class="label">Failed</div>
+                    </div>
+                </div>
+
+                
+                
+                
+                
+                
+                
+            <div class="subsection">
+                <h4>📊 Status Breakdown</h4>
+                <ul class="list-group"><li><span class="icon">✅</span> <strong>completed</strong>: 43</li><li><span class="icon">❌</span> <strong>rejected</strong>: 2</li><li><span class="icon">🟢</span> <strong>active</strong>: 1</li></ul>
+            </div>
+                
+            <div class="subsection">
+                <h4>🎨 Type Breakdown</h4>
+                <ul class="list-group"><li><span class="icon">🎬</span> <strong>video</strong>: 38</li><li><span class="icon">🖼️</span> <strong>image</strong>: 4</li><li><span class="icon">🎞️</span> <strong>animation</strong>: 4</li></ul>
+            </div>
+                
+            <div class="subsection">
+                <h4>💳 Payment Status</h4>
+                <ul class="list-group"><li><span class="icon">⏳</span> <strong>pending</strong>: 32</li><li><span class="icon">💰</span> <strong>paid</strong>: 14</li></ul>
+            </div>
+                
+            <div class="subsection">
+                <h4>📋 All Advertisements (46)</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Payment</th>
+                            <th>Cost</th>
+                            <th>Paid</th>
+                            <th>Doctor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                <tr>
+                    <td class="id-cell">b2142243...</td>
+                    <td>asdas</td>
+                    <td>image</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R60</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">4d381332...</td>
+                    <td>asdas</td>
+                    <td>image</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R60</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">2507feac...</td>
+                    <td>adasd</td>
+                    <td>animation</td>
+                    <td><span class="badge badge-info">active</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R10080</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">42d1a826...</td>
+                    <td>sdfasfasd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R50</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">f178b163...</td>
+                    <td>dfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">c7454ccf...</td>
+                    <td>dfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">3e023566...</td>
+                    <td>dfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">6707947a...</td>
+                    <td>sdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">0b5442ca...</td>
+                    <td>sdfdsfasdfd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R60</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">3996a72c...</td>
+                    <td>sdfdsaf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R600</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">5de28a9b...</td>
+                    <td>sdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">40918c02...</td>
+                    <td>Sbbs</td>
+                    <td>image</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R60</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">1056b826...</td>
+                    <td>Xbd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R1500</td>
+                    <td>R1500</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">f8a8b4d8...</td>
+                    <td>Shsbd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1080</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">878ca4f2...</td>
+                    <td>Dhdh</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">68e29c25...</td>
+                    <td>Ghh</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R50</td>
+                    <td>R50</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">bea698fa...</td>
+                    <td>Gg</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">aafe7f81...</td>
+                    <td>dfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R7560</td>
+                    <td>R7560</td>
+                    <td>testing user 2</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">5117bf83...</td>
+                    <td>sdasd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R60</td>
+                    <td>R0</td>
+                    <td>testing user 2</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">465abdc1...</td>
+                    <td>sdfsdfdaf</td>
+                    <td>animation</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R60</td>
+                    <td>R0</td>
+                    <td>testing user 2</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">39f050b7...</td>
+                    <td>sdfsd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R50</td>
+                    <td>R50</td>
+                    <td>testing user 2</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">e0dc9091...</td>
+                    <td>fsfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>testing user 2</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">ba583202...</td>
+                    <td>sdfsdfasdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1440</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">029d135e...</td>
+                    <td>dsd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1440</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">70966f39...</td>
+                    <td>sdfsd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1080</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">1b61be6a...</td>
+                    <td>sdfsdsdfsd</td>
+                    <td>image</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1200</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">3132de9b...</td>
+                    <td>sdfdf</td>
+                    <td>animation</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1200</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">a6798744...</td>
+                    <td>sdfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R1200</td>
+                    <td>R1200</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">1baef539...</td>
+                    <td>Blood Pressure Monit</td>
+                    <td>video</td>
+                    <td><span class="badge badge-danger">rejected</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>Viewer Administ</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">63fe33ad...</td>
+                    <td>sdfsdf</td>
+                    <td>animation</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R1080</td>
+                    <td>R1080</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">e8d3d136...</td>
+                    <td>sdfadf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1080</td>
+                    <td>R0</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">f45ea7c8...</td>
+                    <td>sdfsdafsa</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1200</td>
+                    <td>R0</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">261c38db...</td>
+                    <td>sdfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1200</td>
+                    <td>R0</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">a479049c...</td>
+                    <td>sdfds</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R1200</td>
+                    <td>R1200</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">aff9df26...</td>
+                    <td>dfdgdsd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1080</td>
+                    <td>R0</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">21ddee44...</td>
+                    <td>video4</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R1080</td>
+                    <td>R0</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">198d2df8...</td>
+                    <td>video</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R360</td>
+                    <td>R0</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">b083ee51...</td>
+                    <td>testing</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">cbe5a3fb...</td>
+                    <td>sdfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-warning">pending</span></td>
+                    <td>R540</td>
+                    <td>R0</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">60d1f1ea...</td>
+                    <td>sfojdslfjsd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-danger">rejected</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R90</td>
+                    <td>R90</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">666c9bf0...</td>
+                    <td>video3</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R1080</td>
+                    <td>R1080</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">44a773a6...</td>
+                    <td>sdfsd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R60</td>
+                    <td>R60</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">c35dc1a3...</td>
+                    <td>video2 </td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R50</td>
+                    <td>R50</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">996619e4...</td>
+                    <td>video 1</td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R45</td>
+                    <td>R45</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">4c241347...</td>
+                    <td>video 1 </td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R45</td>
+                    <td>R45</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                <tr>
+                    <td class="id-cell">44bc2b6c...</td>
+                    <td>testing video 1 </td>
+                    <td>video</td>
+                    <td><span class="badge badge-success">completed</span></td>
+                    <td><span class="badge badge-success">paid</span></td>
+                    <td>R45</td>
+                    <td>R0</td>
+                    <td>MuhammadAsimSha</td>
+                </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+            </div>
+
+            <div id="tab-signup-id" class="tab-content">
+                
+                <div class="section-header">
+                    <span class="icon icon-signup">🎟️</span>
+                    <span>Signup ID Management Process</span>
+                    <span class="badge badge-success">ENABLED</span>
+                </div>
+
+                
+
+                <div class="process-flow">
+                    <div class="flow-step">📥 Fetch IDs</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">📊 Analyze</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">⚠️ Check Status</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">📊 Report</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card stat-primary">
+                        <div class="number">232</div>
+                        <div class="label">Total IDs</div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="number">227</div>
+                        <div class="label">Available</div>
+                    </div>
+                    <div class="stat-card stat-warning">
+                        <div class="number">5</div>
+                        <div class="label">Used</div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="number">2.2%</div>
+                        <div class="label">Usage</div>
+                    </div>
+                </div>
+
+                
+        <div class="usage-bar-container">
+            <div class="usage-bar-header">
+                <span class="usage-label">Usage: 2.2%</span>
+                <span class="usage-stats">5 used / 227 available</span>
+            </div>
+            <div class="usage-bar-track">
+                <div class="usage-bar-fill" style="background:#28a745;width:2.1551724137931036%;"></div>
+            </div>
+        </div>
+                
+            <div class="subsection">
+                <h4>📋 Recent Signups</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Signup ID</th>
+                            <th>Email</th>
+                            <th>Used At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    <tr>
+                        <td><span class="id-cell">12412</span></td>
+                        <td>chaudharyabubakar702@gmail.com</td>
+                        <td>2026-01-23</td>
+                    </tr>
+                    <tr>
+                        <td><span class="id-cell">14591</span></td>
+                        <td>muhammadqasimshabbirshabbir@gmail.com</td>
+                        <td>2026-01-23</td>
+                    </tr>
+                    <tr>
+                        <td><span class="id-cell">24234</span></td>
+                        <td>qwebsiteuser1@gmail.com</td>
+                        <td>2025-12-19</td>
+                    </tr>
+                    <tr>
+                        <td><span class="id-cell">12312</span></td>
+                        <td>qwebsiteuser2@gmail.com</td>
+                        <td>2025-12-19</td>
+                    </tr>
+                    <tr>
+                        <td><span class="id-cell">10615</span></td>
+                        <td>testdoctor@example.com</td>
+                        <td>2025-09-28</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+                
+            <div class="subsection">
+                <h4>🔓 Available Signup IDs (Preview)</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    <span class="id-badge">19812</span> <span class="id-badge">24678</span> <span class="id-badge">24789</span> <span class="id-badge">24890</span> <span class="id-badge">24901</span> <span class="id-badge">25012</span> <span class="id-badge">25123</span> <span class="id-badge">25234</span> <span class="id-badge">25345</span> <span class="id-badge">25456</span> <span class="id-badge">25567</span> <span class="id-badge">25678</span> <span class="id-badge">25789</span> <span class="id-badge">25890</span> <span class="id-badge">25901</span> <span class="id-badge">26012</span> <span class="id-badge">26123</span> <span class="id-badge">26234</span> <span class="id-badge">26345</span> <span class="id-badge">26456</span> 
+                </div>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">... and 207 more available</p>
+            </div>
+            </div>
+
+            <div id="tab-data-analysis" class="tab-content">
+                
+                <div class="section-header">
+                    <span class="icon icon-data">📊</span>
+                    <span>Data Export Process</span>
+                    <span class="badge badge-success">ENABLED</span>
+                </div>
+
+                
+
+                <div class="process-flow">
+                    <div class="flow-step">🚀 Start Job</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">⏳ Poll Status</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">📥 Download</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">✅ Complete</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card stat-primary">
+                        <div class="number">export_1769195719341...</div>
+                        <div class="label">Current Job ID</div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="number">COMPLETED</div>
+                        <div class="label">Job Status</div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="number">6</div>
+                        <div class="label">Completed Jobs</div>
+                    </div>
+                    <div class="stat-card stat-warning">
+                        <div class="number">0</div>
+                        <div class="label">Processing</div>
+                    </div>
+                </div>
+
+                
+            <div class="file-info-card" style="background: var(--bg-card); padding: 1.5rem;
+                border-radius: 12px; margin: 1rem 0;">
+                <h4 style="margin: 0 0 1rem 0;">📁 Downloaded File</h4>
+                <div style="display: grid; gap: 0.5rem;">
+                    <div><strong>Path:</strong> <code>/home/enigmatix/projects/qwebsiteautomationbot/output/exports/export_export_1769195719341_vlvm4mfby.zip</code></div>
+                    <div><strong>Size:</strong> 2.66 MB</div>
+                </div>
+            </div>
+                
+            <div class="download-section" style="margin: 1rem 0;">
+                <a href="https://qwebsitedepolying-production.up.railway.app/api/admin/export-jobs/export_1769195719341_vlvm4mfby/download" target="_blank" class="btn btn-primary"
+                    style="display: inline-flex; align-items: center; gap: 0.5rem;
+                    padding: 0.75rem 1.5rem; background: var(--primary); color: white;
+                    text-decoration: none; border-radius: 8px;">
+                    <span>⬇️</span> Download Export
+                </a>
+            </div>
+                
+            <div class="subsection">
+                <h4>📋 Export Jobs History</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    <tr>
+                        <td><span class="id-cell">export_1769195156214_l6hcfpmhz</span></td>
+                        <td><span class="badge badge-success">completed</span></td>
+                        <td>2026-01-23 19:05:56</td>
+                        <td>2.66 MB</td>
+                    </tr>
+                    <tr>
+                        <td><span class="id-cell">export_1769163657946_8peet2o10</span></td>
+                        <td><span class="badge badge-success">completed</span></td>
+                        <td>2026-01-23 10:20:57</td>
+                        <td>2.66 MB</td>
+                    </tr>
+                    <tr>
+                        <td><span class="id-cell">export_1769163367788_ca2bwvyuk</span></td>
+                        <td><span class="badge badge-success">completed</span></td>
+                        <td>2026-01-23 10:16:07</td>
+                        <td>2.66 MB</td>
+                    </tr>
+                    <tr>
+                        <td><span class="id-cell">export_1769163087274_9ikz4vz7u</span></td>
+                        <td><span class="badge badge-success">completed</span></td>
+                        <td>2026-01-23 10:11:27</td>
+                        <td>2.66 MB</td>
+                    </tr>
+                    <tr>
+                        <td><span class="id-cell">export_1769160778661_wthrl0ioh</span></td>
+                        <td><span class="badge badge-success">completed</span></td>
+                        <td>2026-01-23 09:32:58</td>
+                        <td>2.66 MB</td>
+                    </tr>
+                    <tr>
+                        <td><span class="id-cell">export_1769093501183_g7zepd4de</span></td>
+                        <td><span class="badge badge-success">completed</span></td>
+                        <td>2026-01-22 14:51:41</td>
+                        <td>2.65 MB</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+
+            <div id="tab-logs" class="tab-content">
+                
+                <div class="section-header">
+                    <span class="icon icon-log">📋</span>
+                    <span>Logs</span>
+                </div>
+                
+                
+            <div class="subsection">
+                <h4 style="color: var(--warning);">⚠️ Warnings (1)</h4>
+                <ul class="list-group"><li><span class="icon">⚠️</span> <strong>2026-01-24T00:11:43.413944</strong>: PAYMENT_IDS_LIST is empty - nothing to update</li></ul>
+            </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Generated by QwebsiteAutomationBot • 2026</p>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabId) {
+            // Hide all tab contents
+            var tabContents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+
+            // Remove active class from all tab buttons
+            var tabBtns = document.getElementsByClassName('tab-btn');
+            for (var i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove('active');
+            }
+
+            // Show the current tab and add active class to the button
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+id,email,doctor_name,user_type,created_at,custom_debt_limit,total_owed_amount,debt_limit_exceeded,_export_metadata
+"3a430758-5478-4d3a-bd39-f40557d99429","muhammadqasimshabbirshabbir@gmail.com","Dr Workspace gmail","doctor",""2026-01-23T06:11:05.519Z"","","0.00","false","{"exported_at":"2026-01-23T19:15:20.066Z","export_job_id":"export_1769195719341_vlvm4mfby","data_type":"user_wallets","time_range":"30d"}"
+"e671f0b9-d4f6-4a1a-9f48-7e116aa05a7c","chaudharyabubakar702@gmail.com","abubakar","doctor",""2026-01-23T06:48:14.026Z"","","0.00","false","{"exported_at":"2026-01-23T19:15:20.066Z","export_job_id":"export_1769195719341_vlvm4mfby","data_type":"user_wallets","time_range":"30d"}"

@@ -1,0 +1,8 @@
+{
+    "bitwarden_credentials": {
+        "BW_CLIENTID": "your-client-id",
+        "BW_CLIENTSECRET": "your-client-secret",
+        "BW_PASSWORD": "your-password",
+        "BW_USERNAME": "your-username"
+    }
+}

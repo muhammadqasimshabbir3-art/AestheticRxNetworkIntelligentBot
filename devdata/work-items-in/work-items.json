@@ -1,0 +1,17 @@
+[
+    {
+        "payload": {
+            "run_order_manage_system": true,
+            "run_update_payment_process": true,
+            "payment_ids_list": [],
+            "run_user_management_process": true,
+            "run_advertisement_management_process": true,
+            "advertisement_paid_ids_list": [],
+            "run_signup_id_management_process": true,
+            "run_data_analysis_process": true,
+            "run_business_report_process": true,
+            "dev_safe_mode": true,
+            "log_level": "INFO"
+        }
+    }
+]

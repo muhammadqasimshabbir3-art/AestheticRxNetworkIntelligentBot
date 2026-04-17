@@ -1,0 +1,3 @@
+userType,duration,durationType,isRequired,description,created_at,updated_at,_export_metadata
+"admin","1","hours","true","OTP required for every admin login",""2026-01-20T06:05:07.537Z"",""2026-01-20T06:05:07.537Z"","{"exported_at":"2026-01-23T19:15:20.325Z","export_job_id":"export_1769195719341_vlvm4mfby","data_type":"otp_configs","time_range":"30d"}"
+"regular","24","hours","true","OTP required once per day",""2026-01-20T06:05:07.537Z"",""2026-01-20T16:01:00.486Z"","{"exported_at":"2026-01-23T19:15:20.325Z","export_job_id":"export_1769195719341_vlvm4mfby","data_type":"otp_configs","time_range":"30d"}"

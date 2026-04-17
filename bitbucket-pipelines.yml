@@ -1,0 +1,110 @@
+definitions:
+  steps:
+    - step: &pre-commit
+        name: Run Pre-commit
+        image: python:3.11.5
+        oidc: true
+        script:
+          - pipe: docker://thoughtfulai/pipes:precommit-uv-v0
+            variables:
+              AWS_REGION: ${AWS_DEFAULT_REGION}
+              AWS_CODEARTIFACT_DOMAIN: ${AWS_CODEARTIFACT_DOMAIN}
+              AWS_CODEARTIFACT_DOMAIN_OWNER: ${AWS_CODEARTIFACT_DOMAIN_OWNER}
+              AWS_CODEARTIFACT_REPOSITORY: ${AWS_CODEARTIFACT_REPOSITORY}
+              AWS_ROLE_ARN: ${AWS_CODEARTIFACT_ROLE_ARN}
+    - step: &run-unit-tests
+        name: Run Unit Tests
+        image: python:3.11.5
+        oidc: true
+        script:
+          - pipe: docker://thoughtfulai/pipes:pytest-uv-v0
+            variables:
+              AWS_REGION: ${AWS_DEFAULT_REGION}
+              AWS_CODEARTIFACT_DOMAIN: ${AWS_CODEARTIFACT_DOMAIN}
+              AWS_CODEARTIFACT_DOMAIN_OWNER: ${AWS_CODEARTIFACT_DOMAIN_OWNER}
+              AWS_CODEARTIFACT_REPOSITORY: ${AWS_CODEARTIFACT_REPOSITORY}
+              AWS_ROLE_ARN: ${AWS_CODEARTIFACT_ROLE_ARN}
+              PYTEST_ARGS: "-m unit"
+    - step: &run-integration-tests
+        name: Run Integration Tests
+        size: 2x
+        image: python:3.11.5
+        oidc: true
+        script:
+          - pipe: docker://thoughtfulai/pipes:pytest-uv-v0
+            variables:
+              AWS_REGION: ${AWS_DEFAULT_REGION}
+              AWS_CODEARTIFACT_DOMAIN: ${AWS_CODEARTIFACT_DOMAIN}
+              AWS_CODEARTIFACT_DOMAIN_OWNER: ${AWS_CODEARTIFACT_DOMAIN_OWNER}
+              AWS_CODEARTIFACT_REPOSITORY: ${AWS_CODEARTIFACT_REPOSITORY}
+              AWS_ROLE_ARN: ${AWS_CODEARTIFACT_ROLE_ARN}
+              BW_CLIENTID: ${BW_CLIENTID}
+              BW_CLIENTSECRET: ${BW_CLIENTSECRET}
+              BW_PASSWORD: ${BW_PASSWORD}
+              BW_USERNAME: ${BW_USERNAME}
+              PYTEST_ARGS: "-m integration"
+    - step: &repo-update
+        name: Update Repo Description
+        image: python:3.11.5
+        oidc: true
+        script:
+          - pipe: docker://thoughtfulai/pipes:update-bitbucket-repo-description-uv-v0
+            variables:
+              CLIENT_NAME: ${CLIENT_NAME}
+              APP_PASSWORD: ${APP_PASSWORD}
+              AWS_REGION: ${AWS_DEFAULT_REGION}
+              AWS_CODEARTIFACT_DOMAIN: ${AWS_CODEARTIFACT_DOMAIN}
+              AWS_CODEARTIFACT_DOMAIN_OWNER: ${AWS_CODEARTIFACT_DOMAIN_OWNER}
+              AWS_CODEARTIFACT_REPOSITORY: ${AWS_CODEARTIFACT_REPOSITORY}
+              AWS_ROLE_ARN: ${AWS_CODEARTIFACT_ROLE_ARN}
+    - step: &dump-git-info
+        name: Dump git info to JSON file
+        image: python:3.11.5
+        script:
+          - pipe: docker://thoughtfulai/pipes:dump-bitbucket-commit-info-v0
+        artifacts:
+          - commit_info.json
+    - step: &deploy
+        name: Deploy to workspace on Robocloud
+        image: python:3.11.5
+        script:
+          - pipe: docker://thoughtfulai/pipes:deploy-robocloud-v0
+            variables:
+              ROBOCORP_API_KEY: ${ROBOCORP_API_KEY}
+              ROBOCLOUD_CREDENTIALS: ${robocloud_credentials}
+              WORKSPACE_ID: ${workspace_id}
+              ROBOT_ID: ${robot_id}
+              AWS_EXTERNAL_ID: ${AWS_EXTERNAL_ID}
+              AWS_REGION: ${AWS_DEFAULT_REGION}
+              AWS_CODEARTIFACT_DOMAIN: ${AWS_CODEARTIFACT_DOMAIN}
+              AWS_CODEARTIFACT_DOMAIN_OWNER: ${AWS_CODEARTIFACT_DOMAIN_OWNER}
+              AWS_ROBOCORP_ROLE_ARN: ${AWS_CODEARTIFACT_ROBOCORP_ROLE_ARN}
+              AWS_CODEARTIFACT_REPOSITORY: ${AWS_CODEARTIFACT_REPOSITORY}
+              SLACK_CHANNEL_ID: ${SLACK_CHANNEL_ID}
+              SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
+
+pipelines:
+  default:
+    - parallel:
+        - step: *pre-commit
+        - step: *run-unit-tests
+  branches:
+    "{bugfix/**,feature/**}":
+      - parallel:
+          - step: *pre-commit
+          - step: *dump-git-info
+          - step: *run-unit-tests
+          - step: *run-integration-tests
+      - step:
+          <<: *deploy
+          deployment: Dev
+    master:
+      - parallel:
+          - step: *pre-commit
+          - step: *repo-update
+          - step: *dump-git-info
+          - step: *run-unit-tests
+          - step: *run-integration-tests
+      - step:
+          <<: *deploy
+          deployment: Prod

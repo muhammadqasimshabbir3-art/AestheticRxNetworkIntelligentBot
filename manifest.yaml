@@ -1,0 +1,30 @@
+---
+# This is your manifest.
+# It's our source of truth defining the process we've agreed to automate for the client
+# supervisor allows us to associate functions
+uid: QWAB
+name: QwebsiteAutomationBot
+description: "Website Automation Bot"
+author: TA Team
+source: https://bitbucket.org/thoughtfulautomation/qwebsiteautomationbot/src/master/
+
+workflow:
+  - step_id: "1"
+    title: Initialize Components
+    description: Initialize process components and validate environment setup
+    step_type: sequential
+    steps:
+      - step_id: "1.1"
+        title: Initialize Process
+        description: Set up the process and initialize reporting components
+        step_type: sequential
+
+  - step_id: "2"
+    title: Execute Main Workflow
+    description: Perform the main automation workflow
+    step_type: sequential
+
+  - step_id: "3"
+    title: Finalize Process
+    description: Complete process execution and cleanup resources
+    step_type: sequential

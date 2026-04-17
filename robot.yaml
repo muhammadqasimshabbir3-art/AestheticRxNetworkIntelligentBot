@@ -1,0 +1,82 @@
+# Robot Framework Configuration for QwebsiteAutomationBot
+# Documentation: https://robocorp.com/docs/configuration/robot-yaml
+#
+# This robot can receive inputs via:
+# 1. Robocorp Work Items (JSON payload) - when running in Robocorp Cloud/Assistant
+# 2. Environment variables - for local development
+# 3. Default values - fallback
+#
+# Input Schema (work-items.json payload):
+# {
+#   "run_order_manage_system": true,
+#   "run_update_payment_process": false,
+#   "payment_ids_list": ["id1", "id2"],
+#   "run_user_management_process": false,
+#   "run_advertisement_management_process": false,
+#   "advertisement_paid_ids_list": [],
+#   "run_signup_id_management_process": false,
+#   "run_data_analysis_process": false,
+#   "run_business_report_process": false,
+#   "dev_safe_mode": true,
+#   "log_level": "INFO"
+# }
+
+tasks:
+  # Main automation task - runs all enabled processes
+  QWebsite Automation:
+    shell: python -m robocorp.tasks run task.py -t qwebsite_automation_task
+
+  # Individual process tasks (can be run separately)
+  Order Management Only:
+    shell: python -m robocorp.tasks run task.py -t qwebsite_automation_task
+    env:
+      RUN_ORDER_MANAGE_SYSTEM: "True"
+      RUN_UPDATE_PAYMENT_PROCESS: "False"
+      RUN_USER_MANAGEMENT_PROCESS: "False"
+      RUN_ADVERTISEMENT_MANAGEMENT_PROCESS: "False"
+      RUN_SIGNUP_ID_MANAGEMENT_PROCESS: "False"
+      RUN_DATA_ANALYSIS_PROCESS: "False"
+
+  Data Analysis & Report:
+    shell: python -m robocorp.tasks run task.py -t qwebsite_automation_task
+    env:
+      RUN_ORDER_MANAGE_SYSTEM: "False"
+      RUN_DATA_ANALYSIS_PROCESS: "True"
+
+  All Processes:
+    shell: python -m robocorp.tasks run task.py -t qwebsite_automation_task
+    env:
+      RUN_ORDER_MANAGE_SYSTEM: "True"
+      RUN_UPDATE_PAYMENT_PROCESS: "True"
+      RUN_USER_MANAGEMENT_PROCESS: "True"
+      RUN_ADVERTISEMENT_MANAGEMENT_PROCESS: "True"
+      RUN_SIGNUP_ID_MANAGEMENT_PROCESS: "True"
+      RUN_DATA_ANALYSIS_PROCESS: "True"
+
+# Conda environment configuration
+condaConfigFile: conda.yaml
+
+# Output directory for reports and artifacts
+artifactsDir: output
+
+# Python path configuration
+PATH:
+  - .
+
+PYTHONPATH:
+  - .
+  - src
+  - workflow
+
+# Files to ignore
+ignoreFiles:
+  - .gitignore
+  - .pre-commit-config.yaml
+
+# Development work items configuration
+# These are used for local development only
+devTasksDir: devdata
+
+# Environment configuration files
+environmentConfigs:
+  - devdata/env.json

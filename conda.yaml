@@ -1,0 +1,54 @@
+# Conda Environment Configuration for QwebsiteAutomationBot
+# This file defines the Python environment for Robocorp execution
+
+channels:
+  - conda-forge
+
+dependencies:
+  # Python version
+  - python=3.12
+
+  # Package manager
+  - pip>=23.2.1
+
+  # Pip dependencies
+  - pip:
+      # ============================================
+      # Robocorp Framework
+      # ============================================
+      - robocorp>=2.0.0
+      - robocorp-tasks>=3.0.0
+      - robocorp-workitems>=1.4.0
+
+      # ============================================
+      # Configuration & Validation
+      # ============================================
+      - pydantic>=2.0.0
+      - pydantic-settings>=2.8.1
+
+      # ============================================
+      # HTTP & API Integration
+      # ============================================
+      - requests>=2.31.0
+
+      # ============================================
+      # Environment Management
+      # ============================================
+      - python-dotenv>=1.0.0
+
+      # ============================================
+      # Security & Cryptography
+      # ============================================
+      - cryptography>=41.0.0
+
+      # ============================================
+      # Data Analysis & Processing
+      # ============================================
+      - pandas>=2.0.0
+      - numpy>=1.24.0
+
+      # ============================================
+      # Advanced Analytics & Forecasting
+      # ============================================
+      - scikit-learn>=1.3.0
+      - statsmodels>=0.14.0
