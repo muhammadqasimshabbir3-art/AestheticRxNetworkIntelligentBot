@@ -182,9 +182,7 @@ class AnomalyDetector:
         for alert in all_alerts:
             if alert.metric_name not in result["anomalies_by_metric"]:
                 result["anomalies_by_metric"][alert.metric_name] = []
-            result["anomalies_by_metric"][alert.metric_name].append(
-                self._alert_to_dict(alert)
-            )
+            result["anomalies_by_metric"][alert.metric_name].append(self._alert_to_dict(alert))
 
         # Summary
         result["anomaly_summary"] = {
@@ -263,7 +261,7 @@ class AnomalyDetector:
             current_value=current_value,
             expected_value=mean,
             deviation=zscore,
-            message=f"{metric_name} is {abs(zscore):.1f}σ {direction} average ({current_value:,.0f} vs avg {mean:,.0f})",
+            message=f"{metric_name} is {abs(zscore):.1f} sigma {direction} average ({current_value:,.0f} vs avg {mean:,.0f})",
         )
 
         return result
@@ -472,7 +470,7 @@ class AnomalyDetector:
                 current_value=current_value,
                 expected_value=expected,
                 deviation=deviation,
-                message=f"{metric_name} is {abs(deviation):.1f}σ {direction} than typical for this day of week",
+                message=f"{metric_name} is {abs(deviation):.1f} sigma {direction} than typical for this day of week",
             )
 
         return result
@@ -560,14 +558,9 @@ class AnomalyDetector:
         html_parts = []
 
         if critical:
-            html_parts.append(
-                f'<div class="alert alert-critical">🚨 {len(critical)} Critical Alert(s)</div>'
-            )
+            html_parts.append(f'<div class="alert alert-critical">🚨 {len(critical)} Critical Alert(s)</div>')
 
         if warnings:
-            html_parts.append(
-                f'<div class="alert alert-warning">⚠️ {len(warnings)} Warning(s)</div>'
-            )
+            html_parts.append(f'<div class="alert alert-warning">⚠️ {len(warnings)} Warning(s)</div>')
 
         return "\n".join(html_parts)
-

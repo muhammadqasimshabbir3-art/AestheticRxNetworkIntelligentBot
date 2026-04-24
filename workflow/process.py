@@ -1,4 +1,4 @@
-"""Main Process - Entry point for QwebsiteAutomationBot.
+"""Main Process - Entry point for AestheticRxNetworkIntelligentBot.
 
 This module handles:
 - Bitwarden authentication setup
@@ -14,7 +14,6 @@ Usage:
     process.start()
 """
 
-
 from config import CONFIG
 from libraries.logger import logger
 from libraries.report_generator import ReportGenerator
@@ -22,6 +21,7 @@ from libraries.workitems import INPUTS
 from processes.advertisement import AdvertisementManagementProcess
 from processes.business_report import BusinessReportProcess
 from processes.data_analysis import DataAnalysisProcess
+from processes.invoice import InvoiceGenerationProcess
 from processes.order import OrderManagementProcess
 from processes.payment import UpdatePaymentProcess
 from processes.signup import SignupIDManagementProcess
@@ -29,7 +29,7 @@ from processes.user import UserManagementProcess
 
 
 class Process:
-    """Main Process class for QwebsiteAutomationBot.
+    """Main Process class for AestheticRxNetworkIntelligentBot.
 
     This class handles:
     1. Initialization and configuration logging
@@ -57,7 +57,7 @@ class Process:
         This sets up configuration and prepares all processes.
         """
         logger.info("=" * 60)
-        logger.info("Initializing QwebsiteAutomationBot Process")
+        logger.info("Initializing AestheticRxNetworkIntelligentBot Process")
         logger.info("=" * 60)
 
         # Log configuration
@@ -71,6 +71,7 @@ class Process:
         self._signup_id_process: SignupIDManagementProcess | None = None
         self._data_analysis_process: DataAnalysisProcess | None = None
         self._business_report_process: BusinessReportProcess | None = None
+        self._invoice_process: InvoiceGenerationProcess | None = None
 
         # Initialize report generator
         self._report = ReportGenerator()
@@ -97,6 +98,7 @@ class Process:
         logger.info(f"  RUN_SIGNUP_ID_MANAGEMENT_PROCESS: {INPUTS.RUN_SIGNUP_ID_MANAGEMENT_PROCESS}")
         logger.info(f"  RUN_DATA_ANALYSIS_PROCESS: {INPUTS.RUN_DATA_ANALYSIS_PROCESS}")
         logger.info(f"  RUN_BUSINESS_REPORT_PROCESS: {INPUTS.RUN_BUSINESS_REPORT_PROCESS}")
+        logger.info(f"  RUN_INVOICE_GENERATION_PROCESS: {INPUTS.RUN_INVOICE_GENERATION_PROCESS}")
 
     def start(self) -> None:
         """Start the main workflow.
@@ -107,7 +109,7 @@ class Process:
         3. Generate HTML report
         """
         logger.info("=" * 60)
-        logger.info("Starting QwebsiteAutomationBot Workflow")
+        logger.info("Starting AestheticRxNetworkIntelligentBot Workflow")
         logger.info("=" * 60)
 
         # Start report tracking
@@ -141,11 +143,14 @@ class Process:
                     )
 
                     # Mark step passed
-                    self._report.step_passed("payment_update", {
-                        "IDs Processed": len(INPUTS.PAYMENT_IDS_LIST),
-                        "Updated": self._update_payment_process.updated_count,
-                        "Failed": len(self._update_payment_process.failed_ids),
-                    })
+                    self._report.step_passed(
+                        "payment_update",
+                        {
+                            "IDs Processed": len(INPUTS.PAYMENT_IDS_LIST),
+                            "Updated": self._update_payment_process.updated_count,
+                            "Failed": len(self._update_payment_process.failed_ids),
+                        },
+                    )
                 except Exception as e:
                     error_msg = f"Update Payment Process failed: {e}"
                     logger.error(f"❌ {error_msg}")
@@ -197,11 +202,14 @@ class Process:
                     )
 
                     # Mark step passed
-                    self._report.step_passed("order_management", {
-                        "Orders": len(order_manager.payment_to_process),
-                        "Updated": len(order_manager.updated_order_ids),
-                        "New": len(order_manager.new_orders),
-                    })
+                    self._report.step_passed(
+                        "order_management",
+                        {
+                            "Orders": len(order_manager.payment_to_process),
+                            "Updated": len(order_manager.updated_order_ids),
+                            "New": len(order_manager.new_orders),
+                        },
+                    )
             except Exception as e:
                 error_msg = f"Order Management Process failed: {e}"
                 logger.error(f"❌ {error_msg}")
@@ -222,6 +230,25 @@ class Process:
                 status_breakdown={},
                 doctor_debts=[],
             )
+
+        # ============================================
+        # STEP 2.5: Invoice Generation Process
+        # ============================================
+        if INPUTS.RUN_INVOICE_GENERATION_PROCESS:
+            logger.info("=" * 60)
+            logger.info("🔄 RUN_INVOICE_GENERATION_PROCESS is enabled")
+            logger.info("=" * 60)
+
+            try:
+                self._invoice_process = InvoiceGenerationProcess()
+                self._invoice_process.start()
+            except Exception as e:
+                error_msg = f"Invoice Generation Process failed: {e}"
+                logger.error(f"❌ {error_msg}")
+                errors.append(error_msg)
+                self._report.add_error(error_msg)
+        else:
+            logger.info("⏸ RUN_INVOICE_GENERATION_PROCESS is disabled - skipping")
 
         # ============================================
         # STEP 3: User Management Process
@@ -254,10 +281,13 @@ class Process:
                 )
 
                 # Mark step passed
-                self._report.step_passed("user_management", {
-                    "Users": self._user_process.users_count,
-                    "Approved": len(self._user_process.approved_users),
-                })
+                self._report.step_passed(
+                    "user_management",
+                    {
+                        "Users": self._user_process.users_count,
+                        "Approved": len(self._user_process.approved_users),
+                    },
+                )
             except Exception as e:
                 error_msg = f"User Management Process failed: {e}"
                 logger.error(f"❌ {error_msg}")
@@ -317,10 +347,13 @@ class Process:
                 )
 
                 # Mark step passed
-                self._report.step_passed("advertisement_management", {
-                    "Ads": self._advertisement_process.total_count,
-                    "Approved": len(self._advertisement_process.approved_advertisements),
-                })
+                self._report.step_passed(
+                    "advertisement_management",
+                    {
+                        "Ads": self._advertisement_process.total_count,
+                        "Approved": len(self._advertisement_process.approved_advertisements),
+                    },
+                )
             except Exception as e:
                 error_msg = f"Advertisement Management Process failed: {e}"
                 logger.error(f"❌ {error_msg}")
@@ -376,10 +409,13 @@ class Process:
                 )
 
                 # Mark step passed
-                self._report.step_passed("signup_id_management", {
-                    "Total": self._signup_id_process.total_count,
-                    "Available": self._signup_id_process.unused_count,
-                })
+                self._report.step_passed(
+                    "signup_id_management",
+                    {
+                        "Total": self._signup_id_process.total_count,
+                        "Available": self._signup_id_process.unused_count,
+                    },
+                )
             except Exception as e:
                 error_msg = f"Signup ID Management Process failed: {e}"
                 logger.error(f"❌ {error_msg}")
@@ -432,10 +468,13 @@ class Process:
                 )
 
                 # Mark step passed
-                self._report.step_passed("data_analysis", {
-                    "Status": self._data_analysis_process.job_status,
-                    "Jobs": len(self._data_analysis_process.completed_jobs),
-                })
+                self._report.step_passed(
+                    "data_analysis",
+                    {
+                        "Status": self._data_analysis_process.job_status,
+                        "Jobs": len(self._data_analysis_process.completed_jobs),
+                    },
+                )
             except Exception as e:
                 error_msg = f"Data Analysis Process failed: {e}"
                 logger.error(f"❌ {error_msg}")
@@ -465,20 +504,20 @@ class Process:
         # ============================================
         if INPUTS.RUN_BUSINESS_REPORT_PROCESS:
             # Check if BusinessReport already ran inside DataAnalysis
-            if (
-                self._data_analysis_process
-                and self._data_analysis_process.business_report
-            ):
+            if self._data_analysis_process and self._data_analysis_process.business_report:
                 logger.info("=" * 60)
                 logger.info("📊 Business Report already ran inside Data Analysis Process")
                 logger.info("=" * 60)
                 self._business_report_process = self._data_analysis_process.business_report
                 if self._business_report_process and self._business_report_process.report_path:
                     logger.info(f"📊 Business Report: {self._business_report_process.report_path}")
-                    self._report.step_passed("business_report", {
-                        "Source": "DataAnalysis",
-                        "Report": "Generated",
-                    })
+                    self._report.step_passed(
+                        "business_report",
+                        {
+                            "Source": "DataAnalysis",
+                            "Report": "Generated",
+                        },
+                    )
             else:
                 # Run standalone Business Report
                 logger.info("=" * 60)
@@ -492,10 +531,13 @@ class Process:
                     self._business_report_process.start()
                     logger.info(f"📊 Business Report: {self._business_report_process.report_path}")
 
-                    self._report.step_passed("business_report", {
-                        "Source": "Standalone",
-                        "Report": "Generated",
-                    })
+                    self._report.step_passed(
+                        "business_report",
+                        {
+                            "Source": "Standalone",
+                            "Report": "Generated",
+                        },
+                    )
                 except Exception as e:
                     error_msg = f"Business Report Process failed: {e}"
                     logger.error(f"❌ {error_msg}")
@@ -605,6 +647,10 @@ class Process:
             logger.info(f"Job Status: {self._data_analysis_process.job_status}")
             if self._data_analysis_process.file_path:
                 logger.info(f"File: {self._data_analysis_process.file_path}")
+
+        if self._invoice_process:
+            logger.info(f"Invoices generated: {len(self._invoice_process.generated_invoices)}")
+            logger.info(f"Orders skipped: {len(self._invoice_process.skipped_orders)}")
 
         # Log report path
         if self._report_path:

@@ -405,4 +405,3 @@ class AdvertisementAnalyzer:
         by_date = ads_with_date.groupby("date").size()
 
         return {str(k): int(v) for k, v in by_date.items()}
-

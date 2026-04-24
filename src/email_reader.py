@@ -62,7 +62,7 @@ class GmailReader:
 
     def search_otp_email(
         self,
-        sender_filter: str = "qwebsite",
+        sender_filter: str = "aestheticrxnetwork",
         subject_filter: str = "otp",
         max_emails: int = 10,
         received_after: datetime | None = None,
@@ -226,7 +226,7 @@ class GmailReader:
     def _extract_otp(self, text: str) -> str | None:
         """Extract OTP code from email text.
 
-        Looks for Q Website specific OTP patterns.
+        Looks for AestheticRxNetwork-specific OTP patterns.
 
         Args:
             text: Email body text
@@ -240,10 +240,10 @@ class GmailReader:
         # Normalize whitespace for better pattern matching
         normalized_text = re.sub(r"\s+", " ", text)
 
-        # Q Website specific patterns - MOST SPECIFIC FIRST
+        # AestheticRxNetwork-specific patterns - MOST SPECIFIC FIRST
         # The email format: "Your One-Time Password (OTP) is: 123456"
         patterns = [
-            # Q Website exact format (most reliable)
+            # AestheticRxNetwork exact format (most reliable)
             r"One-Time\s+Password\s*\(\s*OTP\s*\)\s*is\s*[:\s]*(\d{6})",
             # Variations with "Your" prefix
             r"Your\s+One-Time\s+Password.*?(\d{6})",
@@ -286,7 +286,7 @@ class GmailReader:
     def wait_for_otp(
         self,
         received_after: datetime,
-        sender_filter: str = "qwebsite",
+        sender_filter: str = "aestheticrxnetwork",
         subject_filter: str = "otp",
         timeout_seconds: int = 120,
         check_interval: int = 5,
@@ -338,7 +338,7 @@ def get_otp_from_gmail(
     email_address: str,
     app_password: str,
     received_after: datetime,
-    sender_filter: str = "qwebsite",
+    sender_filter: str = "aestheticrxnetwork",
     timeout_seconds: int = 120,
     initial_delay: int = 20,
 ) -> str | None:

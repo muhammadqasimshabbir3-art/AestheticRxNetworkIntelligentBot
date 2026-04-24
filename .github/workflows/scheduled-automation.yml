@@ -1,0 +1,144 @@
+name: Scheduled Automation - Bot Execution
+
+# ✨ This workflow runs your bot on a schedule without needing your PC on
+# GitHub spins up a fresh Ubuntu machine → runs your bot → uploads reports → shuts down
+
+on:
+  # 🗓️ Schedule: 2–4 times per month (1st and 15th of each month at 10 AM UTC)
+  # Change this to your preferred times
+  schedule:
+    - cron: "0 10 1,15 * *"  # Runs on 1st and 15th at 10:00 UTC
+
+  # 🔧 Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      run_all_processes:
+        description: "Run all processes?"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
+      run_order_management:
+        description: "Run order management?"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+      run_data_analysis:
+        description: "Run data analysis & business report?"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+jobs:
+  bot-execution:
+    runs-on: ubuntu-latest
+    name: Execute AestheticRxNetwork Automation Bot
+    env:
+      AESTHETIC_RX_NETWORK_EMAIL: ${{ secrets.AESTHETIC_RX_NETWORK_EMAIL }}
+      AESTHETIC_RX_NETWORK_PASSWORD: ${{ secrets.AESTHETIC_RX_NETWORK_PASSWORD }}
+      AESTHETIC_RX_NETWORK_BASE_URL: ${{ secrets.AESTHETIC_RX_NETWORK_BASE_URL }}
+      AESTHETIC_RX_NETWORK_FRONTEND_URL: ${{ secrets.AESTHETIC_RX_NETWORK_FRONTEND_URL }}
+      AESTHETIC_RX_NETWORK_OTP: ${{ secrets.AESTHETIC_RX_NETWORK_OTP }}
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      GMAIL_EMAIL: ${{ secrets.GMAIL_EMAIL || secrets.GMAIL_USER }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD || secrets.GMAIL_PASSWORD }}
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+      GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+      GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+      GOOGLE_PROJECT_ID: ${{ vars.GOOGLE_PROJECT_ID }}
+      RUN_UPDATE_PAYMENT_PROCESS: ${{ vars.RUN_UPDATE_PAYMENT_PROCESS || 'False' }}
+      RUN_ORDER_MANAGE_SYSTEM: ${{ vars.RUN_ORDER_MANAGE_SYSTEM || 'True' }}
+      RUN_USER_MANAGEMENT_PROCESS: ${{ vars.RUN_USER_MANAGEMENT_PROCESS || 'False' }}
+      RUN_ADVERTISEMENT_MANAGEMENT_PROCESS: ${{ vars.RUN_ADVERTISEMENT_MANAGEMENT_PROCESS || 'False' }}
+      RUN_SIGNUP_ID_MANAGEMENT_PROCESS: ${{ vars.RUN_SIGNUP_ID_MANAGEMENT_PROCESS || 'False' }}
+      RUN_DATA_ANALYSIS_PROCESS: ${{ vars.RUN_DATA_ANALYSIS_PROCESS || 'False' }}
+      RUN_BUSINESS_REPORT_PROCESS: ${{ vars.RUN_BUSINESS_REPORT_PROCESS || 'False' }}
+
+    steps:
+      # 1️⃣ Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup Python 3.11
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # 3️⃣ Install uv (fast package installer)
+      - name: Install uv
+        run: pip install uv
+
+      # 4️⃣ Install dependencies
+      - name: Install dependencies
+        run: uv pip install -e . --system
+
+      # 5️⃣ Run the bot (scheduled execution)
+      - name: Run AestheticRxNetwork Automation Bot
+        run: python task.py
+        env:
+          # Override with workflow_dispatch inputs if triggered manually
+          RUN_UPDATE_PAYMENT_PROCESS: "${{ vars.RUN_UPDATE_PAYMENT_PROCESS || 'False' }}"
+          RUN_ORDER_MANAGE_SYSTEM: "${{ github.event.inputs.run_order_management || vars.RUN_ORDER_MANAGE_SYSTEM || 'True' }}"
+          RUN_DATA_ANALYSIS_PROCESS: "${{ github.event.inputs.run_data_analysis || vars.RUN_DATA_ANALYSIS_PROCESS || 'False' }}"
+          # All processes run if manual trigger with "run_all_processes" = true
+          RUN_USER_MANAGEMENT_PROCESS: "${{ github.event.inputs.run_all_processes || vars.RUN_USER_MANAGEMENT_PROCESS || 'False' }}"
+          RUN_ADVERTISEMENT_MANAGEMENT_PROCESS: "${{ github.event.inputs.run_all_processes || vars.RUN_ADVERTISEMENT_MANAGEMENT_PROCESS || 'False' }}"
+          RUN_SIGNUP_ID_MANAGEMENT_PROCESS: "${{ github.event.inputs.run_all_processes || vars.RUN_SIGNUP_ID_MANAGEMENT_PROCESS || 'False' }}"
+
+      # 7️⃣ Upload reports as artifacts
+      - name: Upload execution reports
+        if: always()  # Run even if previous steps fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: automation-reports-${{ github.run_number }}
+          path: output/
+          retention-days: 30
+
+      # 8️⃣ (Optional) Upload to Google Drive
+      - name: Upload reports to Google Drive
+        if: success()
+        run: |
+          # This can be extended to upload reports to Google Drive
+          echo "Reports generated successfully!"
+          ls -lah output/
+
+      # 9️⃣ (Optional) Send Slack notification on failure
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "❌ AestheticRxNetwork Automation Bot FAILED",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*AestheticRxNetwork Automation Bot Failed*\n*Branch:* ${{ github.ref }}\n*Run:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  # 🔔 Notification on success
+  notify-success:
+    runs-on: ubuntu-latest
+    needs: bot-execution
+    if: success()
+    steps:
+      - name: Report status
+        run: echo "✅ Bot execution completed successfully!"

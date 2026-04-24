@@ -12,8 +12,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from config import CONFIG
+from libraries.aestheticrxnetwork_api import AestheticRxNetworkAPI
 from libraries.logger import logger
-from libraries.qwebsite_api import QWebsiteAPI
 
 if TYPE_CHECKING:
     from processes.business_report import BusinessReportProcess
@@ -30,7 +30,7 @@ class DataAnalysisManager:
     def __init__(self) -> None:
         """Initialize the DataAnalysisManager."""
         logger.info("Initializing DataAnalysisManager...")
-        self._api = QWebsiteAPI()
+        self._api = AestheticRxNetworkAPI()
 
         # Job tracking
         self.job_id: str | None = None
@@ -194,7 +194,7 @@ class DataAnalysisManager:
             if file_path:
                 self.file_path = file_path
                 self.download_url = (
-                    f"https://qwebsitedepolying-production.up.railway.app"
+                    f"https://aestheticrxnetwork-production.up.railway.app"
                     f"/api/admin/export-jobs/{self.job_id}/download"
                 )
 
@@ -267,4 +267,3 @@ class DataAnalysisManager:
     def business_report(self) -> Optional["BusinessReportProcess"]:
         """Get the Business Report process (if run)."""
         return self._business_report
-

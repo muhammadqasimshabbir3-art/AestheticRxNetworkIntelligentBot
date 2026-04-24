@@ -1,18 +1,22 @@
-"""Libraries module for QwebsiteAutomationBot."""
+"""Libraries module for AestheticRxNetwork."""
 
-from .credentials import get_gmail_credentials, get_google_credentials, get_qwebsite_credentials
+from .aestheticrxnetwork_api_impl import AestheticRxNetworkAPI
+from .credentials import (
+    get_aestheticrxnetwork_credentials,
+    get_gmail_credentials,
+    get_google_credentials,
+)
 from .google_drive import GoogleDriveAPI
 from .google_sheets import GoogleSheetsAPI, SheetRowWriter
 from .logger import logger
-from .qwebsite_api import QWebsiteAPI
 
 __all__ = [
     "GoogleDriveAPI",
     "GoogleSheetsAPI",
-    "QWebsiteAPI",
+    "AestheticRxNetworkAPI",
     "SheetRowWriter",
+    "get_aestheticrxnetwork_credentials",
     "get_gmail_credentials",
     "get_google_credentials",
-    "get_qwebsite_credentials",
     "logger",
 ]

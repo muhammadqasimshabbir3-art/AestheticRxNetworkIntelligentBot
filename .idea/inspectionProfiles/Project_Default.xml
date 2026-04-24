@@ -1,0 +1,28 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="robotframework" />
+          <option value="openai" />
+          <option value="python-dotenv" />
+          <option value="selenium" />
+          <option value="pytest" />
+          <option value="robocorp-tasks" />
+          <option value="requests" />
+          <option value="rpa-framework" />
+          <option value="demucs" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="t_page_object.base.base_page.visit.*" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

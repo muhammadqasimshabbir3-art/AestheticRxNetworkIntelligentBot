@@ -3,7 +3,6 @@
 This module provides the public interface for the data analysis/export functionality.
 """
 
-
 from libraries.logger import logger
 from processes.data_analysis.data_analysis_manager import DataAnalysisManager
 
@@ -92,4 +91,3 @@ class DataAnalysisProcess:
     def business_report(self):
         """Get the Business Report process (always runs inside DataAnalysis)."""
         return self._manager.business_report
-

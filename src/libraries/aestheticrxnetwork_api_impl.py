@@ -1,41 +1,49 @@
-"""Q Website API module.
+"""AestheticRxNetwork API module.
 
-All classes are structured hierarchically with QWebsiteAPI as the final class.
-Only QWebsiteAPI should be used externally.
+All classes are structured hierarchically with AestheticRxNetworkAPI as the final class.
+Only AestheticRxNetworkAPI should be used externally.
 
 Hierarchy:
-    _QWebsiteConfig     → Configuration settings
-    _QWebsiteAuth       → Authentication logic (inherits Config)
-    QWebsiteAPI         → Final API client (inherits Auth) ← USE THIS
+    _AestheticRxNetworkConfig     → Configuration settings
+    _AestheticRxNetworkAuth       → Authentication logic (inherits Config)
+    AestheticRxNetworkAPI         → Final API client (inherits Auth) ← USE THIS
 """
 
 import os
 from collections.abc import Callable
-from datetime import UTC, datetime
+
+try:
+    from datetime import UTC, datetime
+except ImportError:  # Python < 3.11
+    from datetime import datetime
+
+    UTC = UTC
 from typing import Any
 
 import requests
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from .credentials import get_gmail_credentials, get_qwebsite_credentials
+from .credentials import get_aestheticrxnetwork_credentials, get_gmail_credentials
 from .logger import logger
 
 
-class _QWebsiteConfig(BaseSettings):
-    """Configuration for Q Website API.
+class _AestheticRxNetworkConfig(BaseSettings):
+    """Configuration for AestheticRxNetwork API.
 
-    Internal class - inherited by _QWebsiteAuth.
+    Internal class - inherited by _AestheticRxNetworkAuth.
     """
 
     model_config = SettingsConfigDict(
-        env_prefix="QWEBSITE_",
+        env_prefix="AESTHETIC_RX_NETWORK_",
         case_sensitive=False,
         extra="ignore",
     )
 
-    BASE_URL: str = Field(default="https://qwebsitedepolying-production.up.railway.app")
-    FRONTEND_URL: str = Field(default="https://qwebsitedepolying.vercel.app")
+    BASE_URL: str = Field(
+        default_factory=lambda: os.getenv("API_BASE_URL", "https://aestheticrxnetwork-production.up.railway.app")
+    )
+    FRONTEND_URL: str = Field(default="https://aestheticrxnetwork.vercel.app")
     LOGIN_ENDPOINT: str = Field(default="/api/auth/login")
     ORDER_MANAGEMENT_ENDPOINT: str = Field(default="/api/order-management")
     ADMIN_USERS_ENDPOINT: str = Field(default="/api/admin/users")
@@ -70,10 +78,10 @@ class _QWebsiteConfig(BaseSettings):
         return headers
 
 
-class _QWebsiteAuth:
-    """Authentication handler for Q Website API.
+class _AestheticRxNetworkAuth:
+    """Authentication handler for AestheticRxNetwork API.
 
-    Internal class - inherited by QWebsiteAPI.
+    Internal class - inherited by AestheticRxNetworkAPI.
     Handles:
     - Credential retrieval from Bitwarden
     - Gmail verification for OTP
@@ -83,7 +91,7 @@ class _QWebsiteAuth:
     def __init__(self) -> None:
         """Initialize authentication handler."""
         # Configuration
-        self._config = _QWebsiteConfig()
+        self._config = _AestheticRxNetworkConfig()
 
         # Auth state
         self._token: str | None = None
@@ -102,12 +110,12 @@ class _QWebsiteAuth:
         # OTP callback (can be set externally)
         self._otp_callback: Callable[[], str | None] | None = None
 
-    def _get_credentials_from_bitwarden(self) -> None:
-        """Get Q Website and Gmail credentials from Bitwarden."""
-        logger.info("Getting credentials from Bitwarden...")
+    def _load_credentials_from_environment(self) -> None:
+        """Load AestheticRxNetwork and Gmail credentials from environment."""
+        logger.info("Loading credentials from environment variables...")
 
-        self._credentials = get_qwebsite_credentials()
-        logger.info(f"✓ Got Q Website credentials for: {self._credentials['email']}")
+        self._credentials = get_aestheticrxnetwork_credentials()
+        logger.info(f"✓ Got AestheticRxNetwork credentials for: {self._credentials['email']}")
 
         self._gmail_creds = get_gmail_credentials()
         if self._gmail_creds:
@@ -137,7 +145,7 @@ class _QWebsiteAuth:
             self._gmail_verified = False
 
     def _login(self, email: str, password: str) -> dict:
-        """Login to Q Website API.
+        """Login to AestheticRxNetwork API.
 
         Returns:
             dict: {"otp_required": True} or {"success": True}
@@ -220,13 +228,13 @@ class _QWebsiteAuth:
         """Get OTP code from various sources.
 
         Priority:
-        1. Environment variable (QWEBSITE_OTP)
+        1. Environment variable (AESTHETIC_RX_NETWORK_OTP)
         2. Custom callback function
         3. Gmail inbox
         4. Manual input
         """
         # Option 1: Environment variable
-        otp = os.getenv("QWEBSITE_OTP")
+        otp = os.getenv("AESTHETIC_RX_NETWORK_OTP")
         if otp:
             logger.info("Using OTP from environment variable")
             return otp.strip()
@@ -263,7 +271,7 @@ class _QWebsiteAuth:
                 email_address=self._gmail_creds["email"],
                 app_password=self._gmail_creds["app_password"],
                 received_after=self._login_timestamp,
-                sender_filter="qwebsite",
+                sender_filter="aestheticrxnetwork",
                 timeout_seconds=120,
                 initial_delay=20,
             )
@@ -274,7 +282,7 @@ class _QWebsiteAuth:
     def _authenticate(self) -> None:
         """Full authentication flow: login + OTP if needed."""
         if not self._credentials:
-            raise ValueError("No credentials available. Call _get_credentials_from_bitwarden() first.")
+            raise ValueError("No credentials available. Call _load_credentials_from_environment() first.")
 
         # Record timestamp for OTP email filtering
         self._login_timestamp = datetime.now(UTC)
@@ -314,16 +322,16 @@ class _QWebsiteAuth:
         return self._user_data
 
 
-class QWebsiteAPI(_QWebsiteAuth):
-    """Q Website API client.
+class AestheticRxNetworkAPI(_AestheticRxNetworkAuth):
+    """AestheticRxNetwork API client.
 
     This is the ONLY class that should be used externally.
 
     Inherits from:
-    - _QWebsiteAuth (authentication) → _QWebsiteConfig (configuration)
+    - _AestheticRxNetworkAuth (authentication) → _AestheticRxNetworkConfig (configuration)
 
     Usage:
-        api = QWebsiteAPI()  # Auto-authenticates
+        api = AestheticRxNetworkAPI()  # Auto-authenticates
         orders = api.get_orders()
     """
 
@@ -332,7 +340,7 @@ class QWebsiteAPI(_QWebsiteAuth):
         auto_authenticate: bool = True,
         otp_callback: Callable[[], str | None] | None = None,
     ) -> None:
-        """Initialize Q Website API client.
+        """Initialize AestheticRxNetwork API client.
 
         Args:
             auto_authenticate: If True, authenticate during initialization.
@@ -342,15 +350,15 @@ class QWebsiteAPI(_QWebsiteAuth):
         super().__init__()
 
         logger.info("=" * 50)
-        logger.info("Initializing QWebsiteAPI")
+        logger.info("Initializing AestheticRxNetworkAPI")
         logger.info("=" * 50)
 
         # Set OTP callback if provided
         if otp_callback:
             self._otp_callback = otp_callback
 
-        # Get credentials from Bitwarden
-        self._get_credentials_from_bitwarden()
+        # Load credentials from environment variables
+        self._load_credentials_from_environment()
 
         # Verify Gmail connection
         self._verify_gmail_connection()
@@ -360,7 +368,7 @@ class QWebsiteAPI(_QWebsiteAuth):
             self._authenticate()
 
         logger.info("=" * 50)
-        logger.info("QWebsiteAPI ready")
+        logger.info("AestheticRxNetworkAPI ready")
         logger.info("=" * 50)
 
     # ===================

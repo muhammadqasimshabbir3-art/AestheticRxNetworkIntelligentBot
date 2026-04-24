@@ -4,7 +4,6 @@ This module provides a clean interface for the user management workflow,
 encapsulating the UserManager implementation details.
 """
 
-
 from libraries.logger import logger
 from processes.user.user_manager import UserManager
 

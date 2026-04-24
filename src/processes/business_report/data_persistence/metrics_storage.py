@@ -477,4 +477,3 @@ class MetricsStorage:
             metrics["fin_cac"] = kpis.get("cac", 0.0)
 
         return metrics
-

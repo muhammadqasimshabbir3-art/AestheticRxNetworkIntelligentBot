@@ -8,10 +8,9 @@ Workflow:
 5. Update Status in sheet to "active" for approved ads
 """
 
-
+from libraries.aestheticrxnetwork_api import AestheticRxNetworkAPI
 from libraries.google_sheets import GoogleSheetsAPI
 from libraries.logger import logger
-from libraries.qwebsite_api import QWebsiteAPI
 from libraries.sheet_utils import column_index_to_letter, find_column_index
 
 # Advertisement spreadsheet configuration
@@ -86,7 +85,7 @@ class AdvertisementManager:
         self._payment_status_column_index: int = 15  # "Payment Status" column
 
         # API and Sheets
-        self._api: QWebsiteAPI | None = None
+        self._api: AestheticRxNetworkAPI | None = None
         self._sheets_api: GoogleSheetsAPI | None = None
 
         logger.info(f"Paid IDs to update: {self._paid_ids_list}")
@@ -190,8 +189,8 @@ class AdvertisementManager:
         # Initialize Google Sheets API first (for reading existing data)
         self._sheets_api = GoogleSheetsAPI()
 
-        # Initialize Q Website API
-        self._api = QWebsiteAPI(auto_authenticate=True)
+        # Initialize AestheticRxNetwork API
+        self._api = AestheticRxNetworkAPI(auto_authenticate=True)
 
     def _read_sheet_data(self) -> None:
         """Read existing data from the sheet."""
@@ -211,9 +210,7 @@ class AdvertisementManager:
 
             # Read all data
             read_range = f"'{self._sheet_name}'!A:AA"
-            self._sheet_data = self._sheets_api.read_data(
-                ADVERTISEMENT_SPREADSHEET_ID, read_range
-            )
+            self._sheet_data = self._sheets_api.read_data(ADVERTISEMENT_SPREADSHEET_ID, read_range)
 
             if self._sheet_data and len(self._sheet_data) > 0:
                 headers = self._sheet_data[0]
@@ -280,7 +277,9 @@ class AdvertisementManager:
                 logger.warning(f"⚠ ID not found in sheet: {ad_id}")
                 self._payment_update_failed_ids.append(ad_id)
 
-        logger.info(f"Payment Status updates: {len(self._payment_updated_ids)} successful, {len(self._payment_update_failed_ids)} failed")
+        logger.info(
+            f"Payment Status updates: {len(self._payment_updated_ids)} successful, {len(self._payment_update_failed_ids)} failed"
+        )
 
     def _fetch_advertisements(self) -> None:
         """Fetch all advertisements from API."""
@@ -329,9 +328,7 @@ class AdvertisementManager:
 
             # Payment status breakdown
             payment_status = ad.get("payment_status", "unknown")
-            self._payment_status_breakdown[payment_status] = (
-                self._payment_status_breakdown.get(payment_status, 0) + 1
-            )
+            self._payment_status_breakdown[payment_status] = self._payment_status_breakdown.get(payment_status, 0) + 1
 
         logger.info(f"Status breakdown: {self._status_breakdown}")
         logger.info(f"Type breakdown: {self._type_breakdown}")
@@ -343,9 +340,7 @@ class AdvertisementManager:
         logger.info("Filtering for pending advertisements...")
         logger.info("=" * 60)
 
-        self._pending_advertisements = [
-            ad for ad in self._all_advertisements if ad.get("status") == "pending"
-        ]
+        self._pending_advertisements = [ad for ad in self._all_advertisements if ad.get("status") == "pending"]
 
         logger.info(f"Found {len(self._pending_advertisements)} pending advertisements")
         for ad in self._pending_advertisements:
@@ -405,9 +400,7 @@ class AdvertisementManager:
                         logger.info(f"  ID {ad_id} not in existing sheet (will be added if needed)")
                         self._status_updated_ids.append(ad_id)
                 else:
-                    logger.warning(
-                        f"⚠ Failed to approve {ad_id}: {data.get('message', 'Unknown error')}"
-                    )
+                    logger.warning(f"⚠ Failed to approve {ad_id}: {data.get('message', 'Unknown error')}")
                     self._failed_approvals.append(ad_id)
 
             except Exception as e:

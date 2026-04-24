@@ -1,12 +1,12 @@
-"""Main task entry point for QwebsiteAutomationBot.
+"""Main task entry point for AestheticRxNetworkIntelligentBot.
 
 Works with both:
 - Robocorp (via @task decorator)
 - Local execution (via __main__)
 
 Workflow:
-1. Authenticate with Bitwarden → Get credentials
-2. Connect to Q Website API (handles OTP via Gmail)
+1. Load credentials from environment variables
+2. Connect to AestheticRxNetwork API (handles OTP via Gmail)
 3. Check for existing order file in Google Drive
 4. Fetch ALL orders from API (all statuses)
 5. Create new spreadsheet with datestamp naming
@@ -49,9 +49,9 @@ def initialize_process() -> Process:
     """Initialize the process.
 
     This performs:
-    - Bitwarden authentication
+    - Environment credential loading
     - Gmail verification (for OTP)
-    - Q Website API authentication
+    - AestheticRxNetwork API authentication
     """
     try:
         return Process()
@@ -125,11 +125,11 @@ def log_run_configuration() -> None:
 
 
 @robocorp_task
-def qwebsite_automation_task() -> None:
-    """Main task entry point for QwebsiteAutomationBot.
+def aestheticrxnetwork_automation_task() -> None:
+    """Main task entry point for AestheticRxNetworkIntelligentBot.
 
     This is the Robocorp task entry point. It orchestrates:
-        1. Initialize the process (Bitwarden auth, Gmail verification, Q Website login)
+        1. Initialize the process (env credentials, Gmail verification, AestheticRxNetwork login)
         2. Execute the workflow (check existing files, fetch orders, create spreadsheet)
         3. Handle any errors appropriately
         4. Ensure proper cleanup
@@ -142,13 +142,13 @@ def qwebsite_automation_task() -> None:
     except json.JSONDecodeError as e:
         logger.error(f"Failed to log build info: {e}")
 
-    logger.info("Starting QwebsiteAutomationBot")
+    logger.info("Starting AestheticRxNetworkIntelligentBot")
     log_run_configuration()
 
     process = None
 
     try:
-        # 1° - Initialize (Bitwarden auth, Gmail, Q Website API)
+        # 1° - Initialize (env credentials, Gmail, AestheticRxNetwork API)
         process = initialize_process()
 
         # 2° - Execute (check files, fetch orders, create spreadsheet)
@@ -163,9 +163,9 @@ def qwebsite_automation_task() -> None:
         if process:
             finalize_process(process)
 
-    logger.info("QwebsiteAutomationBot task complete")
+    logger.info("AestheticRxNetworkIntelligentBot task complete")
 
 
 # For local execution
 if __name__ == "__main__":
-    qwebsite_automation_task()
+    aestheticrxnetwork_automation_task()

@@ -389,4 +389,3 @@ class TrendAnalyzer:
             "seasonal_patterns": {},
             "current_vs_average": {},
         }
-

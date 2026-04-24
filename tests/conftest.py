@@ -175,9 +175,9 @@ def mock_google_drive_api():
 
 
 @pytest.fixture
-def mock_qwebsite_api():
-    """Mock QWebsite API."""
-    with patch("libraries.qwebsite_api.QWebsiteAPI") as mock:
+def mock_aestheticrxnetwork_api():
+    """Mock AestheticRxNetwork API."""
+    with patch("libraries.aestheticrxnetwork_api.AestheticRxNetworkAPI") as mock:
         mock_instance = MagicMock()
         mock_instance.authenticate.return_value = True
         mock_instance.get_orders.return_value = []

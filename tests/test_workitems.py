@@ -47,7 +47,7 @@ class TestWorkItemInputs:
         reload(libraries.workitems)
         from libraries.workitems import INPUTS
 
-        assert INPUTS.PAYMENT_IDS_LIST == []
+        assert [] == INPUTS.PAYMENT_IDS_LIST
 
     @pytest.mark.unit
     def test_payment_ids_list_from_env(self, monkeypatch):
@@ -61,7 +61,7 @@ class TestWorkItemInputs:
         reload(libraries.workitems)
         from libraries.workitems import INPUTS
 
-        assert INPUTS.PAYMENT_IDS_LIST == ["id1", "id2", "id3"]
+        assert ["id1", "id2", "id3"] == INPUTS.PAYMENT_IDS_LIST
 
     @pytest.mark.unit
     def test_payment_ids_list_strips_whitespace(self, monkeypatch):
@@ -75,7 +75,7 @@ class TestWorkItemInputs:
         reload(libraries.workitems)
         from libraries.workitems import INPUTS
 
-        assert INPUTS.PAYMENT_IDS_LIST == ["id1", "id2", "id3"]
+        assert ["id1", "id2", "id3"] == INPUTS.PAYMENT_IDS_LIST
 
     @pytest.mark.unit
     def test_run_order_manage_system_true_string(self, monkeypatch):

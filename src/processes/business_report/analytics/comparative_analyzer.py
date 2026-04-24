@@ -86,9 +86,7 @@ class ComparativeAnalyzer:
         # Today vs Yesterday
         yesterday = comparison_data.get("yesterday")
         if yesterday and current_metrics:
-            result["today_vs_yesterday"] = self._compare_dicts(
-                current_metrics, yesterday, "Today vs Yesterday"
-            )
+            result["today_vs_yesterday"] = self._compare_dicts(current_metrics, yesterday, "Today vs Yesterday")
             result["has_data"] = True
 
         # Today vs Same Day Last Week
@@ -108,11 +106,15 @@ class ComparativeAnalyzer:
         # This Week vs Last Week (aggregate)
         this_week_df = comparison_data.get("this_week")
         prev_week_df = comparison_data.get("previous_week")
-        if isinstance(this_week_df, pd.DataFrame) and isinstance(prev_week_df, pd.DataFrame):
-            if not this_week_df.empty and not prev_week_df.empty:
-                result["this_week_vs_last_week"] = self._compare_aggregates(
-                    this_week_df, prev_week_df, "This Week vs Last Week"
-                )
+        if (
+            isinstance(this_week_df, pd.DataFrame)
+            and isinstance(prev_week_df, pd.DataFrame)
+            and not this_week_df.empty
+            and not prev_week_df.empty
+        ):
+            result["this_week_vs_last_week"] = self._compare_aggregates(
+                this_week_df, prev_week_df, "This Week vs Last Week"
+            )
 
         # Month-to-date progress
         mtd_df = comparison_data.get("month_to_date")
@@ -128,9 +130,7 @@ class ComparativeAnalyzer:
                 if metric in df.columns:
                     result["rankings"][metric] = self._rank_days_by_metric(df, metric)
                     if current_metrics and metric in current_metrics:
-                        result["percentiles"][metric] = self._calculate_percentile(
-                            df, metric, current_metrics[metric]
-                        )
+                        result["percentiles"][metric] = self._calculate_percentile(df, metric, current_metrics[metric])
 
         logger.info("✓ Comparative analysis complete")
         return result
@@ -281,12 +281,14 @@ class ComparativeAnalyzer:
                     daily_avg = mtd_value / days_elapsed if days_elapsed > 0 else 0
                     projected_month = daily_avg * days_in_month
 
-                    metric_result.update({
-                        "prev_month_value": round(prev_value, 2),
-                        "projected_month": round(projected_month, 2),
-                        "vs_prev_month_pct": round((projected_month / prev_value - 1) * 100, 1),
-                        "on_track": projected_month >= prev_value,
-                    })
+                    metric_result.update(
+                        {
+                            "prev_month_value": round(prev_value, 2),
+                            "projected_month": round(projected_month, 2),
+                            "vs_prev_month_pct": round((projected_month / prev_value - 1) * 100, 1),
+                            "on_track": projected_month >= prev_value,
+                        }
+                    )
 
             result["metrics"][metric] = metric_result
 
@@ -325,11 +327,13 @@ class ComparativeAnalyzer:
             else:
                 date_str = str(idx)
 
-            top_days.append({
-                "rank": i + 1,
-                "date": date_str,
-                "value": round(value, 2),
-            })
+            top_days.append(
+                {
+                    "rank": i + 1,
+                    "date": date_str,
+                    "value": round(value, 2),
+                }
+            )
 
         return {
             "top_days": top_days,
@@ -387,16 +391,18 @@ class ComparativeAnalyzer:
             return {}
 
         improved_count = sum(1 for c in comparisons.values() if c.get("improved"))
-        declined_count = sum(1 for c in comparisons.values() if not c.get("improved") and c.get("percent_change", 0) != 0)
+        declined_count = sum(
+            1 for c in comparisons.values() if not c.get("improved") and c.get("percent_change", 0) != 0
+        )
 
         return {
             "total_metrics": len(comparisons),
             "improved": improved_count,
             "declined": declined_count,
             "unchanged": len(comparisons) - improved_count - declined_count,
-            "overall_sentiment": "positive" if improved_count > declined_count else (
-                "negative" if declined_count > improved_count else "neutral"
-            ),
+            "overall_sentiment": "positive"
+            if improved_count > declined_count
+            else ("negative" if declined_count > improved_count else "neutral"),
         }
 
     def _get_numeric(self, d: dict, key: str) -> float | None:
@@ -437,9 +443,4 @@ class ComparativeAnalyzer:
         if not metrics1 or not metrics2:
             return {"error": "Data not available for one or both dates"}
 
-        return self._compare_dicts(
-            metrics1,
-            metrics2,
-            f"{date1.isoformat()} vs {date2.isoformat()}"
-        )
-
+        return self._compare_dicts(metrics1, metrics2, f"{date1.isoformat()} vs {date2.isoformat()}")

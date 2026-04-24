@@ -119,6 +119,9 @@ class TestProcessStart:
         monkeypatch.setenv("RUN_ORDER_MANAGE_SYSTEM", "False")
         monkeypatch.setenv("RUN_USER_MANAGEMENT_PROCESS", "False")
         monkeypatch.setenv("RUN_ADVERTISEMENT_MANAGEMENT_PROCESS", "False")
+        monkeypatch.setenv("RUN_SIGNUP_ID_MANAGEMENT_PROCESS", "False")
+        monkeypatch.setenv("RUN_DATA_ANALYSIS_PROCESS", "False")
+        monkeypatch.setenv("RUN_BUSINESS_REPORT_PROCESS", "False")
 
         mock_omp = MagicMock()
         mock_report = MagicMock()
@@ -129,6 +132,9 @@ class TestProcessStart:
             patch("workflow.process.UpdatePaymentProcess"),
             patch("workflow.process.UserManagementProcess"),
             patch("workflow.process.AdvertisementManagementProcess"),
+            patch("workflow.process.SignupIDManagementProcess"),
+            patch("workflow.process.DataAnalysisProcess"),
+            patch("workflow.process.BusinessReportProcess"),
             patch("workflow.process.ReportGenerator", return_value=mock_report),
         ):
             from importlib import reload

@@ -1,1 +1,1 @@
-"""Test suite for QwebsiteAutomationBot."""
+"""Test suite for AestheticRxNetworkIntelligentBot."""

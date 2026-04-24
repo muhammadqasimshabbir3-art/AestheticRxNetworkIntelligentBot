@@ -541,4 +541,3 @@ class DataLoader:
             "files_with_data": sum(1 for df in self._dataframes.values() if not df.empty),
             "row_counts": self.get_row_counts(),
         }
-

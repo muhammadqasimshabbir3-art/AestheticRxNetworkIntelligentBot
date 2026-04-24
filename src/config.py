@@ -1,4 +1,4 @@
-"""Configuration for QwebsiteAutomationBot."""
+"""Configuration for AestheticRxNetwork."""
 
 from pathlib import Path
 
@@ -23,7 +23,7 @@ class Config(BaseSettings):
     )
 
     # Application
-    APP_NAME: str = "QwebsiteAutomationBot"
+    APP_NAME: str = "AestheticRxNetworkIntelligentBot"
     DEBUG: bool = Field(default=False)
 
     # Directories
@@ -60,7 +60,7 @@ class Config(BaseSettings):
 
     # Spreadsheet naming convention
     SPREADSHEET_NAME_PREFIX: str = Field(
-        default="QwebsitePendingOrder",
+        default="AestheticRxNetworkPendingOrder",
         description="Prefix for spreadsheet names (followed by date)",
     )
 
@@ -70,6 +70,20 @@ class Config(BaseSettings):
         default="1E9eA0XrEv7BqvYUgvLQOlaqw9walZUmC7p8atgh2D_s",
         description="Google Sheet ID for advertisement management",
     )
+
+    # Google Drive file IDs for invoice generation workflow
+    PENDING_ORDERS_FILE_ID: str = Field(
+        default="1wRQcrgotbeWsz6s5hJQ4xv_5g_fjhQiM",
+        description="Google Drive file ID for pending orders Excel",
+    )
+    ADVERTISEMENT_FILE_ID: str = Field(
+        default="1BOucirkN3GmY84IsS9dK3wjFwjavoZaQ",
+        description="Google Drive file ID for advertisement Excel",
+    )
+
+    INVOICE_OUTPUT_DIR: Path = Field(default_factory=lambda: Path.cwd() / "output" / "invoices")
+    INVOICE_PROCESSED_LOG: Path = Field(default_factory=lambda: Path.cwd() / "output" / "processed_invoices.json")
+    DRIVE_CACHE_DIR: Path = Field(default_factory=lambda: Path.cwd() / "temp" / "drive_cache")
 
     # ===================
     # Financial Tracking Configuration
@@ -118,6 +132,8 @@ class Config(BaseSettings):
         """Create output and temp directories if they don't exist."""
         self.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         self.TEMP_DIR.mkdir(parents=True, exist_ok=True)
+        self.INVOICE_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        self.DRIVE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     @property
     def spreadsheet_url(self) -> str:

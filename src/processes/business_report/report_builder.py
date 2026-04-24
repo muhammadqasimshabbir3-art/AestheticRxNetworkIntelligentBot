@@ -448,7 +448,7 @@ class ReportBuilder:
         return f"""
         <div class="header">
             <h1>📊 Business Intelligence Report</h1>
-            <p class="subtitle">Q Website - Comprehensive Analytics Dashboard</p>
+            <p class="subtitle">AestheticRxNetwork - Comprehensive Analytics Dashboard</p>
             <p class="subtitle">Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
         </div>"""
 
@@ -529,7 +529,7 @@ class ReportBuilder:
         # Top doctors table
         doctors_rows = ""
         for doc in top_doctors[:10]:
-            doctor_display = str(doc.get('doctor_name', doc.get('doctor_id', 'N/A')))[:20]
+            doctor_display = str(doc.get("doctor_name", doc.get("doctor_id", "N/A")))[:20]
             doctors_rows += f"""
                 <tr>
                     <td>{doc.get('rank', 'N/A')}</td>
@@ -693,8 +693,8 @@ class ReportBuilder:
         # Top doctors table
         doctors_rows = ""
         for doc in top_doctors[:10]:
-            doctor_display = str(doc.get('doctor_name', doc.get('doctor_id', 'N/A')))[:20]
-            clinic_display = str(doc.get('clinic_name', 'N/A'))[:20]
+            doctor_display = str(doc.get("doctor_name", doc.get("doctor_id", "N/A")))[:20]
+            clinic_display = str(doc.get("clinic_name", "N/A"))[:20]
             doctors_rows += f"""
                 <tr>
                     <td>{doctor_display}</td>
@@ -1099,12 +1099,24 @@ class ReportBuilder:
         bk.get("payment_status_distribution", {})
 
         # Growth metrics from new structure
-        sales_growth = growth.sales_growth_percent if hasattr(growth, "sales_growth_percent") else growth.get("sales_growth_percent", 0)
-        order_growth = growth.order_growth_percent if hasattr(growth, "order_growth_percent") else growth.get("order_growth_percent", 0)
-        growth.profit_growth_percent if hasattr(growth, "profit_growth_percent") else growth.get("profit_growth_percent", 0)
+        sales_growth = (
+            growth.sales_growth_percent
+            if hasattr(growth, "sales_growth_percent")
+            else growth.get("sales_growth_percent", 0)
+        )
+        order_growth = (
+            growth.order_growth_percent
+            if hasattr(growth, "order_growth_percent")
+            else growth.get("order_growth_percent", 0)
+        )
+        growth.profit_growth_percent if hasattr(growth, "profit_growth_percent") else growth.get(
+            "profit_growth_percent", 0
+        )
 
         # Growth indicators
-        sales_growth_class = "badge-success" if sales_growth > 0 else "badge-danger" if sales_growth < 0 else "badge-info"
+        sales_growth_class = (
+            "badge-success" if sales_growth > 0 else "badge-danger" if sales_growth < 0 else "badge-info"
+        )
         sales_growth_icon = "📈" if sales_growth > 0 else "📉" if sales_growth < 0 else "➡️"
 
         # Monthly trend chart data
@@ -1125,7 +1137,11 @@ class ReportBuilder:
 
         # Payment methods chart
         method_labels = json.dumps(list(payment_methods.keys()) if payment_methods else ["No Data"])
-        method_revenue = json.dumps([v.get("revenue", 0) if isinstance(v, dict) else v for v in payment_methods.values()] if payment_methods else [1])
+        method_revenue = json.dumps(
+            [v.get("revenue", 0) if isinstance(v, dict) else v for v in payment_methods.values()]
+            if payment_methods
+            else [1]
+        )
 
         # Product trajectories (per-product sales over time)
         product_trajectories = bk.get("product_trajectories", [])
@@ -1137,16 +1153,20 @@ class ReportBuilder:
         colors = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"]
         for i, traj in enumerate(product_trajectories[:5]):
             color = colors[i % len(colors)]
-            product_traj_datasets.append({
-                "label": str(traj.get("product_name", f"Product {i+1}"))[:25],
-                "data": traj.get("sales", []),
-                "borderColor": color,
-                "backgroundColor": f"rgba({int(color[1:3], 16)}, {int(color[3:5], 16)}, {int(color[5:7], 16)}, 0.1)",
-                "fill": False,
-                "tension": 0.4,
-                "borderWidth": 2,
-            })
-        product_traj_datasets_json = json.dumps(product_traj_datasets if product_traj_datasets else [{"label": "No Data", "data": [0]}])
+            product_traj_datasets.append(
+                {
+                    "label": str(traj.get("product_name", f"Product {i+1}"))[:25],
+                    "data": traj.get("sales", []),
+                    "borderColor": color,
+                    "backgroundColor": f"rgba({int(color[1:3], 16)}, {int(color[3:5], 16)}, {int(color[5:7], 16)}, 0.1)",
+                    "fill": False,
+                    "tension": 0.4,
+                    "borderWidth": 2,
+                }
+            )
+        product_traj_datasets_json = json.dumps(
+            product_traj_datasets if product_traj_datasets else [{"label": "No Data", "data": [0]}]
+        )
 
         # Top products table
         products_rows = ""
@@ -1161,12 +1181,22 @@ class ReportBuilder:
 
         # Trajectory indicator
         trajectory = bk.get("growth_trajectory", "stable")
-        traj_class = "badge-success" if "growth" in trajectory else "badge-danger" if "decline" in trajectory else "badge-info"
-        traj_icon = "🚀" if trajectory == "strong_growth" else "📈" if "growth" in trajectory else "📉" if "decline" in trajectory else "➡️"
+        traj_class = (
+            "badge-success" if "growth" in trajectory else "badge-danger" if "decline" in trajectory else "badge-info"
+        )
+        traj_icon = (
+            "🚀"
+            if trajectory == "strong_growth"
+            else "📈"
+            if "growth" in trajectory
+            else "📉"
+            if "decline" in trajectory
+            else "➡️"
+        )
 
         # Calculate pending percentage
-        total_rev = bk.get('total_revenue', 0)
-        total_pending = bk.get('total_pending', 0)
+        total_rev = bk.get("total_revenue", 0)
+        total_pending = bk.get("total_pending", 0)
         pending_percent = (total_pending / total_rev * 100) if total_rev > 0 else 0
 
         return f"""
@@ -1824,7 +1854,9 @@ class ReportBuilder:
 
         # Expense chart data
         exp_labels = json.dumps(["Operating", "Marketing", "Products", "Salaries", "Delivery", "Regulatory", "Other"])
-        exp_data = json.dumps([exp_operating, exp_marketing, exp_product, exp_salaries, exp_delivery, exp_regulatory, exp_other])
+        exp_data = json.dumps(
+            [exp_operating, exp_marketing, exp_product, exp_salaries, exp_delivery, exp_regulatory, exp_other]
+        )
 
         return f"""
         <div class="section">
@@ -2507,8 +2539,10 @@ class ReportBuilder:
         today_vs_yesterday = comparisons.get("today_vs_yesterday", {})
         if today_vs_yesterday.get("metrics"):
             summary = today_vs_yesterday.get("summary", {})
-            sentiment_class = "success" if summary.get("overall_sentiment") == "positive" else (
-                "danger" if summary.get("overall_sentiment") == "negative" else "warning"
+            sentiment_class = (
+                "success"
+                if summary.get("overall_sentiment") == "positive"
+                else ("danger" if summary.get("overall_sentiment") == "negative" else "warning")
             )
             comparison_html += f"""
             <div class="comparison-card">
@@ -2680,7 +2714,9 @@ class ReportBuilder:
         model_info = self.forecast_analytics.get("model_info", {})
         model_note = ""
         if model_info.get("statsmodels_available"):
-            model_note = "<p class='description'>Using Holt-Winters exponential smoothing with 85% confidence intervals.</p>"
+            model_note = (
+                "<p class='description'>Using Holt-Winters exponential smoothing with 85% confidence intervals.</p>"
+            )
         else:
             model_note = "<p class='description'>Using simple moving average forecasting. Install statsmodels for advanced predictions.</p>"
 
@@ -3019,7 +3055,7 @@ class ReportBuilder:
                 ⚠️ <strong>{len(warnings)} Warning(s):</strong>
                 {'; '.join(a.get('message', '') for a in warnings[:3])}
             </div>"""
-        banner_html += '</div>'
+        banner_html += "</div>"
 
         return banner_html
 
@@ -3027,7 +3063,7 @@ class ReportBuilder:
         """Generate footer."""
         return f"""
         <div class="footer">
-            <p>Business Intelligence Report - Generated by QwebsiteAutomationBot</p>
+            <p>Business Intelligence Report - Generated by AestheticRxNetworkIntelligentBot</p>
             <p>{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
         </div>"""
 
@@ -3048,4 +3084,3 @@ class ReportBuilder:
             evt.currentTarget.classList.add('active');
         }
     </script>"""
-

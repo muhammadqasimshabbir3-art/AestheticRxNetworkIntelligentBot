@@ -82,9 +82,7 @@ class PaymentAnalyzer:
 
             # Revenue by payment method
             if "payment_amount" in orders_df.columns:
-                orders_df["payment_amount_num"] = pd.to_numeric(
-                    orders_df["payment_amount"], errors="coerce"
-                ).fillna(0)
+                orders_df["payment_amount_num"] = pd.to_numeric(orders_df["payment_amount"], errors="coerce").fillna(0)
                 revenue_by_method = orders_df.groupby("payment_method_clean")["payment_amount_num"].sum().to_dict()
                 self.results["revenue_by_method"] = {k: round(v, 2) for k, v in revenue_by_method.items()}
 
@@ -96,14 +94,10 @@ class PaymentAnalyzer:
 
         # Convert amounts to numeric
         if "payment_amount" in orders_df.columns:
-            orders_df["payment_amount_num"] = pd.to_numeric(
-                orders_df["payment_amount"], errors="coerce"
-            ).fillna(0)
+            orders_df["payment_amount_num"] = pd.to_numeric(orders_df["payment_amount"], errors="coerce").fillna(0)
 
         if "order_total" in orders_df.columns:
-            orders_df["order_total_num"] = pd.to_numeric(
-                orders_df["order_total"], errors="coerce"
-            ).fillna(0)
+            orders_df["order_total_num"] = pd.to_numeric(orders_df["order_total"], errors="coerce").fillna(0)
 
         # Total revenue from paid orders
         if "payment_status" in orders_df.columns and "payment_amount_num" in orders_df.columns:
@@ -111,7 +105,9 @@ class PaymentAnalyzer:
             self.results["total_paid_amount"] = round(paid_orders["payment_amount_num"].sum(), 2)
 
             pending_orders = orders_df[orders_df["payment_status"].isin(["pending", "unpaid"])]
-            self.results["total_pending_amount"] = round(pending_orders["order_total_num"].sum() if "order_total_num" in orders_df.columns else 0, 2)
+            self.results["total_pending_amount"] = round(
+                pending_orders["order_total_num"].sum() if "order_total_num" in orders_df.columns else 0, 2
+            )
 
         # Total revenue from all orders
         if "order_total_num" in orders_df.columns:
@@ -130,32 +126,36 @@ class PaymentAnalyzer:
 
         # Convert amounts
         if "payment_amount" in orders_df.columns:
-            orders_df["payment_amount_num"] = pd.to_numeric(
-                orders_df["payment_amount"], errors="coerce"
-            ).fillna(0)
+            orders_df["payment_amount_num"] = pd.to_numeric(orders_df["payment_amount"], errors="coerce").fillna(0)
 
         # Get paid orders grouped by doctor
         if "payment_status" in orders_df.columns:
             paid_orders = orders_df[orders_df["payment_status"].isin(["paid", "success"])]
 
             if not paid_orders.empty and "payment_amount_num" in paid_orders.columns:
-                doctor_revenue = paid_orders.groupby("doctor_id").agg({
-                    "payment_amount_num": "sum",
-                    "id": "count"
-                }).rename(columns={"id": "order_count", "payment_amount_num": "total_paid"})
+                doctor_revenue = (
+                    paid_orders.groupby("doctor_id")
+                    .agg({"payment_amount_num": "sum", "id": "count"})
+                    .rename(columns={"id": "order_count", "payment_amount_num": "total_paid"})
+                )
 
                 doctor_revenue = doctor_revenue.sort_values("total_paid", ascending=False).head(10)
 
                 # Try to get doctor names from the doctor column (JSON)
                 top_doctors = []
                 for doctor_id, row in doctor_revenue.iterrows():
-                    doctor_info = {"doctor_id": doctor_id, "total_paid": round(row["total_paid"], 2), "order_count": int(row["order_count"])}
+                    doctor_info = {
+                        "doctor_id": doctor_id,
+                        "total_paid": round(row["total_paid"], 2),
+                        "order_count": int(row["order_count"]),
+                    }
 
                     # Try to extract doctor name from the orders data
                     doctor_orders = paid_orders[paid_orders["doctor_id"] == doctor_id]
                     if "doctor" in doctor_orders.columns and not doctor_orders.empty:
                         try:
                             import json
+
                             doctor_data = doctor_orders.iloc[0]["doctor"]
                             if isinstance(doctor_data, str):
                                 doctor_json = json.loads(doctor_data)
@@ -189,9 +189,11 @@ class PaymentAnalyzer:
         )
 
         # Sort by date and get recent
-        recent = paid_orders.dropna(subset=["payment_completed_at_dt"]).sort_values(
-            "payment_completed_at_dt", ascending=False
-        ).head(10)
+        recent = (
+            paid_orders.dropna(subset=["payment_completed_at_dt"])
+            .sort_values("payment_completed_at_dt", ascending=False)
+            .head(10)
+        )
 
         recent_payments = []
         for _, row in recent.iterrows():
@@ -199,7 +201,9 @@ class PaymentAnalyzer:
                 "order_number": row.get("order_number", "N/A"),
                 "amount": float(row.get("payment_amount", 0) or 0),
                 "method": row.get("payment_method", "unknown"),
-                "completed_at": str(row.get("payment_completed_at_dt", ""))[:10] if pd.notna(row.get("payment_completed_at_dt")) else "N/A",
+                "completed_at": str(row.get("payment_completed_at_dt", ""))[:10]
+                if pd.notna(row.get("payment_completed_at_dt"))
+                else "N/A",
             }
             recent_payments.append(payment_info)
 
@@ -220,31 +224,26 @@ class PaymentAnalyzer:
             return
 
         # Parse dates
-        paid_orders["created_date"] = pd.to_datetime(
-            paid_orders["created_at"], errors="coerce", utc=True
-        )
+        paid_orders["created_date"] = pd.to_datetime(paid_orders["created_at"], errors="coerce", utc=True)
         paid_orders["date_only"] = paid_orders["created_date"].dt.date
 
         # Convert amounts
-        paid_orders["payment_amount_num"] = pd.to_numeric(
-            paid_orders["payment_amount"], errors="coerce"
-        ).fillna(0)
+        paid_orders["payment_amount_num"] = pd.to_numeric(paid_orders["payment_amount"], errors="coerce").fillna(0)
 
         # Group by date
-        daily = paid_orders.groupby("date_only").agg({
-            "payment_amount_num": "sum",
-            "id": "count"
-        }).rename(columns={"id": "order_count", "payment_amount_num": "revenue"})
+        daily = (
+            paid_orders.groupby("date_only")
+            .agg({"payment_amount_num": "sum", "id": "count"})
+            .rename(columns={"id": "order_count", "payment_amount_num": "revenue"})
+        )
 
         daily = daily.sort_index(ascending=False).head(30)
 
         daily_revenue = []
         for date, row in daily.iterrows():
-            daily_revenue.append({
-                "date": str(date),
-                "revenue": round(row["revenue"], 2),
-                "order_count": int(row["order_count"])
-            })
+            daily_revenue.append(
+                {"date": str(date), "revenue": round(row["revenue"], 2), "order_count": int(row["order_count"])}
+            )
 
         self.results["daily_revenue"] = daily_revenue
 
@@ -262,6 +261,5 @@ class PaymentAnalyzer:
                 "last_7_days_revenue": round(last_7_days, 2),
                 "prev_7_days_revenue": round(prev_7_days, 2),
                 "trend_percentage": trend_pct,
-                "trend_direction": "up" if trend_pct > 0 else "down" if trend_pct < 0 else "stable"
+                "trend_direction": "up" if trend_pct > 0 else "down" if trend_pct < 0 else "stable",
             }
-

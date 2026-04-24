@@ -131,15 +131,13 @@ class FinancialTrackingData:
     def has_data(self) -> bool:
         """Check if any records have actual data."""
         for record in self.records:
-            if record.record_type == "Month_End":
-                # Check if any actual value is non-zero
-                if (
-                    record.medical_products_sales_actual > 0
-                    or record.beauty_products_sales_actual > 0
-                    or record.tp_actual > 0
-                    or record.tnc_actual > 0
-                ):
-                    return True
+            if record.record_type == "Month_End" and (
+                record.medical_products_sales_actual > 0
+                or record.beauty_products_sales_actual > 0
+                or record.tp_actual > 0
+                or record.tnc_actual > 0
+            ):
+                return True
         return False
 
     def get_month_end_records(self) -> list[MonthlyFinancialData]:
@@ -336,46 +334,22 @@ class FinancialTrackingLoader:
                 timestamp=timestamp,
                 # Sales
                 ts_target=self._safe_float(self._get_cell(row, "TS_Target")),
-                medical_products_sales_target=self._safe_float(
-                    self._get_cell(row, "Medical_Products_Sales_Target")
-                ),
-                medical_products_sales_actual=self._safe_float(
-                    self._get_cell(row, "Medical_Products_Sales_Actual")
-                ),
-                beauty_products_sales_target=self._safe_float(
-                    self._get_cell(row, "Beauty_Products_Sales_Target")
-                ),
-                beauty_products_sales_actual=self._safe_float(
-                    self._get_cell(row, "Beauty_Products_Sales_Actual")
-                ),
+                medical_products_sales_target=self._safe_float(self._get_cell(row, "Medical_Products_Sales_Target")),
+                medical_products_sales_actual=self._safe_float(self._get_cell(row, "Medical_Products_Sales_Actual")),
+                beauty_products_sales_target=self._safe_float(self._get_cell(row, "Beauty_Products_Sales_Target")),
+                beauty_products_sales_actual=self._safe_float(self._get_cell(row, "Beauty_Products_Sales_Actual")),
                 ts_calculated=self._safe_float(self._get_cell(row, "TS_Calculated")),
                 # Investment
                 ti_target=self._safe_float(self._get_cell(row, "TI_Target")),
                 ti_calculated=self._safe_float(self._get_cell(row, "TI_Calculated")),
-                founder_investment_target=self._safe_float(
-                    self._get_cell(row, "Founder_Investment_Target")
-                ),
-                founder_investment_actual=self._safe_float(
-                    self._get_cell(row, "Founder_Investment_Actual")
-                ),
-                cofounder_investment_target=self._safe_float(
-                    self._get_cell(row, "CoFounder_Investment_Target")
-                ),
-                cofounder_investment_actual=self._safe_float(
-                    self._get_cell(row, "CoFounder_Investment_Actual")
-                ),
-                investor_investment_target=self._safe_float(
-                    self._get_cell(row, "Investor_Investment_Target")
-                ),
-                investor_investment_actual=self._safe_float(
-                    self._get_cell(row, "Investor_Investment_Actual")
-                ),
-                importer_investment_target=self._safe_float(
-                    self._get_cell(row, "Importer_Investment_Target")
-                ),
-                importer_investment_actual=self._safe_float(
-                    self._get_cell(row, "Importer_Investment_Actual")
-                ),
+                founder_investment_target=self._safe_float(self._get_cell(row, "Founder_Investment_Target")),
+                founder_investment_actual=self._safe_float(self._get_cell(row, "Founder_Investment_Actual")),
+                cofounder_investment_target=self._safe_float(self._get_cell(row, "CoFounder_Investment_Target")),
+                cofounder_investment_actual=self._safe_float(self._get_cell(row, "CoFounder_Investment_Actual")),
+                investor_investment_target=self._safe_float(self._get_cell(row, "Investor_Investment_Target")),
+                investor_investment_actual=self._safe_float(self._get_cell(row, "Investor_Investment_Actual")),
+                importer_investment_target=self._safe_float(self._get_cell(row, "Importer_Investment_Target")),
+                importer_investment_actual=self._safe_float(self._get_cell(row, "Importer_Investment_Actual")),
                 # Profit & Clients
                 tp_target=self._safe_float(self._get_cell(row, "TP_Target")),
                 tp_actual=self._safe_float(self._get_cell(row, "TP_Actual")),
@@ -394,12 +368,8 @@ class FinancialTrackingLoader:
                 rbpp_calculated=self._safe_float(self._get_cell(row, "RBPP_Calculated")),
                 # Expenses
                 te_target=self._safe_float(self._get_cell(row, "TE_Target")),
-                operating_expenses_target=self._safe_float(
-                    self._get_cell(row, "Operating_Expenses_Target")
-                ),
-                operating_expenses_actual=self._safe_float(
-                    self._get_cell(row, "Operating_Expenses_Actual")
-                ),
+                operating_expenses_target=self._safe_float(self._get_cell(row, "Operating_Expenses_Target")),
+                operating_expenses_actual=self._safe_float(self._get_cell(row, "Operating_Expenses_Actual")),
                 marketing_sales_expenses_target=self._safe_float(
                     self._get_cell(row, "Marketing_Sales_Expenses_Target")
                 ),
@@ -410,29 +380,17 @@ class FinancialTrackingLoader:
                 product_costs_actual=self._safe_float(self._get_cell(row, "Product_Costs_Actual")),
                 salaries_wages_target=self._safe_float(self._get_cell(row, "Salaries_Wages_Target")),
                 salaries_wages_actual=self._safe_float(self._get_cell(row, "Salaries_Wages_Actual")),
-                delivery_logistics_target=self._safe_float(
-                    self._get_cell(row, "Delivery_Logistics_Target")
-                ),
-                delivery_logistics_actual=self._safe_float(
-                    self._get_cell(row, "Delivery_Logistics_Actual")
-                ),
-                regulatory_compliance_target=self._safe_float(
-                    self._get_cell(row, "Regulatory_Compliance_Target")
-                ),
-                regulatory_compliance_actual=self._safe_float(
-                    self._get_cell(row, "Regulatory_Compliance_Actual")
-                ),
+                delivery_logistics_target=self._safe_float(self._get_cell(row, "Delivery_Logistics_Target")),
+                delivery_logistics_actual=self._safe_float(self._get_cell(row, "Delivery_Logistics_Actual")),
+                regulatory_compliance_target=self._safe_float(self._get_cell(row, "Regulatory_Compliance_Target")),
+                regulatory_compliance_actual=self._safe_float(self._get_cell(row, "Regulatory_Compliance_Actual")),
                 other_expenses_target=self._safe_float(self._get_cell(row, "Other_Expenses_Target")),
                 other_expenses_actual=self._safe_float(self._get_cell(row, "Other_Expenses_Actual")),
                 te_calculated=self._safe_float(self._get_cell(row, "TE_Calculated")),
                 # Doctor Prizes
                 pupmpd_target=self._safe_float(self._get_cell(row, "PUPMPD_Target")),
-                doctor_prizes_gifts_target=self._safe_float(
-                    self._get_cell(row, "Doctor_Prizes_Gifts_Target")
-                ),
-                doctor_prizes_gifts_actual=self._safe_float(
-                    self._get_cell(row, "Doctor_Prizes_Gifts_Actual")
-                ),
+                doctor_prizes_gifts_target=self._safe_float(self._get_cell(row, "Doctor_Prizes_Gifts_Target")),
+                doctor_prizes_gifts_actual=self._safe_float(self._get_cell(row, "Doctor_Prizes_Gifts_Actual")),
                 doctor_prizes_research_products_target=self._safe_float(
                     self._get_cell(row, "Doctor_Prizes_Research_Products_Target")
                 ),
@@ -447,16 +405,12 @@ class FinancialTrackingLoader:
                 tcmcci_actual=self._safe_float(self._get_cell(row, "TCMCCI_Actual")),
                 # Calculated Metrics
                 tnppm_calculated=self._safe_float(self._get_cell(row, "TNPPM_Calculated")),
-                roi_percent_calculated=self._safe_float(
-                    self._get_cell(row, "ROI_Percent_Calculated")
-                ),
+                roi_percent_calculated=self._safe_float(self._get_cell(row, "ROI_Percent_Calculated")),
                 profit_margin_percent_calculated=self._safe_float(
                     self._get_cell(row, "Profit_Margin_Percent_Calculated")
                 ),
                 cac_calculated=self._safe_float(self._get_cell(row, "CAC_Calculated")),
-                debt_ratio_percent_calculated=self._safe_float(
-                    self._get_cell(row, "Debt_Ratio_Percent_Calculated")
-                ),
+                debt_ratio_percent_calculated=self._safe_float(self._get_cell(row, "Debt_Ratio_Percent_Calculated")),
                 collection_efficiency_percent_calculated=self._safe_float(
                     self._get_cell(row, "Collection_Efficiency_Percent_Calculated")
                 ),
@@ -556,17 +510,13 @@ class FinancialTrackingLoader:
                 source_spreadsheet_id=self.spreadsheet_id,
             )
 
-    def calculate_derived_metrics(
-        self, record: MonthlyFinancialData
-    ) -> MonthlyFinancialData:
+    def calculate_derived_metrics(self, record: MonthlyFinancialData) -> MonthlyFinancialData:
         """Calculate derived metrics for a record.
 
         Updates the *_Calculated fields based on actual values.
         """
         # Total Sales = Medical + Beauty
-        record.ts_calculated = (
-            record.medical_products_sales_actual + record.beauty_products_sales_actual
-        )
+        record.ts_calculated = record.medical_products_sales_actual + record.beauty_products_sales_actual
 
         # Total Investment = All sources
         record.ti_calculated = (
@@ -588,22 +538,14 @@ class FinancialTrackingLoader:
         )
 
         # Doctor Prizes = Gifts + Research Products
-        record.pupmpd_calculated = (
-            record.doctor_prizes_gifts_actual
-            + record.doctor_prizes_research_products_actual
-        )
+        record.pupmpd_calculated = record.doctor_prizes_gifts_actual + record.doctor_prizes_research_products_actual
 
         # Remaining Borrowed Product
         record.rbpp_calculated = record.tbpc_actual - record.tbpp_actual
 
         # Total Capital = Investment + Profit - Prizes - Borrowed Paid
         # Note: TP is already Net Profit (TS - TE)
-        record.tcmc_calculated = (
-            record.ti_calculated
-            + record.tp_actual
-            - record.pupmpd_calculated
-            - record.tbpp_actual
-        )
+        record.tcmc_calculated = record.ti_calculated + record.tp_actual - record.pupmpd_calculated - record.tbpp_actual
 
         # ROI (Payment Received Rate) = Money Received / Sales Orders * 100
         if record.mspm > 0:
@@ -611,9 +553,7 @@ class FinancialTrackingLoader:
 
         # Profit Margin = Net Profit / Sales * 100
         if record.ts_calculated > 0:
-            record.profit_margin_percent_calculated = (
-                record.tp_actual / record.ts_calculated
-            ) * 100
+            record.profit_margin_percent_calculated = (record.tp_actual / record.ts_calculated) * 100
 
         # Client Acquisition Cost = Total Expenses / Clients
         if record.tnc_actual > 0:
@@ -621,16 +561,12 @@ class FinancialTrackingLoader:
 
         # Debt Ratio = Remaining Borrowed / Total Capital * 100
         if record.tcmc_calculated > 0:
-            record.debt_ratio_percent_calculated = (
-                record.rbpp_calculated / record.tcmc_calculated
-            ) * 100
+            record.debt_ratio_percent_calculated = (record.rbpp_calculated / record.tcmc_calculated) * 100
 
         # Collection Efficiency = Money Received / Total Sales Orders * 100
         total_sales_orders = record.tpmrp + record.trpmrp
         if total_sales_orders > 0:
-            record.collection_efficiency_percent_calculated = (
-                record.tpmrp / total_sales_orders
-            ) * 100
+            record.collection_efficiency_percent_calculated = (record.tpmrp / total_sales_orders) * 100
 
         return record
 
@@ -638,4 +574,3 @@ class FinancialTrackingLoader:
     def data(self) -> FinancialTrackingData | None:
         """Get the loaded data (None if not loaded yet)."""
         return self._data
-

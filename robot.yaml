@@ -1,4 +1,4 @@
-# Robot Framework Configuration for QwebsiteAutomationBot
+# Robot Framework Configuration for AestheticRxNetworkIntelligentBot
 # Documentation: https://robocorp.com/docs/configuration/robot-yaml
 #
 # This robot can receive inputs via:
@@ -23,12 +23,12 @@
 
 tasks:
   # Main automation task - runs all enabled processes
-  QWebsite Automation:
-    shell: python -m robocorp.tasks run task.py -t qwebsite_automation_task
+  AestheticRxNetwork Automation:
+    shell: python -m robocorp.tasks run task.py -t aestheticrxnetwork_automation_task
 
   # Individual process tasks (can be run separately)
   Order Management Only:
-    shell: python -m robocorp.tasks run task.py -t qwebsite_automation_task
+    shell: python -m robocorp.tasks run task.py -t aestheticrxnetwork_automation_task
     env:
       RUN_ORDER_MANAGE_SYSTEM: "True"
       RUN_UPDATE_PAYMENT_PROCESS: "False"
@@ -38,13 +38,13 @@ tasks:
       RUN_DATA_ANALYSIS_PROCESS: "False"
 
   Data Analysis & Report:
-    shell: python -m robocorp.tasks run task.py -t qwebsite_automation_task
+    shell: python -m robocorp.tasks run task.py -t aestheticrxnetwork_automation_task
     env:
       RUN_ORDER_MANAGE_SYSTEM: "False"
       RUN_DATA_ANALYSIS_PROCESS: "True"
 
   All Processes:
-    shell: python -m robocorp.tasks run task.py -t qwebsite_automation_task
+    shell: python -m robocorp.tasks run task.py -t aestheticrxnetwork_automation_task
     env:
       RUN_ORDER_MANAGE_SYSTEM: "True"
       RUN_UPDATE_PAYMENT_PROCESS: "True"

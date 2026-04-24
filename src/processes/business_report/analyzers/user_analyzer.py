@@ -237,4 +237,3 @@ class UserAnalyzer:
 
         distribution = users["user_type"].value_counts().to_dict()
         return {str(k): int(v) for k, v in distribution.items() if k and str(k) != "nan"}
-

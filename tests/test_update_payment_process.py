@@ -19,7 +19,7 @@ class TestUpdatePaymentProcess:
     @pytest.fixture
     def update_payment_process(self, mock_sheets_api):
         """Create an UpdatePaymentProcess with mocked API."""
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI") as mock_class:
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI") as mock_class:
             mock_class.return_value = mock_sheets_api
 
             from processes.payment.update_payment_process import UpdatePaymentProcess
@@ -31,7 +31,7 @@ class TestUpdatePaymentProcess:
     @pytest.mark.unit
     def test_init_with_payment_ids(self):
         """Test initialization with payment IDs."""
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI"):
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI"):
             from processes.payment.update_payment_process import UpdatePaymentProcess
 
             process = UpdatePaymentProcess(payment_ids=["id-1", "id-2", "id-3"])
@@ -41,7 +41,7 @@ class TestUpdatePaymentProcess:
     @pytest.mark.unit
     def test_init_empty_payment_ids(self):
         """Test initialization with empty payment IDs."""
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI"):
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI"):
             from processes.payment.update_payment_process import UpdatePaymentProcess
 
             process = UpdatePaymentProcess(payment_ids=[])
@@ -80,7 +80,7 @@ class TestUpdatePaymentProcessStart:
     @pytest.mark.unit
     def test_start_with_empty_ids(self, mock_sheets_api):
         """Test start() with no payment IDs."""
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI") as mock_class:
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI") as mock_class:
             mock_class.return_value = mock_sheets_api
 
             from processes.payment.update_payment_process import UpdatePaymentProcess
@@ -100,7 +100,7 @@ class TestUpdatePaymentProcessStart:
             ["id-2", "ORD-002", "pending"],
         ]
 
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI") as mock_class:
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI") as mock_class:
             mock_class.return_value = mock_sheets_api
 
             from processes.payment.update_payment_process import UpdatePaymentProcess
@@ -119,7 +119,7 @@ class TestUpdatePaymentProcessStart:
             ["id-1", "ORD-001", "pending"],
         ]
 
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI") as mock_class:
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI") as mock_class:
             mock_class.return_value = mock_sheets_api
 
             from processes.payment.update_payment_process import UpdatePaymentProcess
@@ -138,7 +138,7 @@ class TestUpdatePaymentProcessStart:
             ["id-1", "ORD-001", "pending"],
         ]
 
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI") as mock_class:
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI") as mock_class:
             mock_class.return_value = mock_sheets_api
 
             from processes.payment.update_payment_process import UpdatePaymentProcess
@@ -165,7 +165,7 @@ class TestUpdatePaymentProcessEdgeCases:
         """Test handling of empty sheet."""
         mock_sheets_api.read_data.return_value = []
 
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI") as mock_class:
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI") as mock_class:
             mock_class.return_value = mock_sheets_api
 
             from processes.payment.update_payment_process import UpdatePaymentProcess
@@ -181,7 +181,7 @@ class TestUpdatePaymentProcessEdgeCases:
         """Test handling of sheet with only headers."""
         mock_sheets_api.read_data.return_value = [["id", "orderNumber", "payment_status"]]
 
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI") as mock_class:
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI") as mock_class:
             mock_class.return_value = mock_sheets_api
 
             from processes.payment.update_payment_process import UpdatePaymentProcess
@@ -196,7 +196,7 @@ class TestUpdatePaymentProcessEdgeCases:
         """Test handling of API errors."""
         mock_sheets_api.read_data.side_effect = Exception("API Error")
 
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI") as mock_class:
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI") as mock_class:
             mock_class.return_value = mock_sheets_api
 
             from processes.payment.update_payment_process import UpdatePaymentProcess
@@ -218,7 +218,7 @@ class TestUpdatePaymentProcessEdgeCases:
             ["id-2", "ORD-002", "Pending"],  # Mixed case
         ]
 
-        with patch("UpdatePaymentSheet.update_payment_process.GoogleSheetsAPI") as mock_class:
+        with patch("processes.payment.update_payment_process.GoogleSheetsAPI") as mock_class:
             mock_class.return_value = mock_sheets_api
 
             from processes.payment.update_payment_process import UpdatePaymentProcess

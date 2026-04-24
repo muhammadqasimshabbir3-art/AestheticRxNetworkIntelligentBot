@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+# 🚀 This workflow runs on every push and pull request to ensure code quality
+# Runs pre-commit (linting/formatting) and pytest (testing)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+    name: Code Quality Checks
+
+    steps:
+      # 1️⃣ Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup Python 3.11
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # 3️⃣ Install uv (fast package installer)
+      - name: Install uv
+        run: pip install uv
+
+      # 4️⃣ Install dependencies
+      - name: Install dependencies
+        run: uv pip install -e . --system
+
+      # 5️⃣ Install pre-commit
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      # 6️⃣ Run pre-commit on all files
+      - name: Run pre-commit
+        run: pre-commit run --all-files
+
+      # 7️⃣ Run pytest (without credentials - tests should mock external dependencies)
+      - name: Run pytest
+        run: python -m pytest --tb=short
+        env:
+          # Set dummy environment variables to avoid credential errors in tests
+          AESTHETIC_RX_NETWORK_EMAIL: "test@example.com"
+          AESTHETIC_RX_NETWORK_PASSWORD: "test_password"
+          GOOGLE_SERVICE_ACCOUNT_JSON: "{}"
+          GMAIL_EMAIL: "test@gmail.com"
+          GMAIL_APP_PASSWORD: "test_password"

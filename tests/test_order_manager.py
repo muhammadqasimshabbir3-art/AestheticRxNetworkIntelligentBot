@@ -42,9 +42,9 @@ class TestOrderManager:
     def order_manager(self, mock_api_handler, mock_sheet_handler, mock_comparator):
         """Create an OrderManager with mocked dependencies."""
         with (
-            patch("orderManagement.order_manager.APIHandler") as api_class,
-            patch("orderManagement.order_manager.SheetHandler") as sheet_class,
-            patch("orderManagement.order_manager.OrderComparator") as comp_class,
+            patch("processes.order.order_manager.APIHandler") as api_class,
+            patch("processes.order.order_manager.SheetHandler") as sheet_class,
+            patch("processes.order.order_manager.OrderComparator") as comp_class,
         ):
             api_class.return_value = mock_api_handler
             sheet_class.return_value = mock_sheet_handler
@@ -76,9 +76,9 @@ class TestOrderManager:
     def test_start_initializes_workflow(self, mock_api_handler, mock_sheet_handler, mock_comparator):
         """Test start() initializes the workflow."""
         with (
-            patch("orderManagement.order_manager.APIHandler") as api_class,
-            patch("orderManagement.order_manager.SheetHandler") as sheet_class,
-            patch("orderManagement.order_manager.OrderComparator") as comp_class,
+            patch("processes.order.order_manager.APIHandler") as api_class,
+            patch("processes.order.order_manager.SheetHandler") as sheet_class,
+            patch("processes.order.order_manager.OrderComparator") as comp_class,
         ):
             api_class.return_value = mock_api_handler
             sheet_class.return_value = mock_sheet_handler
@@ -118,9 +118,9 @@ class TestOrderManagerWorkflow:
         mock_sheet.read_sheet_payments.return_value = [{"id": "1", "payment_status": "completed"}]
 
         with (
-            patch("orderManagement.order_manager.APIHandler") as api_class,
-            patch("orderManagement.order_manager.SheetHandler") as sheet_class,
-            patch("orderManagement.order_manager.OrderComparator") as comp_class,
+            patch("processes.order.order_manager.APIHandler") as api_class,
+            patch("processes.order.order_manager.SheetHandler") as sheet_class,
+            patch("processes.order.order_manager.OrderComparator") as comp_class,
         ):
             api_class.return_value = mock_api
             sheet_class.return_value = mock_sheet
@@ -164,9 +164,9 @@ class TestOrderManagerWorkflow:
         mock_comp.get_payment_status.side_effect = lambda x: x.get("payment_status", "")
 
         with (
-            patch("orderManagement.order_manager.APIHandler") as api_class,
-            patch("orderManagement.order_manager.SheetHandler") as sheet_class,
-            patch("orderManagement.order_manager.OrderComparator") as comp_class,
+            patch("processes.order.order_manager.APIHandler") as api_class,
+            patch("processes.order.order_manager.SheetHandler") as sheet_class,
+            patch("processes.order.order_manager.OrderComparator") as comp_class,
         ):
             api_class.return_value = mock_api
             sheet_class.return_value = mock_sheet
@@ -201,9 +201,9 @@ class TestOrderManagerWorkflow:
         mock_comp.get_order_id.side_effect = lambda x: x.get("id", "")
 
         with (
-            patch("orderManagement.order_manager.APIHandler") as api_class,
-            patch("orderManagement.order_manager.SheetHandler") as sheet_class,
-            patch("orderManagement.order_manager.OrderComparator") as comp_class,
+            patch("processes.order.order_manager.APIHandler") as api_class,
+            patch("processes.order.order_manager.SheetHandler") as sheet_class,
+            patch("processes.order.order_manager.OrderComparator") as comp_class,
         ):
             api_class.return_value = mock_api
             sheet_class.return_value = mock_sheet
@@ -255,9 +255,9 @@ class TestOrderManagerResults:
         mock_comp.get_payment_status.side_effect = lambda x: x.get("payment_status", "")
 
         with (
-            patch("orderManagement.order_manager.APIHandler") as api_class,
-            patch("orderManagement.order_manager.SheetHandler") as sheet_class,
-            patch("orderManagement.order_manager.OrderComparator") as comp_class,
+            patch("processes.order.order_manager.APIHandler") as api_class,
+            patch("processes.order.order_manager.SheetHandler") as sheet_class,
+            patch("processes.order.order_manager.OrderComparator") as comp_class,
         ):
             api_class.return_value = mock_api
             sheet_class.return_value = mock_sheet
@@ -289,9 +289,9 @@ class TestOrderManagerResults:
         mock_comp.find_new_orders.return_value = []
 
         with (
-            patch("orderManagement.order_manager.APIHandler") as api_class,
-            patch("orderManagement.order_manager.SheetHandler") as sheet_class,
-            patch("orderManagement.order_manager.OrderComparator") as comp_class,
+            patch("processes.order.order_manager.APIHandler") as api_class,
+            patch("processes.order.order_manager.SheetHandler") as sheet_class,
+            patch("processes.order.order_manager.OrderComparator") as comp_class,
         ):
             api_class.return_value = mock_api
             sheet_class.return_value = mock_sheet

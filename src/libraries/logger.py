@@ -10,7 +10,7 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
-logger = logging.getLogger("qwebsite_automation_bot")
+logger = logging.getLogger("aestheticrxnetwork_intelligent_bot")
 
 
 def reconfigure_log_level(log_level: str) -> None:

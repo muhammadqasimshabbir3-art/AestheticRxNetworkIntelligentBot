@@ -1,6 +1,6 @@
 """Data Analysis Process Module.
 
-This module handles data export from the Q Website API.
+This module handles data export from the AestheticRxNetwork API.
 Includes BusinessReportProcess which runs automatically after data export.
 """
 

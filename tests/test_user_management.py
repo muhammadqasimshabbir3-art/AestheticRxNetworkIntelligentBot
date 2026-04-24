@@ -11,7 +11,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_init_creates_process(self):
         """Test UserManagementProcess initializes correctly."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -22,7 +22,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_users_property_empty_before_start(self):
         """Test users property returns empty list before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -32,7 +32,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_users_count_zero_before_start(self):
         """Test users_count returns 0 before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -42,7 +42,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_new_users_empty_before_start(self):
         """Test new_users returns empty list before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -52,7 +52,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_updated_users_empty_before_start(self):
         """Test updated_users returns empty list before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -62,7 +62,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_status_breakdown_empty_before_start(self):
         """Test status_breakdown returns empty dict before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -72,7 +72,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_user_type_breakdown_empty_before_start(self):
         """Test user_type_breakdown returns empty dict before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -82,7 +82,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_tier_breakdown_empty_before_start(self):
         """Test tier_breakdown returns empty dict before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -92,7 +92,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_admin_count_zero_before_start(self):
         """Test admin_count returns 0 before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -102,7 +102,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_deactivated_count_zero_before_start(self):
         """Test deactivated_count returns 0 before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -112,7 +112,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_approved_users_empty_before_start(self):
         """Test approved_users returns empty list before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -122,7 +122,7 @@ class TestUserManagementProcess:
     @pytest.mark.unit
     def test_failed_approvals_empty_before_start(self):
         """Test failed_approvals returns empty list before start."""
-        with patch("UserManagement.user_management_process.UserManager"):
+        with patch("processes.user.user_management_process.UserManager"):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -143,7 +143,7 @@ class TestUserManagementProcessStart:
         mock_manager.updated_users = []
         mock_manager.status_breakdown = {}
 
-        with patch("UserManagement.user_management_process.UserManager", return_value=mock_manager):
+        with patch("processes.user.user_management_process.UserManager", return_value=mock_manager):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -158,7 +158,7 @@ class TestUserManagementProcessStart:
         mock_manager = MagicMock()
         mock_manager.start.side_effect = Exception("Test error")
 
-        with patch("UserManagement.user_management_process.UserManager", return_value=mock_manager):
+        with patch("processes.user.user_management_process.UserManager", return_value=mock_manager):
             from processes.user.user_management_process import UserManagementProcess
 
             process = UserManagementProcess()
@@ -172,7 +172,7 @@ class TestUserManager:
 
     @pytest.fixture
     def mock_api(self):
-        """Create mock QWebsiteAPI."""
+        """Create mock AestheticRxNetworkAPI."""
         mock = MagicMock()
         mock.get_users.return_value = []
         return mock
@@ -187,8 +187,8 @@ class TestUserManager:
     def test_init_creates_manager(self, mock_api, mock_sheets_api):
         """Test UserManager initializes correctly."""
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -203,8 +203,8 @@ class TestUserManager:
     def test_users_property(self, mock_api, mock_sheets_api):
         """Test users property."""
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -217,8 +217,8 @@ class TestUserManager:
     def test_users_count_property(self, mock_api, mock_sheets_api):
         """Test users_count property."""
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -233,7 +233,7 @@ class TestUserManagerWorkflow:
 
     @pytest.fixture
     def mock_api(self):
-        """Create mock QWebsiteAPI."""
+        """Create mock AestheticRxNetworkAPI."""
         mock = MagicMock()
         return mock
 
@@ -252,8 +252,8 @@ class TestUserManagerWorkflow:
         ]
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -274,8 +274,8 @@ class TestUserManagerWorkflow:
         mock_api.approve_user.return_value = {"success": True}
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -297,8 +297,8 @@ class TestUserManagerWorkflow:
         ]
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -319,8 +319,8 @@ class TestUserManagerWorkflow:
         ]
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -340,8 +340,8 @@ class TestUserManagerWorkflow:
         ]
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -360,8 +360,8 @@ class TestUserManagerWorkflow:
         ]
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -376,8 +376,8 @@ class TestUserManagerWorkflow:
         mock_api.get_users.side_effect = Exception("API Error")
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -392,8 +392,8 @@ class TestUserManagerWorkflow:
         mock_api.get_users.return_value = []
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -431,7 +431,7 @@ class TestUserManagerApproval:
 
     @pytest.fixture
     def mock_api(self):
-        """Create mock QWebsiteAPI."""
+        """Create mock AestheticRxNetworkAPI."""
         mock = MagicMock()
         return mock
 
@@ -451,8 +451,8 @@ class TestUserManagerApproval:
         mock_api.approve_user.return_value = {"success": True, "message": "User approved"}
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -472,8 +472,8 @@ class TestUserManagerApproval:
         mock_api.approve_user.return_value = {"success": False, "message": "Error"}
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -492,8 +492,8 @@ class TestUserManagerApproval:
         mock_api.approve_user.side_effect = Exception("API Error")
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -511,8 +511,8 @@ class TestUserManagerApproval:
         ]
 
         with (
-            patch("UserManagement.user_manager.QWebsiteAPI", return_value=mock_api),
-            patch("UserManagement.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
+            patch("processes.user.user_manager.AestheticRxNetworkAPI", return_value=mock_api),
+            patch("processes.user.user_manager.GoogleSheetsAPI", return_value=mock_sheets_api),
         ):
             from processes.user.user_manager import UserManager
 
@@ -523,16 +523,16 @@ class TestUserManagerApproval:
             assert len(manager.approved_users) == 0
 
 
-class TestQWebsiteAPIUserMethods:
-    """Tests for QWebsiteAPI user-related methods."""
+class TestAestheticRxNetworkAPIUserMethods:
+    """Tests for AestheticRxNetworkAPI user-related methods."""
 
     @pytest.mark.unit
     def test_approve_user_endpoint(self):
         """Test approve_user calls correct endpoint."""
         with (
-            patch("libraries.qwebsite_api._QWebsiteAuth._get_credentials_from_bitwarden"),
-            patch("libraries.qwebsite_api._QWebsiteAuth._verify_gmail_connection"),
-            patch("libraries.qwebsite_api._QWebsiteAuth._authenticate"),
+            patch("libraries.aestheticrxnetwork_api._AestheticRxNetworkAuth._load_credentials_from_environment"),
+            patch("libraries.aestheticrxnetwork_api._AestheticRxNetworkAuth._verify_gmail_connection"),
+            patch("libraries.aestheticrxnetwork_api._AestheticRxNetworkAuth._authenticate"),
             patch("requests.request") as mock_request,
         ):
             mock_response = MagicMock()
@@ -540,9 +540,9 @@ class TestQWebsiteAPIUserMethods:
             mock_response.json.return_value = {"success": True, "message": "User approved"}
             mock_request.return_value = mock_response
 
-            from libraries.qwebsite_api import QWebsiteAPI
+            from libraries.aestheticrxnetwork_api import AestheticRxNetworkAPI
 
-            api = QWebsiteAPI(auto_authenticate=False)
+            api = AestheticRxNetworkAPI(auto_authenticate=False)
             api._token = "test-token"
 
             result = api.approve_user("test-user-id")
@@ -556,9 +556,9 @@ class TestQWebsiteAPIUserMethods:
     def test_get_unapproved_users_filters_correctly(self):
         """Test get_unapproved_users filters out approved users."""
         with (
-            patch("libraries.qwebsite_api._QWebsiteAuth._get_credentials_from_bitwarden"),
-            patch("libraries.qwebsite_api._QWebsiteAuth._verify_gmail_connection"),
-            patch("libraries.qwebsite_api._QWebsiteAuth._authenticate"),
+            patch("libraries.aestheticrxnetwork_api._AestheticRxNetworkAuth._load_credentials_from_environment"),
+            patch("libraries.aestheticrxnetwork_api._AestheticRxNetworkAuth._verify_gmail_connection"),
+            patch("libraries.aestheticrxnetwork_api._AestheticRxNetworkAuth._authenticate"),
             patch("requests.request") as mock_request,
         ):
             mock_response = MagicMock()
@@ -570,9 +570,9 @@ class TestQWebsiteAPIUserMethods:
             ]
             mock_request.return_value = mock_response
 
-            from libraries.qwebsite_api import QWebsiteAPI
+            from libraries.aestheticrxnetwork_api import AestheticRxNetworkAPI
 
-            api = QWebsiteAPI(auto_authenticate=False)
+            api = AestheticRxNetworkAPI(auto_authenticate=False)
             api._token = "test-token"
 
             unapproved = api.get_unapproved_users()

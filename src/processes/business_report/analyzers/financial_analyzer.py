@@ -163,4 +163,3 @@ class FinancialAnalyzer:
     def _count_award_templates(self) -> int:
         """Count award message templates."""
         return len(self._loader.get("award_message_templates"))
-

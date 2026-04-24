@@ -52,7 +52,7 @@ class Inputs(BaseModel):
     # UPDATE PAYMENT SHEET INPUTS
     # ============================================
     # RUN_UPDATE_PAYMENT_PROCESS: Flag to enable/disable update payment process
-    RUN_UPDATE_PAYMENT_PROCESS: bool = True
+    RUN_UPDATE_PAYMENT_PROCESS: bool = False
 
     # PAYMENT_IDS_LIST: List of payment IDs to update status to 'paid'
     PAYMENT_IDS_LIST: list[str] = Field(default_factory=list)
@@ -91,6 +91,11 @@ class Inputs(BaseModel):
     # RUN_BUSINESS_REPORT_PROCESS: Flag to enable/disable standalone business report
     # Note: If RUN_DATA_ANALYSIS_PROCESS is True, BusinessReport runs automatically
     RUN_BUSINESS_REPORT_PROCESS: bool = True
+
+    # ============================================
+    # INVOICE GENERATION PROCESS INPUTS
+    # ============================================
+    RUN_INVOICE_GENERATION_PROCESS: bool = False
 
 
 def _parse_bool(value: Any, default: bool = False) -> bool:
@@ -171,8 +176,8 @@ def _get_env_variables() -> dict[str, Any]:
         "log_level": os.getenv("LOG_LEVEL", "INFO"),
         # Order Management (default: True)
         "run_order_manage_system": os.getenv("RUN_ORDER_MANAGE_SYSTEM", "True"),
-        # Payment Update (default: True)
-        "run_update_payment_process": os.getenv("RUN_UPDATE_PAYMENT_PROCESS", "True"),
+        # Payment Update (default: False)
+        "run_update_payment_process": os.getenv("RUN_UPDATE_PAYMENT_PROCESS", "False"),
         "payment_ids_list": os.getenv("PAYMENT_IDS_LIST", ""),
         # User Management (default: True)
         "run_user_management_process": os.getenv("RUN_USER_MANAGEMENT_PROCESS", "True"),
@@ -185,6 +190,8 @@ def _get_env_variables() -> dict[str, Any]:
         "run_data_analysis_process": os.getenv("RUN_DATA_ANALYSIS_PROCESS", "True"),
         # Business Report (default: True)
         "run_business_report_process": os.getenv("RUN_BUSINESS_REPORT_PROCESS", "True"),
+        # Invoice Generation (default: False)
+        "run_invoice_generation_process": os.getenv("RUN_INVOICE_GENERATION_PROCESS", "False"),
     }
 
 
@@ -241,7 +248,7 @@ def load_work_items(variables: dict[str, Any], metadata: dict[str, Any]) -> Inpu
 
     # Parse process flags (all default to True for full workflow)
     run_order_manage_system = _parse_bool(variables.get("run_order_manage_system"), default=True)
-    run_update_payment_process = _parse_bool(variables.get("run_update_payment_process"), default=True)
+    run_update_payment_process = _parse_bool(variables.get("run_update_payment_process"), default=False)
     run_user_management_process = _parse_bool(variables.get("run_user_management_process"), default=True)
     run_advertisement_management_process = _parse_bool(
         variables.get("run_advertisement_management_process"), default=True
@@ -249,6 +256,7 @@ def load_work_items(variables: dict[str, Any], metadata: dict[str, Any]) -> Inpu
     run_signup_id_management_process = _parse_bool(variables.get("run_signup_id_management_process"), default=True)
     run_data_analysis_process = _parse_bool(variables.get("run_data_analysis_process"), default=True)
     run_business_report_process = _parse_bool(variables.get("run_business_report_process"), default=True)
+    run_invoice_generation_process = _parse_bool(variables.get("run_invoice_generation_process"), default=False)
 
     # Parse ID lists
     payment_ids_list = _parse_list(variables.get("payment_ids_list"))
@@ -268,6 +276,7 @@ def load_work_items(variables: dict[str, Any], metadata: dict[str, Any]) -> Inpu
         RUN_SIGNUP_ID_MANAGEMENT_PROCESS=run_signup_id_management_process,
         RUN_DATA_ANALYSIS_PROCESS=run_data_analysis_process,
         RUN_BUSINESS_REPORT_PROCESS=run_business_report_process,
+        RUN_INVOICE_GENERATION_PROCESS=run_invoice_generation_process,
     )
 
 

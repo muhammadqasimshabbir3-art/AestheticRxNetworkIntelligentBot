@@ -2,7 +2,7 @@
 
 This module handles the complete order management workflow:
 - Reading orders from Google Sheets
-- Fetching orders from Q Website API
+- Fetching orders from AestheticRxNetwork API
 - Comparing orders and updating statuses
 - Writing orders back to Google Sheets
 
