@@ -7,9 +7,9 @@ and draws them with Pillow — producing a result similar to a screenshot.
 
 import io
 import os
+
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
-from openpyxl.drawing.spreadsheet_drawing import OneCellAnchor, TwoCellAnchor
 from PIL import Image, ImageDraw, ImageFont
 
 # ── Configuration ─────────────────────────────────────────────────────────────
@@ -22,11 +22,12 @@ OUT_PATH = os.path.join(
     "aestheticrxnetwork_challan_slip.png",
 )
 
-SCALE       = 2          # render at 2× then optionally down-sample for crisp text
-CELL_PAD    = 8 * SCALE  # inner cell padding (px)
-DPI         = 150
+SCALE = 2
+CELL_PAD = 8 * SCALE  # inner cell padding (px)
+DPI = 150
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
 
 def _hex_to_rgb(theme_or_hex, default=(0, 0, 0)):
     """Convert an openpyxl colour value to an (R, G, B) tuple."""
@@ -39,7 +40,7 @@ def _hex_to_rgb(theme_or_hex, default=(0, 0, 0)):
     if len(h) != 6:
         return default
     try:
-        return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+        return tuple(int(h[i : i + 2], 16) for i in (0, 2, 4))
     except ValueError:
         return default
 
@@ -76,6 +77,7 @@ def _get_font(bold=False, italic=False, size=10):
 
 # ── Main rendering ────────────────────────────────────────────────────────────
 
+
 def render_xlsx_to_image(xlsx_path: str, out_path: str):
     wb = load_workbook(xlsx_path, data_only=True)
     ws = wb.active
@@ -87,7 +89,7 @@ def render_xlsx_to_image(xlsx_path: str, out_path: str):
     # ── Compute column widths (in pixels) ─────────────────────────────────────
     # openpyxl width is in "characters"; ≈ 7 px each at normal zoom
     PX_PER_CHAR = 8 * SCALE
-    DEFAULT_W   = 10 * PX_PER_CHAR
+    DEFAULT_W = 10 * PX_PER_CHAR
     col_widths = []
     for ci in range(1, max_col + 1):
         letter = get_column_letter(ci)
@@ -121,18 +123,24 @@ def render_xlsx_to_image(xlsx_path: str, out_path: str):
 
     # ── Build merged-cells lookup ─────────────────────────────────────────────
     # merged_map[(row,col)] → (min_row, min_col, max_row, max_col) for slave cells
-    merged_map = {}       # slave cells → range tuple
-    merged_origins = {}   # origin cells → range tuple
+    merged_map = {}  # slave cells → range tuple
+    merged_origins = {}  # origin cells → range tuple
     for rng in ws.merged_cells.ranges:
         for row in range(rng.min_row, rng.max_row + 1):
             for col in range(rng.min_col, rng.max_col + 1):
                 if row == rng.min_row and col == rng.min_col:
                     merged_origins[(row, col)] = (
-                        rng.min_row, rng.min_col, rng.max_row, rng.max_col,
+                        rng.min_row,
+                        rng.min_col,
+                        rng.max_row,
+                        rng.max_col,
                     )
                 else:
                     merged_map[(row, col)] = (
-                        rng.min_row, rng.min_col, rng.max_row, rng.max_col,
+                        rng.min_row,
+                        rng.min_col,
+                        rng.max_row,
+                        rng.max_col,
                     )
 
     # ── Create image ──────────────────────────────────────────────────────────
@@ -180,17 +188,16 @@ def render_xlsx_to_image(xlsx_path: str, out_path: str):
 
             def _side_color(side):
                 if side and side.style and side.style != "none":
-                    c = _hex_to_rgb(getattr(side.color, "rgb", None) if side.color else None,
-                                    default=(180, 180, 180))
+                    c = _hex_to_rgb(getattr(side.color, "rgb", None) if side.color else None, default=(180, 180, 180))
                     w = 2 * SCALE if side.style == "medium" else 1 * SCALE
                     return c, w
                 return None, 0
 
             for side_attr, coords in [
-                ("top",    [(x1, y1), (x2, y1)]),
+                ("top", [(x1, y1), (x2, y1)]),
                 ("bottom", [(x1, y2), (x2, y2)]),
-                ("left",   [(x1, y1), (x1, y2)]),
-                ("right",  [(x2, y1), (x2, y2)]),
+                ("left", [(x1, y1), (x1, y2)]),
+                ("right", [(x2, y1), (x2, y2)]),
             ]:
                 color, width = _side_color(getattr(brd, side_attr, None))
                 if color:
@@ -207,10 +214,9 @@ def render_xlsx_to_image(xlsx_path: str, out_path: str):
                 continue
 
             # Format the value
-            from datetime import datetime, date
+            from datetime import datetime
+
             if isinstance(val, datetime):
-                text = val.strftime("%d/%m/%Y")
-            elif isinstance(val, date):
                 text = val.strftime("%d/%m/%Y")
             elif isinstance(val, float):
                 if val == int(val):
@@ -273,7 +279,7 @@ def render_xlsx_to_image(xlsx_path: str, out_path: str):
         anchor = xl_img.anchor
         # Determine pixel position from the anchor
         # OneCellAnchor has _from with col/row; TwoCellAnchor has _from/_to
-        if hasattr(anchor, '_from'):
+        if hasattr(anchor, "_from"):
             anc = anchor._from
             col_idx = anc.col  # 0-based
             row_idx = anc.row  # 0-based
@@ -311,4 +317,3 @@ if __name__ == "__main__":
     print("Rendering Excel → Image …")
     render_xlsx_to_image(XLSX_PATH, OUT_PATH)
     print("Done!")
-
