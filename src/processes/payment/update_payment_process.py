@@ -11,7 +11,6 @@ Usage:
     process.start()
 """
 
-
 from config import CONFIG
 from libraries.google_sheets import GoogleSheetsAPI
 from libraries.logger import logger

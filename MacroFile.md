@@ -1,4 +1,4 @@
-# QwebsiteAutomationBot - Architecture & Workflow Documentation
+# AestheticRxNetworkIntelligentBot - Architecture & Workflow Documentation
 
 > **Version 2.4.0** | Last Updated: 2026-01-23
 
@@ -6,7 +6,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
-│                              QwebsiteAutomationBot v2.4                                      │
+│                       AestheticRxNetworkIntelligentBot v2.4                                   │
 │                                                                                              │
 │  ┌─────────────┐                                                                            │
 │  │  task.py    │ ◄─── Entry Point (Robocorp Task)                                           │
@@ -88,7 +88,7 @@
 │  ┌───────────────────────────────────────────────────────────────────────────────────┐     │
 │  │                    src/libraries/ (Shared Components)                              │     │
 │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                 │     │
-│  │  │QWebsite  │ │ Google   │ │ Google   │ │ Report   │ │Bitwarden │                 │     │
+│  │  │Aesthetic │ │ Google   │ │ Google   │ │ Report   │ │Bitwarden │                 │     │
 │  │  │   API    │ │ Sheets   │ │  Drive   │ │Generator │ │Credential│                 │     │
 │  │  │          │ │   API    │ │   API    │ │ (10 tabs)│ │ Manager  │                 │     │
 │  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘                 │     │
@@ -99,7 +99,7 @@
                     ┌─────────────────────────────────────┐
                     │         External Services           │
                     │  ┌─────────┐  ┌─────────┐  ┌──────┐│
-                    │  │Q Website│  │ Google  │  │Gmail ││
+                    │  │Aesthetic│  │ Google  │  │Gmail ││
                     │  │   API   │  │  APIs   │  │ IMAP ││
                     │  │(Railway)│  │(Sheets+ │  │(OTP) ││
                     │  │         │  │ Drive)  │  │      ││
@@ -112,7 +112,7 @@
 ## 📁 Project Structure (v2.4.0)
 
 ```
-qwebsiteautomationbot/
+AestheticRxNetworkIntelligentBot/
 ├── task.py                              # 🚀 Entry point
 │
 ├── workflow/                            # 🔄 Orchestration (outside src/)
@@ -265,7 +265,7 @@ from processes.business_report import BusinessReportProcess
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                      QwebsiteAutomationBot Report                        │
+│                AestheticRxNetworkIntelligentBot Report                   │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  [📦 Orders] [💳 Payment] [👥 Users] [📺 Ads] [🎟️ SignupIDs]            │
 │  [📊 Data] [📈 KPIs] [💹 Tracking] [📈 Trends] [🔮 Forecast]            │
@@ -315,7 +315,7 @@ from processes.business_report import BusinessReportProcess
 
 ```toml
 [project]
-name = "qwebsite-automation-bot"
+name = "aestheticrxnetwork-intelligent-bot"
 version = "2.4.0"
 requires-python = ">=3.11,<3.13"
 
@@ -344,7 +344,7 @@ select = ["E", "F", "I", "W", "B", "C4", "UP", "SIM", "TCH", "RUF"]
 
 ```yaml
 tasks:
-  QWebsite Automation:        # Main task - runs all enabled processes
+  AestheticRxNetwork Automation:  # Main task - runs all enabled processes
   Order Management:           # Individual: Order management only
   Payment Update:             # Individual: Payment updates only
   User Management:            # Individual: User management only

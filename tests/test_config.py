@@ -11,7 +11,7 @@ class TestAppConfig:
     @pytest.mark.unit
     def test_config_app_name(self):
         """Test that APP_NAME is set correctly."""
-        assert CONFIG.APP_NAME == "QwebsiteAutomationBot"
+        assert CONFIG.APP_NAME == "AestheticRxNetworkIntelligentBot"
 
     @pytest.mark.unit
     def test_config_has_google_drive_folder_id(self):
@@ -35,7 +35,7 @@ class TestAppConfig:
     def test_config_has_spreadsheet_name_prefix(self):
         """Test that SPREADSHEET_NAME_PREFIX is configured."""
         assert hasattr(CONFIG, "SPREADSHEET_NAME_PREFIX")
-        assert CONFIG.SPREADSHEET_NAME_PREFIX == "QwebsitePendingOrder"
+        assert CONFIG.SPREADSHEET_NAME_PREFIX == "AestheticRxNetworkPendingOrder"
 
     @pytest.mark.unit
     def test_config_has_order_headers(self):
@@ -76,5 +76,5 @@ class TestConfigConstants:
     @pytest.mark.unit
     def test_spreadsheet_prefix_format(self):
         """Test SPREADSHEET_NAME_PREFIX has correct format."""
-        assert CONFIG.SPREADSHEET_NAME_PREFIX.startswith("Qwebsite")
+        assert CONFIG.SPREADSHEET_NAME_PREFIX.startswith("AestheticRxNetwork")
         assert not CONFIG.SPREADSHEET_NAME_PREFIX.endswith("_")

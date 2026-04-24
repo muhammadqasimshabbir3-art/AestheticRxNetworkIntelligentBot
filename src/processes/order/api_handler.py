@@ -1,32 +1,31 @@
-"""API Handler - Q Website API operations for Order Management.
+"""API Handler - AestheticRxNetwork API operations for Order Management.
 
 Handles:
-- Fetching orders from Q Website API (pending status only)
+- Fetching orders from AestheticRxNetwork API (pending status only)
 - Updating order status via API
 """
 
-
+from libraries.aestheticrxnetwork_api import AestheticRxNetworkAPI
 from libraries.logger import logger
-from libraries.qwebsite_api import QWebsiteAPI
 
 
 class APIHandler:
-    """Handles all Q Website API operations for order management."""
+    """Handles all AestheticRxNetwork API operations for order management."""
 
-    def __init__(self, api: QWebsiteAPI | None = None) -> None:
+    def __init__(self, api: AestheticRxNetworkAPI | None = None) -> None:
         """Initialize the API handler.
 
         Args:
-            api: Optional QWebsiteAPI instance. If not provided, creates new one.
+            api: Optional AestheticRxNetworkAPI instance. If not provided, creates new one.
         """
         if api:
             self.api = api
         else:
-            logger.info("Initializing Q Website API...")
-            self.api = QWebsiteAPI(auto_authenticate=True)
+            logger.info("Initializing AestheticRxNetwork API...")
+            self.api = AestheticRxNetworkAPI(auto_authenticate=True)
 
     def fetch_pending_orders(self) -> list[dict]:
-        """Fetch orders with status 'pending' from Q Website API.
+        """Fetch orders with status 'pending' from AestheticRxNetwork API.
 
         Returns:
             list[dict]: List of orders with pending status (paymentToProcess)
@@ -59,8 +58,42 @@ class APIHandler:
 
         return pending_orders
 
+    def fetch_unpaid_orders(self) -> list[dict]:
+        """Fetch orders that are not paid yet from AestheticRxNetwork API.
+
+        Returns:
+            list[dict]: Orders that are not in paid/completed/success state
+        """
+        logger.info("=" * 60)
+        logger.info("Fetching unpaid orders from API...")
+        logger.info("=" * 60)
+
+        try:
+            response = self.api.get_orders()
+        except Exception as e:
+            logger.error(f"Failed to fetch orders from API: {e}")
+            return []
+
+        if isinstance(response, dict):
+            all_orders = response.get("data") or response.get("orders") or []
+        elif isinstance(response, list):
+            all_orders = response
+        else:
+            all_orders = []
+
+        unpaid_orders: list[dict] = []
+        paid_statuses = {"paid", "completed", "success"}
+        for order in all_orders:
+            payment_status = self._get_payment_status(order)
+            if payment_status not in paid_statuses:
+                unpaid_orders.append(order)
+
+        logger.info(f"Total orders from API: {len(all_orders)}")
+        logger.info(f"✓ Found {len(unpaid_orders)} unpaid orders")
+        return unpaid_orders
+
     def fetch_completed_orders(self) -> list[dict]:
-        """Fetch orders with status 'completed' from Q Website API.
+        """Fetch orders with status 'completed' from AestheticRxNetwork API.
 
         Returns:
             list[dict]: List of orders with completed status

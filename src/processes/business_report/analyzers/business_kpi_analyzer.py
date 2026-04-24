@@ -59,10 +59,7 @@ class ExpenseBreakdown:
         """Get expense breakdown as percentages."""
         if self.total_expenses <= 0:
             return dict.fromkeys(self.breakdown_dict.keys(), 0.0)
-        return {
-            k: (v / self.total_expenses) * 100
-            for k, v in self.breakdown_dict.items()
-        }
+        return {k: (v / self.total_expenses) * 100 for k, v in self.breakdown_dict.items()}
 
 
 @dataclass
@@ -90,10 +87,7 @@ class InvestmentBreakdown:
         """Get investment breakdown as percentages."""
         if self.total_investment <= 0:
             return dict.fromkeys(self.breakdown_dict.keys(), 0.0)
-        return {
-            k: (v / self.total_investment) * 100
-            for k, v in self.breakdown_dict.items()
-        }
+        return {k: (v / self.total_investment) * 100 for k, v in self.breakdown_dict.items()}
 
 
 @dataclass
@@ -182,30 +176,22 @@ class BusinessKPIAnalyzer:
             "data_source": "downloaded_export",
             "records_count": len(orders_df),
             "analysis_timestamp": datetime.now().isoformat(),
-
             # Core Metrics from Orders
             **self._analyze_revenue_metrics(orders_df),
-
             # Client Metrics
             **self._analyze_client_metrics(),
-
             # Growth & Trajectories
             "growth": self._calculate_growth_metrics(orders_df),
             "monthly_trends": self._calculate_monthly_trends(orders_df),
             "weekly_trends": self._calculate_weekly_trends(orders_df),
-
             # Product Analysis
             **self._analyze_products(orders_df),
-
             # Product Trajectories (per-product sales/payment over time)
             **self._calculate_product_trajectories(orders_df),
-
             # Payment Method Analysis
             **self._analyze_payment_methods(orders_df),
-
             # Status Distribution for charts
             **self._analyze_status_distribution(orders_df),
-
             # Projections
             **self._calculate_projections(orders_df),
         }
@@ -342,10 +328,16 @@ class BusinessKPIAnalyzer:
 
         # Group by month
         orders_df["_month"] = orders_df["_date"].dt.to_period("M")
-        monthly = orders_df.groupby("_month").agg({
-            "_order_total": "sum",
-            "id": "count",
-        }).reset_index()
+        monthly = (
+            orders_df.groupby("_month")
+            .agg(
+                {
+                    "_order_total": "sum",
+                    "id": "count",
+                }
+            )
+            .reset_index()
+        )
 
         if len(monthly) < 2:
             return GrowthMetrics()
@@ -354,7 +346,11 @@ class BusinessKPIAnalyzer:
         current = monthly.iloc[-1]
         previous = monthly.iloc[-2]
 
-        sales_growth = ((current["_order_total"] - previous["_order_total"]) / previous["_order_total"] * 100) if previous["_order_total"] > 0 else 0
+        sales_growth = (
+            ((current["_order_total"] - previous["_order_total"]) / previous["_order_total"] * 100)
+            if previous["_order_total"] > 0
+            else 0
+        )
         order_growth = ((current["id"] - previous["id"]) / previous["id"] * 100) if previous["id"] > 0 else 0
 
         return GrowthMetrics(
@@ -404,13 +400,19 @@ class BusinessKPIAnalyzer:
         orders_df["_month"] = orders_df["_date"].dt.month
         orders_df["_month_name"] = orders_df["_date"].dt.strftime("%b")
 
-        monthly = orders_df.groupby(["_year", "_month", "_month_name"]).agg({
-            "_order_total": "sum",
-            "_payment_amount": "sum",
-            "_remaining": "sum",
-            "id": "count",
-            "doctor_id": "nunique",
-        }).reset_index()
+        monthly = (
+            orders_df.groupby(["_year", "_month", "_month_name"])
+            .agg(
+                {
+                    "_order_total": "sum",
+                    "_payment_amount": "sum",
+                    "_remaining": "sum",
+                    "id": "count",
+                    "doctor_id": "nunique",
+                }
+            )
+            .reset_index()
+        )
 
         trends = []
         for _, row in monthly.iterrows():
@@ -419,18 +421,20 @@ class BusinessKPIAnalyzer:
             completion = (paid / total_sales * 100) if total_sales > 0 else 0
             avg_order = total_sales / row["id"] if row["id"] > 0 else 0
 
-            trends.append({
-                "year": int(row["_year"]),
-                "month": row["_month_name"],
-                "month_num": int(row["_month"]),
-                "total_sales": float(total_sales),
-                "total_orders": int(row["id"]),
-                "total_clients": int(row["doctor_id"]),
-                "avg_order_value": float(avg_order),
-                "paid_amount": float(paid),
-                "pending_amount": float(row["_remaining"]),
-                "completion_rate": float(completion),
-            })
+            trends.append(
+                {
+                    "year": int(row["_year"]),
+                    "month": row["_month_name"],
+                    "month_num": int(row["_month"]),
+                    "total_sales": float(total_sales),
+                    "total_orders": int(row["id"]),
+                    "total_clients": int(row["doctor_id"]),
+                    "avg_order_value": float(avg_order),
+                    "paid_amount": float(paid),
+                    "pending_amount": float(row["_remaining"]),
+                    "completion_rate": float(completion),
+                }
+            )
 
         # Sort by year and month
         trends.sort(key=lambda x: (x["year"], x["month_num"]))
@@ -462,22 +466,30 @@ class BusinessKPIAnalyzer:
         orders_df["_year"] = orders_df["_date"].dt.year
         orders_df["_week_start"] = orders_df["_date"].dt.to_period("W").dt.start_time
 
-        weekly = orders_df.groupby(["_year", "_week", "_week_start"]).agg({
-            "_order_total": "sum",
-            "id": "count",
-        }).reset_index()
+        weekly = (
+            orders_df.groupby(["_year", "_week", "_week_start"])
+            .agg(
+                {
+                    "_order_total": "sum",
+                    "id": "count",
+                }
+            )
+            .reset_index()
+        )
 
         trends = []
         for _, row in weekly.iterrows():
             avg_order = row["_order_total"] / row["id"] if row["id"] > 0 else 0
-            trends.append({
-                "week_start": row["_week_start"].strftime("%Y-%m-%d"),
-                "week_num": int(row["_week"]),
-                "year": int(row["_year"]),
-                "total_sales": float(row["_order_total"]),
-                "total_orders": int(row["id"]),
-                "avg_order_value": float(avg_order),
-            })
+            trends.append(
+                {
+                    "week_start": row["_week_start"].strftime("%Y-%m-%d"),
+                    "week_num": int(row["_week"]),
+                    "year": int(row["_year"]),
+                    "total_sales": float(row["_order_total"]),
+                    "total_orders": int(row["id"]),
+                    "avg_order_value": float(avg_order),
+                }
+            )
 
         trends.sort(key=lambda x: (x["year"], x["week_num"]))
         return trends[-12:]  # Last 12 weeks
@@ -535,29 +547,35 @@ class BusinessKPIAnalyzer:
             orders_with_products["_order_total"] = 0.0
 
         if "qty" in orders_with_products.columns:
-            orders_with_products["_qty"] = pd.to_numeric(
-                orders_with_products["qty"], errors="coerce"
-            ).fillna(1)
+            orders_with_products["_qty"] = pd.to_numeric(orders_with_products["qty"], errors="coerce").fillna(1)
         else:
             orders_with_products["_qty"] = 1
 
-        product_stats = orders_with_products.groupby("product_name").agg({
-            "_order_total": "sum",
-            "_qty": "sum",
-            "id": "count",
-        }).reset_index()
+        product_stats = (
+            orders_with_products.groupby("product_name")
+            .agg(
+                {
+                    "_order_total": "sum",
+                    "_qty": "sum",
+                    "id": "count",
+                }
+            )
+            .reset_index()
+        )
 
         product_stats.columns = ["product_name", "revenue", "qty", "order_count"]
         product_stats = product_stats.sort_values("revenue", ascending=False)
 
         top_products = []
         for _, row in product_stats.head(10).iterrows():
-            top_products.append({
-                "name": row["product_name"],
-                "revenue": float(row["revenue"]),
-                "qty": int(row["qty"]),
-                "orders": int(row["order_count"]),
-            })
+            top_products.append(
+                {
+                    "name": row["product_name"],
+                    "revenue": float(row["revenue"]),
+                    "qty": int(row["qty"]),
+                    "orders": int(row["order_count"]),
+                }
+            )
 
         # Categorize products (simple heuristic)
         categories = {}
@@ -653,19 +671,27 @@ class BusinessKPIAnalyzer:
         for product_name in top_product_names:
             product_orders = orders_df[orders_df["product_name"] == product_name]
 
-            monthly_data = product_orders.groupby("_year_month").agg({
-                "_order_total": "sum",
-                "_payment_amount": "sum",
-                "id": "count",
-            }).reindex(all_months, fill_value=0)
+            monthly_data = (
+                product_orders.groupby("_year_month")
+                .agg(
+                    {
+                        "_order_total": "sum",
+                        "_payment_amount": "sum",
+                        "id": "count",
+                    }
+                )
+                .reindex(all_months, fill_value=0)
+            )
 
-            trajectories.append({
-                "product_name": product_name,
-                "sales": [float(v) for v in monthly_data["_order_total"].values],
-                "payments": [float(v) for v in monthly_data["_payment_amount"].values],
-                "orders": [int(v) for v in monthly_data["id"].values],
-                "total_revenue": float(product_totals.get(product_name, 0)),
-            })
+            trajectories.append(
+                {
+                    "product_name": product_name,
+                    "sales": [float(v) for v in monthly_data["_order_total"].values],
+                    "payments": [float(v) for v in monthly_data["_payment_amount"].values],
+                    "orders": [int(v) for v in monthly_data["id"].values],
+                    "total_revenue": float(product_totals.get(product_name, 0)),
+                }
+            )
 
         return {
             "product_trajectories": trajectories,
@@ -683,10 +709,16 @@ class BusinessKPIAnalyzer:
         else:
             orders_df["_payment_amount"] = 0.0
 
-        method_stats = orders_df.groupby("payment_method").agg({
-            "_payment_amount": "sum",
-            "id": "count",
-        }).reset_index()
+        method_stats = (
+            orders_df.groupby("payment_method")
+            .agg(
+                {
+                    "_payment_amount": "sum",
+                    "id": "count",
+                }
+            )
+            .reset_index()
+        )
 
         methods = {}
         for _, row in method_stats.iterrows():
@@ -781,7 +813,8 @@ class BusinessKPIAnalyzer:
 
         # Get records with actual data
         records_with_data = [
-            r for r in month_ends
+            r
+            for r in month_ends
             if r.medical_products_sales_actual > 0 or r.beauty_products_sales_actual > 0 or r.tp_actual != 0
         ]
 
@@ -797,15 +830,19 @@ class BusinessKPIAnalyzer:
                 "target": latest.medical_products_sales_target,
                 "actual": latest.medical_products_sales_actual,
                 "variance": latest.medical_products_sales_actual - latest.medical_products_sales_target,
-                "achievement_percent": (latest.medical_products_sales_actual / latest.medical_products_sales_target * 100)
-                    if latest.medical_products_sales_target > 0 else 0,
+                "achievement_percent": (
+                    latest.medical_products_sales_actual / latest.medical_products_sales_target * 100
+                )
+                if latest.medical_products_sales_target > 0
+                else 0,
             },
             "beauty_products": {
                 "target": latest.beauty_products_sales_target,
                 "actual": latest.beauty_products_sales_actual,
                 "variance": latest.beauty_products_sales_actual - latest.beauty_products_sales_target,
                 "achievement_percent": (latest.beauty_products_sales_actual / latest.beauty_products_sales_target * 100)
-                    if latest.beauty_products_sales_target > 0 else 0,
+                if latest.beauty_products_sales_target > 0
+                else 0,
             },
             "total": {
                 "target": latest.ts_target,
@@ -930,46 +967,52 @@ class BusinessKPIAnalyzer:
         # === MONTHLY TRENDS FROM FINANCIAL SHEET ===
         financial_trends = []
         for record in records_with_data[-12:]:  # Last 12 months
-            financial_trends.append({
-                "period": f"{record.month[:3]} {record.year}",
-                "year": record.year,
-                "month": record.month,
-                "sales": record.ts_calculated,
-                "medical_sales": record.medical_products_sales_actual,
-                "beauty_sales": record.beauty_products_sales_actual,
-                "expenses": record.te_calculated,
-                "profit": record.tp_actual,
-                "clients": record.tnc_actual,
-                "investment": record.ti_calculated,
-                "roi_percent": record.roi_percent_calculated,
-            })
+            financial_trends.append(
+                {
+                    "period": f"{record.month[:3]} {record.year}",
+                    "year": record.year,
+                    "month": record.month,
+                    "sales": record.ts_calculated,
+                    "medical_sales": record.medical_products_sales_actual,
+                    "beauty_sales": record.beauty_products_sales_actual,
+                    "expenses": record.te_calculated,
+                    "profit": record.tp_actual,
+                    "clients": record.tnc_actual,
+                    "investment": record.ti_calculated,
+                    "roi_percent": record.roi_percent_calculated,
+                }
+            )
 
         # === INVESTMENT TREND ===
         investment_trend = []
         for record in records_with_data[-12:]:
-            investment_trend.append({
-                "period": f"{record.month[:3]} {record.year}",
-                "founder": record.founder_investment_actual,
-                "cofounder": record.cofounder_investment_actual,
-                "investor": record.investor_investment_actual,
-                "importer": record.importer_investment_actual,
-                "total": record.ti_calculated,
-            })
+            investment_trend.append(
+                {
+                    "period": f"{record.month[:3]} {record.year}",
+                    "founder": record.founder_investment_actual,
+                    "cofounder": record.cofounder_investment_actual,
+                    "investor": record.investor_investment_actual,
+                    "importer": record.importer_investment_actual,
+                    "total": record.ti_calculated,
+                }
+            )
 
         # === EXPENSE TREND ===
         expense_trend = []
         for record in records_with_data[-12:]:
-            expense_trend.append({
-                "period": f"{record.month[:3]} {record.year}",
-                "operating": record.operating_expenses_actual,
-                "marketing": record.marketing_sales_expenses_actual,
-                "product_costs": record.product_costs_actual,
-                "salaries": record.salaries_wages_actual,
-                "delivery": record.delivery_logistics_actual,
-                "regulatory": record.regulatory_compliance_actual,
-                "other": record.other_expenses_actual,
-                "total": record.te_calculated,
-            })
+            expense_trend.append(
+                {
+                    "period": f"{record.month[:3]} {record.year}",
+                    "operating": record.operating_expenses_actual,
+                    "marketing": record.marketing_sales_expenses_actual,
+                    "product_costs": record.product_costs_actual,
+                    "salaries": record.salaries_wages_actual,
+                    "delivery": record.delivery_logistics_actual,
+                    "regulatory": record.regulatory_compliance_actual,
+                    "other": record.other_expenses_actual,
+                    "total": record.te_calculated,
+                }
+            )
 
         # === FINANCIAL TRAJECTORY DATA (for charts) ===
         financial_trajectory = self._build_financial_trajectory(records_with_data)
@@ -984,31 +1027,26 @@ class BusinessKPIAnalyzer:
             "has_financial_data": True,
             "period": f"{latest.month} {latest.year}",
             "records_count": len(records_with_data),
-
             # Core Metrics
             "total_sales": latest.ts_calculated,
             "total_investment": latest.ti_calculated,
             "total_expenses": latest.te_calculated,
             "net_profit": latest.tp_actual,
             "total_clients": latest.tnc_actual,
-
             # Breakdowns
             "sales_breakdown": sales_breakdown,
             "investment_breakdown": investment_breakdown,
             "expense_breakdown": expense_breakdown,
             "doctor_prizes": doctor_prizes,
-
             # Metrics
             "capital_metrics": capital_metrics,
             "calculated_kpis": calculated_kpis,
             "client_metrics": client_metrics,
             "profit_metrics": profit_metrics,
-
             # Trends
             "financial_trends": financial_trends,
             "investment_trend": investment_trend,
             "expense_trend": expense_trend,
-
             # Target vs Actual Summary
             "target_vs_actual": {
                 "sales_achievement": (latest.ts_calculated / latest.ts_target * 100) if latest.ts_target > 0 else 0,
@@ -1016,7 +1054,6 @@ class BusinessKPIAnalyzer:
                 "profit_achievement": (latest.tp_actual / latest.tp_target * 100) if latest.tp_target > 0 else 0,
                 "client_achievement": (latest.tnc_actual / latest.tnc_target * 100) if latest.tnc_target > 0 else 0,
             },
-
             # NEW: Trajectory Chart Data
             "financial_trajectory": financial_trajectory,
             "capital_trajectory": capital_trajectory,
@@ -1165,81 +1202,95 @@ class BusinessKPIAnalyzer:
 
         # Sales Goal
         if latest.ts_target > 0:
-            goals.append({
-                "name": "Monthly Sales Target",
-                "target": latest.ts_target,
-                "current": latest.ts_calculated,
-                "progress_percent": min((latest.ts_calculated / latest.ts_target) * 100, 150),
-                "on_track": latest.ts_calculated >= latest.ts_target * 0.8,
-                "status": "achieved" if latest.ts_calculated >= latest.ts_target else (
-                    "on_track" if latest.ts_calculated >= latest.ts_target * 0.8 else "behind"
-                ),
-            })
+            goals.append(
+                {
+                    "name": "Monthly Sales Target",
+                    "target": latest.ts_target,
+                    "current": latest.ts_calculated,
+                    "progress_percent": min((latest.ts_calculated / latest.ts_target) * 100, 150),
+                    "on_track": latest.ts_calculated >= latest.ts_target * 0.8,
+                    "status": "achieved"
+                    if latest.ts_calculated >= latest.ts_target
+                    else ("on_track" if latest.ts_calculated >= latest.ts_target * 0.8 else "behind"),
+                }
+            )
 
         # Profit Goal
         if latest.tp_target != 0:
-            goals.append({
-                "name": "Monthly Profit Target",
-                "target": latest.tp_target,
-                "current": latest.tp_actual,
-                "progress_percent": min((latest.tp_actual / latest.tp_target) * 100, 150) if latest.tp_target > 0 else 0,
-                "on_track": latest.tp_actual >= latest.tp_target * 0.8,
-                "status": "achieved" if latest.tp_actual >= latest.tp_target else (
-                    "on_track" if latest.tp_actual >= latest.tp_target * 0.8 else "behind"
-                ),
-            })
+            goals.append(
+                {
+                    "name": "Monthly Profit Target",
+                    "target": latest.tp_target,
+                    "current": latest.tp_actual,
+                    "progress_percent": min((latest.tp_actual / latest.tp_target) * 100, 150)
+                    if latest.tp_target > 0
+                    else 0,
+                    "on_track": latest.tp_actual >= latest.tp_target * 0.8,
+                    "status": "achieved"
+                    if latest.tp_actual >= latest.tp_target
+                    else ("on_track" if latest.tp_actual >= latest.tp_target * 0.8 else "behind"),
+                }
+            )
 
         # Client Acquisition Goal
         if latest.tnc_target > 0:
-            goals.append({
-                "name": "New Clients Target",
-                "target": latest.tnc_target,
-                "current": latest.tnc_actual,
-                "progress_percent": min((latest.tnc_actual / latest.tnc_target) * 100, 150),
-                "on_track": latest.tnc_actual >= latest.tnc_target * 0.8,
-                "status": "achieved" if latest.tnc_actual >= latest.tnc_target else (
-                    "on_track" if latest.tnc_actual >= latest.tnc_target * 0.8 else "behind"
-                ),
-            })
+            goals.append(
+                {
+                    "name": "New Clients Target",
+                    "target": latest.tnc_target,
+                    "current": latest.tnc_actual,
+                    "progress_percent": min((latest.tnc_actual / latest.tnc_target) * 100, 150),
+                    "on_track": latest.tnc_actual >= latest.tnc_target * 0.8,
+                    "status": "achieved"
+                    if latest.tnc_actual >= latest.tnc_target
+                    else ("on_track" if latest.tnc_actual >= latest.tnc_target * 0.8 else "behind"),
+                }
+            )
 
         # Investment Goal (monthly)
         if latest.ti_target > 0:
-            goals.append({
-                "name": "Investment Target",
-                "target": latest.ti_target,
-                "current": latest.ti_calculated,
-                "progress_percent": min((latest.ti_calculated / latest.ti_target) * 100, 150),
-                "on_track": latest.ti_calculated >= latest.ti_target * 0.8,
-                "status": "achieved" if latest.ti_calculated >= latest.ti_target else "behind",
-            })
+            goals.append(
+                {
+                    "name": "Investment Target",
+                    "target": latest.ti_target,
+                    "current": latest.ti_calculated,
+                    "progress_percent": min((latest.ti_calculated / latest.ti_target) * 100, 150),
+                    "on_track": latest.ti_calculated >= latest.ti_target * 0.8,
+                    "status": "achieved" if latest.ti_calculated >= latest.ti_target else "behind",
+                }
+            )
 
         # Collection Efficiency Goal (85% target)
         collection_target = 85.0
         collection_actual = latest.collection_efficiency_percent_calculated
-        goals.append({
-            "name": "Payment Collection Rate",
-            "target": collection_target,
-            "current": collection_actual,
-            "progress_percent": min((collection_actual / collection_target) * 100, 150),
-            "on_track": collection_actual >= collection_target * 0.9,
-            "status": "achieved" if collection_actual >= collection_target else (
-                "on_track" if collection_actual >= collection_target * 0.9 else "behind"
-            ),
-            "unit": "%",
-        })
+        goals.append(
+            {
+                "name": "Payment Collection Rate",
+                "target": collection_target,
+                "current": collection_actual,
+                "progress_percent": min((collection_actual / collection_target) * 100, 150),
+                "on_track": collection_actual >= collection_target * 0.9,
+                "status": "achieved"
+                if collection_actual >= collection_target
+                else ("on_track" if collection_actual >= collection_target * 0.9 else "behind"),
+                "unit": "%",
+            }
+        )
 
         # Capital Growth Goal (Total Capital > Total Investment)
         if latest.ti_calculated > 0:
             capital_ratio = (latest.tcmc_calculated / latest.ti_calculated) * 100 if latest.ti_calculated > 0 else 0
-            goals.append({
-                "name": "Capital Growth (Capital/Investment)",
-                "target": 100,  # Capital should at least equal investment
-                "current": capital_ratio,
-                "progress_percent": min(capital_ratio, 150),
-                "on_track": capital_ratio >= 100,
-                "status": "achieved" if capital_ratio >= 100 else "behind",
-                "unit": "%",
-            })
+            goals.append(
+                {
+                    "name": "Capital Growth (Capital/Investment)",
+                    "target": 100,  # Capital should at least equal investment
+                    "current": capital_ratio,
+                    "progress_percent": min(capital_ratio, 150),
+                    "on_track": capital_ratio >= 100,
+                    "status": "achieved" if capital_ratio >= 100 else "behind",
+                    "unit": "%",
+                }
+            )
 
         # Calculate overall stats
         achieved_count = sum(1 for g in goals if g["status"] == "achieved")
@@ -1253,9 +1304,9 @@ class BusinessKPIAnalyzer:
                 "achieved": achieved_count,
                 "on_track": on_track_count,
                 "behind": behind_count,
-                "overall_health": "excellent" if achieved_count >= len(goals) * 0.8 else (
-                    "good" if (achieved_count + on_track_count) >= len(goals) * 0.7 else "needs_attention"
-                ),
+                "overall_health": "excellent"
+                if achieved_count >= len(goals) * 0.8
+                else ("good" if (achieved_count + on_track_count) >= len(goals) * 0.7 else "needs_attention"),
             },
         }
 

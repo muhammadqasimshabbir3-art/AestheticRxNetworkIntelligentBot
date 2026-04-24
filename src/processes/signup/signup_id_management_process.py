@@ -83,4 +83,3 @@ class SignupIDManagementProcess:
     def emergency_threshold(self) -> int:
         """Get the emergency threshold."""
         return self._signup_id_manager.emergency_threshold
-

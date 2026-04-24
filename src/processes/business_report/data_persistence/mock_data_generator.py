@@ -42,7 +42,7 @@ class MockDataGenerator:
 
     # Day of week multipliers (0=Monday, 6=Sunday)
     DOW_MULTIPLIERS = {
-        0: 1.0,   # Monday - baseline
+        0: 1.0,  # Monday - baseline
         1: 1.05,  # Tuesday - slightly higher
         2: 1.15,  # Wednesday - peak
         3: 1.10,  # Thursday - good
@@ -151,14 +151,8 @@ class MockDataGenerator:
             metrics[metric] = value
 
         # Ensure logical consistency
-        metrics["orders_completed"] = min(
-            metrics["orders_completed"],
-            metrics["orders_total"]
-        )
-        metrics["orders_pending"] = max(
-            0,
-            metrics["orders_total"] - metrics["orders_completed"]
-        )
+        metrics["orders_completed"] = min(metrics["orders_completed"], metrics["orders_total"])
+        metrics["orders_pending"] = max(0, metrics["orders_total"] - metrics["orders_completed"])
         metrics["ads_active"] = min(metrics["ads_active"], metrics["ads_total"])
         metrics["ads_pending"] = max(0, metrics["ads_total"] - metrics["ads_active"])
 
@@ -228,4 +222,3 @@ if __name__ == "__main__":
 
     days = int(sys.argv[1]) if len(sys.argv) > 1 else 90
     generate_mock_data(days)
-

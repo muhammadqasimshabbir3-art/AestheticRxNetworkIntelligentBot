@@ -3,7 +3,7 @@
 This is the main entry point for the order management process.
 It coordinates between:
 - SheetHandler: Google Sheets operations
-- APIHandler: Q Website API operations
+- APIHandler: AestheticRxNetwork API operations
 - OrderComparator: Order comparison logic
 
 Workflow:

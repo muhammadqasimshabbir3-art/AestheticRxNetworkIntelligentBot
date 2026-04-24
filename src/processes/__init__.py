@@ -1,4 +1,4 @@
-"""Process modules for QwebsiteAutomationBot.
+"""Process modules for AestheticRxNetworkIntelligentBot.
 
 This package contains all the automation processes:
 - advertisement: Advertisement management and approval
@@ -13,6 +13,7 @@ This package contains all the automation processes:
 from processes.advertisement import AdvertisementManagementProcess
 from processes.business_report import BusinessReportProcess
 from processes.data_analysis import DataAnalysisProcess
+from processes.invoice import InvoiceGenerationProcess
 from processes.order import OrderManagementProcess
 from processes.payment import UpdatePaymentProcess
 from processes.signup import SignupIDManagementProcess
@@ -22,9 +23,9 @@ __all__ = [
     "AdvertisementManagementProcess",
     "BusinessReportProcess",
     "DataAnalysisProcess",
+    "InvoiceGenerationProcess",
     "OrderManagementProcess",
     "SignupIDManagementProcess",
     "UpdatePaymentProcess",
     "UserManagementProcess",
 ]
-

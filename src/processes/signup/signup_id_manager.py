@@ -6,8 +6,8 @@ This module handles:
 - Determining emergency status
 """
 
+from libraries.aestheticrxnetwork_api import AestheticRxNetworkAPI
 from libraries.logger import logger
-from libraries.qwebsite_api import QWebsiteAPI
 
 
 class SignupIDManager:
@@ -19,7 +19,7 @@ class SignupIDManager:
     def __init__(self) -> None:
         """Initialize the SignupIDManager."""
         logger.info("Initializing SignupIDManager...")
-        self._api = QWebsiteAPI()
+        self._api = AestheticRxNetworkAPI()
 
         # Data storage
         self.signup_ids: list[dict] = []
@@ -129,4 +129,3 @@ class SignupIDManager:
                     f"  - {signup.get('signup_id')} → {signup.get('used_by_email')} "
                     f"({signup.get('used_at', 'N/A')[:10]})"
                 )
-

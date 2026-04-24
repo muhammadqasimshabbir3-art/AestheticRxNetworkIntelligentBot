@@ -216,11 +216,15 @@ class OrderAnalyzer:
             orders["qty"] = 1
 
         # Group by product_id and count
-        product_counts = orders.groupby("product_id").agg(
-            order_count=("id", "count"),
-            total_qty=("qty", "sum"),
-            total_revenue=("order_total", "sum"),
-        ).reset_index()
+        product_counts = (
+            orders.groupby("product_id")
+            .agg(
+                order_count=("id", "count"),
+                total_qty=("qty", "sum"),
+                total_revenue=("order_total", "sum"),
+            )
+            .reset_index()
+        )
 
         top_products = product_counts.nlargest(limit, "total_revenue")
 
@@ -297,4 +301,3 @@ class OrderAnalyzer:
         by_date = orders_with_date.groupby("date")["order_total"].sum()
 
         return {str(k): float(v) for k, v in by_date.items()}
-

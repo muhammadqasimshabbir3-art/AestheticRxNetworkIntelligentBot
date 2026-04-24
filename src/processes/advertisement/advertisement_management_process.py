@@ -3,7 +3,6 @@
 This class wraps the AdvertisementManager and exposes only necessary methods.
 """
 
-
 from libraries.logger import logger
 from processes.advertisement.advertisement_manager import AdvertisementManager
 
@@ -116,9 +115,7 @@ class AdvertisementManagementProcess:
         logger.info("=" * 60)
 
         # Initialize manager with paid IDs
-        self._advertisement_manager = AdvertisementManager(
-            paid_ids_list=self._paid_ids_list
-        )
+        self._advertisement_manager = AdvertisementManager(paid_ids_list=self._paid_ids_list)
 
         # Run workflow
         self._advertisement_manager.start()

@@ -11,7 +11,6 @@ Usage:
     process.start()
 """
 
-
 from libraries.logger import logger
 from processes.order.order_manager import OrderManager
 
@@ -24,7 +23,7 @@ class OrderManagementProcess:
 
     The workflow includes:
     1. Read orders from Google Sheet
-    2. Fetch orders from Q Website API
+    2. Fetch orders from AestheticRxNetwork API
     3. Compare orders by ID and update status
     4. Write all orders to spreadsheet
     """

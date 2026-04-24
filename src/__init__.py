@@ -1,1 +1,1 @@
-"""QwebsiteAutomationBot - Website Automation Agent."""
+"""AestheticRxNetworkIntelligentBot - Website Automation Agent."""

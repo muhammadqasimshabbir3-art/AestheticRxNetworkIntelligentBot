@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AestheticRxNetworkIntelligentBot Report - 2026-04-24 14:38</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --purple: #8b5cf6;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-tab: #334155;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+        }
+
+        .meta-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .meta-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        .meta-card .label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-card .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Tab Styles */
+        .tabs-container {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: var(--bg-tab);
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.6rem 0.8rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background: var(--bg-card);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-btn .icon {
+            font-size: 1rem;
+        }
+
+        .tab-btn .badge {
+            font-size: 0.6rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            margin-left: 0.5rem;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Styles */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-header .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .icon-payment { background: rgba(16, 185, 129, 0.2); }
+        .icon-order { background: rgba(59, 130, 246, 0.2); }
+        .icon-user { background: rgba(139, 92, 246, 0.2); }
+        .icon-log { background: rgba(239, 68, 68, 0.2); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card .label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .stat-success .number { color: var(--success); }
+        .stat-warning .number { color: var(--warning); }
+        .stat-danger .number { color: var(--danger); }
+        .stat-info .number { color: var(--info); }
+        .stat-purple .number { color: var(--purple); }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .badge-info { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+        .badge-purple { background: rgba(139, 92, 246, 0.2); color: var(--purple); }
+        .badge-disabled { background: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(255,255,255,0.05);
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .id-cell {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+            color: var(--primary);
+        }
+
+        .id-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            background: var(--surface);
+            border-radius: 0.5rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+            color: var(--success);
+            border: 1px solid var(--border);
+        }
+
+        .emergency-alert {
+            background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+        .emergency-alert h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+        }
+        .emergency-alert p {
+            margin: 0.25rem 0;
+            font-size: 1rem;
+        }
+        .emergency-alert .threshold {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .usage-bar-container {
+            margin: 1.5rem 0;
+        }
+        .usage-bar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .usage-label {
+            font-weight: 600;
+        }
+        .usage-stats {
+            color: var(--text-muted);
+        }
+        .usage-bar-track {
+            background: var(--surface);
+            border-radius: 10px;
+            height: 24px;
+            overflow: hidden;
+        }
+        .usage-bar-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .status-pending { color: var(--warning); }
+        .status-paid { color: var(--info); }
+        .status-completed { color: var(--success); }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .list-group {
+            list-style: none;
+        }
+
+        .list-group li {
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .list-group li .icon {
+            font-size: 1.25rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .process-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .flow-arrow {
+            color: var(--text-muted);
+            font-size: 1.5rem;
+        }
+
+        .subsection {
+            margin-top: 1.5rem;
+        }
+
+        .subsection h4 {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.75rem; }
+            .tab-content { padding: 1.5rem; }
+            .tab-btn { min-width: 80px; padding: 0.5rem 0.5rem; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AestheticRxNetworkIntelligentBot Report</h1>
+            <p class="subtitle">Workflow Execution Summary</p>
+        </div>
+
+        <div class="meta-info">
+            <div class="meta-card">
+                <div class="label">📅 Report Generated</div>
+                <div class="value">2026-04-24 14:38:15</div>
+            </div>
+            <div class="meta-card">
+                <div class="label">⏱️ Duration</div>
+                <div class="value">0.00 seconds</div>
+            </div>
+            <div class="meta-card">
+                <div class="label">📊 Spreadsheet</div>
+                <div class="value"><a href="https://docs.google.com/spreadsheets/d/1wNrE75TQzg4Qkyj0enRvdKw1QSFq1NhU3ZGqbhnzX1E"
+                    target="_blank" style="color: var(--primary);">View Sheet</a></div>
+            </div>
+        </div>
+
+
+        <div class="step-status-section" style="background: var(--bg-card); border-radius: 1rem;
+            padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                    📋 Step Execution Status
+                </h2>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <span style="font-size: 1.5rem;">⏳</span>
+                    <span style="font-weight: 700; font-size: 1.1rem; color: var(--text-muted);">
+                        NOT RUN
+                    </span>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 0.75rem; margin-bottom: 1.5rem;">
+                <div style="background: var(--bg-tab); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">0</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Passed</div>
+                </div>
+                <div style="background: var(--bg-tab); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--danger);">0</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Failed</div>
+                </div>
+                <div style="background: var(--bg-tab); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-muted);">7</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Skipped</div>
+                </div>
+                <div style="background: var(--bg-tab); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">0%</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Pass Rate</div>
+                </div>
+            </div>
+
+            <div class="step-list">
+
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--text-muted);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">⏭️</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Payment Update</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Update payment status in Google Sheet</div>
+
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Disabled in config</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">Skipped</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">N/A</div>
+                    </div>
+                </div>
+
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--text-muted);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">⏭️</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Order Management</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Sync orders between API and Sheet</div>
+
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Disabled in config</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">Skipped</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">N/A</div>
+                    </div>
+                </div>
+
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--text-muted);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">⏭️</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">User Management</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Manage and approve users</div>
+
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Disabled in config</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">Skipped</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">N/A</div>
+                    </div>
+                </div>
+
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--text-muted);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">⏭️</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Advertisement Management</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Manage and approve advertisements</div>
+
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Disabled in config</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">Skipped</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">N/A</div>
+                    </div>
+                </div>
+
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--text-muted);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">⏭️</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Signup ID Management</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Monitor signup ID usage</div>
+
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Disabled in config</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">Skipped</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">N/A</div>
+                    </div>
+                </div>
+
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--text-muted);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">⏭️</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Data Analysis</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Export and analyze platform data</div>
+
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Disabled in config</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">Skipped</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">N/A</div>
+                    </div>
+                </div>
+
+                <div class="step-row" style="display: flex; align-items: center; padding: 0.75rem 1rem;
+                    background: var(--bg-tab); border-radius: 0.5rem; margin-bottom: 0.5rem;
+                    border-left: 4px solid var(--text-muted);">
+                    <div style="font-size: 1.25rem; margin-right: 1rem;">⏭️</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">Business Report</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Generate business intelligence report</div>
+
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Disabled in config</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">Skipped</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">N/A</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="openTab(event, 'tab-payment')">
+                    <span class="icon">💳</span>
+                    <span>Update Payment</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-order')">
+                    <span class="icon">📦</span>
+                    <span>Order Management</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-user')">
+                    <span class="icon">👥</span>
+                    <span>User Management</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-advertisement')">
+                    <span class="icon">📺</span>
+                    <span>Advertisement</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-signup-id')">
+                    <span class="icon">🎟️</span>
+                    <span>Signup IDs</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-data-analysis')">
+                    <span class="icon">📊</span>
+                    <span>Data Export</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-logs')">
+                    <span class="icon">📋</span>
+                    <span>Logs</span>
+                    <span class="badge badge-success">✓</span>
+                </button>
+            </div>
+
+            <div id="tab-payment" class="tab-content active">
+
+                <div class="section-header">
+                    <span class="icon icon-payment">💳</span>
+                    <span>Update Payment Process</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </div>
+                <div class="empty-state">
+                    <div class="icon">⏸️</div>
+                    <p>This process was not enabled for this run</p>
+                </div>
+            </div>
+
+            <div id="tab-order" class="tab-content">
+
+                <div class="section-header">
+                    <span class="icon icon-order">📦</span>
+                    <span>Order Management Process</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </div>
+                <div class="empty-state">
+                    <div class="icon">⏸️</div>
+                    <p>This process was not enabled for this run</p>
+                </div>
+            </div>
+
+            <div id="tab-user" class="tab-content">
+
+                <div class="section-header">
+                    <span class="icon icon-user">👥</span>
+                    <span>User Management Process</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </div>
+                <div class="empty-state">
+                    <div class="icon">⏸️</div>
+                    <p>This process was not enabled for this run</p>
+                </div>
+            </div>
+
+            <div id="tab-advertisement" class="tab-content">
+
+                <div class="section-header">
+                    <span class="icon icon-ad">📺</span>
+                    <span>Advertisement Management Process</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </div>
+                <div class="empty-state">
+                    <div class="icon">⏸️</div>
+                    <p>This process was not enabled for this run</p>
+                </div>
+            </div>
+
+            <div id="tab-signup-id" class="tab-content">
+
+                <div class="section-header">
+                    <span class="icon icon-signup">🎟️</span>
+                    <span>Signup ID Management Process</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </div>
+                <div class="empty-state">
+                    <div class="icon">⏸️</div>
+                    <p>This process was not enabled for this run</p>
+                </div>
+            </div>
+
+            <div id="tab-data-analysis" class="tab-content">
+
+                <div class="section-header">
+                    <span class="icon icon-data">📊</span>
+                    <span>Data Export Process</span>
+                    <span class="badge badge-disabled">DISABLED</span>
+                </div>
+                <div class="empty-state">
+                    <div class="icon">⏸️</div>
+                    <p>This process was not enabled for this run</p>
+                </div>
+            </div>
+
+            <div id="tab-logs" class="tab-content">
+
+                <div class="section-header">
+                    <span class="icon icon-log">📋</span>
+                    <span>Logs</span>
+                </div>
+                <div class="empty-state">
+                    <div class="icon">✅</div>
+                    <p>No errors or warnings during execution</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Generated by AestheticRxNetworkIntelligentBot • 2026</p>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabId) {
+            // Hide all tab contents
+            var tabContents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+
+            // Remove active class from all tab buttons
+            var tabBtns = document.getElementsByClassName('tab-btn');
+            for (var i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove('active');
+            }
+
+            // Show the current tab and add active class to the button
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-"""Order model for Q Website API."""
+"""Order model for AestheticRxNetwork API."""
 
 from datetime import datetime
 from decimal import Decimal
@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 
 class Order(BaseModel):
-    """Order model representing an order from Q Website API."""
+    """Order model representing an order from AestheticRxNetwork API."""
 
     id: str
     order_number: str

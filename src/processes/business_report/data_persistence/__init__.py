@@ -5,4 +5,3 @@ from processes.business_report.data_persistence.metrics_storage import MetricsSt
 from processes.business_report.data_persistence.mock_data_generator import MockDataGenerator
 
 __all__ = ["HistoricalLoader", "MetricsStorage", "MockDataGenerator"]
-

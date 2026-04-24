@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Intelligence Report - 2026-04-24</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            --border: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            border-radius: 16px;
+        }
+
+        .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .header .subtitle { color: rgba(255,255,255,0.8); }
+
+        .executive-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .kpi-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .kpi-card .value { font-size: 2rem; font-weight: 700; }
+        .kpi-card .label { color: var(--text-muted); font-size: 0.875rem; }
+
+        .kpi-card.primary .value { color: var(--primary); }
+        .kpi-card.success .value { color: var(--success); }
+        .kpi-card.warning .value { color: var(--warning); }
+        .kpi-card.danger .value { color: var(--danger); }
+        .kpi-card.info .value { color: var(--info); }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover { background: var(--bg-card); color: var(--text); }
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: 350px;
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-dark);
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        tr:hover td { background: var(--bg-card-hover); }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .badge-info { background: rgba(6, 182, 212, 0.2); color: var(--info); }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { color: var(--text-muted); }
+        .stat-value { font-weight: 600; }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .executive-summary { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Trend indicators */
+        .trend-indicators {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+        }
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+        .trend-flat { color: var(--warning); }
+
+        /* Alerts banner */
+        .alerts-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0.5rem 1rem;
+        }
+        .alert-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        .alert-item.critical {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+        }
+        .alert-item.warning {
+            background: rgba(245, 158, 11, 0.9);
+            color: white;
+        }
+
+        /* Risk indicators */
+        .risk-indicators { margin-top: 1rem; }
+        .risk-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        .risk-item.success { background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--success); }
+        .risk-item.warning { background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--warning); }
+        .risk-item.danger { background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--danger); }
+        .risk-icon { font-size: 1.25rem; }
+
+        /* Goal tracking */
+        .goal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .goal-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .goal-card h4 { margin-bottom: 1rem; }
+        .progress-bar {
+            background: var(--border);
+            border-radius: 8px;
+            height: 20px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.5s;
+        }
+        .progress-fill.badge-success { background: var(--success); }
+        .progress-fill.badge-warning { background: var(--warning); }
+
+        /* Comparison cards */
+        .comparison-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .comparison-summary { display: inline-block; margin-top: 0.5rem; }
+
+        /* Rankings */
+        .rankings-section { margin-top: 1rem; }
+
+        /* Seasonal patterns */
+        .seasonal-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        /* Info card */
+        .info-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        .info-card p { margin: 0.5rem 0; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="header">
+            <h1>📊 Business Intelligence Report</h1>
+            <p class="subtitle">AestheticRxNetwork - Comprehensive Analytics Dashboard</p>
+            <p class="subtitle">Generated: 2026-04-24 13:00:39</p>
+        </div>
+
+        <div class="executive-summary">
+            <div class="kpi-card primary">
+                <div class="icon">👥</div>
+                <div class="value">2</div>
+                <div class="label">Total Users</div>
+            </div>
+            <div class="kpi-card success">
+                <div class="icon">📦</div>
+                <div class="value">95</div>
+                <div class="label">Total Orders</div>
+            </div>
+            <div class="kpi-card warning">
+                <div class="icon">💰</div>
+                <div class="value">₨89,619,559</div>
+                <div class="label">Revenue Collected</div>
+            </div>
+            <div class="kpi-card danger">
+                <div class="icon">⏳</div>
+                <div class="value">₨0</div>
+                <div class="label">Pending Revenue</div>
+            </div>
+            <div class="kpi-card info">
+                <div class="icon">✅</div>
+                <div class="value">96.8%</div>
+                <div class="label">Payment Rate</div>
+            </div>
+            <div class="kpi-card primary">
+                <div class="icon">📊</div>
+                <div class="value">₨954,410</div>
+                <div class="label">Avg Order Value</div>
+            </div>
+            <div class="kpi-card success">
+                <div class="icon">📄</div>
+                <div class="value">12</div>
+                <div class="label">Research Papers</div>
+            </div>
+            <div class="kpi-card info">
+                <div class="icon">📺</div>
+                <div class="value">1</div>
+                <div class="label">Active Ads</div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="openTab(event, 'tab-users')">👥 Users</button>
+            <button class="nav-tab" onclick="openTab(event, 'tab-orders')">📦 Orders</button>
+            <button class="nav-tab" onclick="openTab(event, 'tab-payments')">💳 Payments</button>
+            <button class="nav-tab" onclick="openTab(event, 'tab-research')">📄 Research</button>
+            <button class="nav-tab" onclick="openTab(event, 'tab-ads')">📺 Ads</button>
+            <button class="nav-tab" onclick="openTab(event, 'tab-financial')">💵 System</button>
+            <button class="nav-tab" onclick="openTab(event, 'tab-business-kpi')">📊 KPIs</button>
+            <button class="nav-tab" onclick="openTab(event, 'tab-fin-tracking')">💹 Tracking</button>
+            <button class="nav-tab" onclick="openTab(event, 'tab-trends')">📈 Trends</button>
+            <button class="nav-tab" onclick="openTab(event, 'tab-forecast')">🔮 Forecast</button>
+        </div>
+        <div id="tab-users" class="tab-content active">
+
+        <div class="section">
+            <h2 class="section-title">👥 Users & Doctors Overview</h2>
+            <div class="grid-3">
+                <div class="stat-row"><span class="stat-label">Total Users</span><span class="stat-value">2</span></div>
+                <div class="stat-row"><span class="stat-label">Total Doctors</span><span class="stat-value">2</span></div>
+                <div class="stat-row"><span class="stat-label">Active Users</span><span class="stat-value">2</span></div>
+                <div class="stat-row"><span class="stat-label">Approved</span><span class="stat-value">2</span></div>
+                <div class="stat-row"><span class="stat-label">Pending Approval</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Approval Rate</span><span class="stat-value">100.0%</span></div>
+                <div class="stat-row"><span class="stat-label">Admins</span><span class="stat-value">2</span></div>
+                <div class="stat-row"><span class="stat-label">Signup IDs Used</span><span class="stat-value">232/232</span></div>
+                <div class="stat-row"><span class="stat-label">Signup Usage Rate</span><span class="stat-value">100.0%</span></div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="chart-container">
+                <h3 class="chart-title">Tier Distribution</h3>
+                <canvas id="tierChart"></canvas>
+            </div>
+            <div class="section">
+                <h3 class="section-title">🏆 Top Doctors by Sales</h3>
+                <table>
+                    <thead><tr><th>Rank</th><th>Doctor</th><th>Tier</th><th>Sales</th></tr></thead>
+                    <tbody><tr><td colspan="4">No data available</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+            new Chart(document.getElementById('tierChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ["2026-01-23T06:11:05.519Z\"\"", "2026-01-23T06:48:14.026Z\"\""],
+                    datasets: [{
+                        data: [1, 1],
+                        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#f8fafc' } } } }
+            });
+        </script>
+        </div>
+        <div id="tab-orders" class="tab-content">
+
+        <div class="section">
+            <h2 class="section-title">📦 Orders & Revenue Overview</h2>
+            <div class="grid-3">
+                <div class="stat-row"><span class="stat-label">Total Orders</span><span class="stat-value">95</span></div>
+                <div class="stat-row"><span class="stat-label">Completed Orders</span><span class="stat-value">85</span></div>
+                <div class="stat-row"><span class="stat-label">Pending Orders</span><span class="stat-value">10</span></div>
+                <div class="stat-row"><span class="stat-label">Cancelled Orders</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Total Revenue</span><span class="stat-value">₨90,668,946</span></div>
+                <div class="stat-row"><span class="stat-label">Paid Revenue</span><span class="stat-value">₨89,619,559</span></div>
+                <div class="stat-row"><span class="stat-label">Pending Revenue</span><span class="stat-value">₨0</span></div>
+                <div class="stat-row"><span class="stat-label">Avg Order Value</span><span class="stat-value">₨954,410</span></div>
+                <div class="stat-row"><span class="stat-label">Total Products</span><span class="stat-value">18</span></div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="chart-container">
+                <h3 class="chart-title">Order Status Distribution</h3>
+                <canvas id="orderStatusChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">Payment Status Distribution</h3>
+                <canvas id="paymentStatusChart"></canvas>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3 class="section-title">🏆 Top Products by Revenue</h3>
+            <table>
+                <thead><tr><th>Product</th><th>Orders</th><th>Qty</th><th>Revenue</th></tr></thead>
+                <tbody>
+                <tr>
+                    <td>TENTH PRODUCT </td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>₨49,284,929</td>
+                </tr>
+                <tr>
+                    <td>Blood Pressure Monitor</td>
+                    <td>13</td>
+                    <td>13</td>
+                    <td>₨22,500,000</td>
+                </tr>
+                <tr>
+                    <td>TESTING PRODUCT </td>
+                    <td>35</td>
+                    <td>35</td>
+                    <td>₨17,231,656</td>
+                </tr>
+                <tr>
+                    <td>TESTING PRODUCT </td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>₨739,279</td>
+                </tr>
+                <tr>
+                    <td>test</td>
+                    <td>5</td>
+                    <td>5</td>
+                    <td>₨616,066</td>
+                </tr>
+                <tr>
+                    <td>Testing product </td>
+                    <td>8</td>
+                    <td>8</td>
+                    <td>₨290,957</td>
+                </tr>
+                <tr>
+                    <td>Digital Thermometer</td>
+                    <td>16</td>
+                    <td>16</td>
+                    <td>₨4,792</td>
+                </tr>
+                <tr>
+                    <td>Medical Gloves - Latex Free</td>
+                    <td>8</td>
+                    <td>8</td>
+                    <td>₨884</td>
+                </tr>
+                <tr>
+                    <td>Surgical Masks - N95</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>₨228</td>
+                </tr>
+                <tr>
+                    <td>First Aid Kit - Complete</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>₨150</td>
+                </tr></tbody>
+            </table>
+        </div>
+
+        <script>
+            new Chart(document.getElementById('orderStatusChart'), {
+                type: 'pie',
+                data: {
+                    labels: ["completed", "pending"],
+                    datasets: [{ data: [85, 10], backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#6366f1'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#f8fafc' } } } }
+            });
+
+            new Chart(document.getElementById('paymentStatusChart'), {
+                type: 'pie',
+                data: {
+                    labels: ["paid"],
+                    datasets: [{ data: [92], backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#06b6d4'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#f8fafc' } } } }
+            });
+        </script>
+        </div>
+        <div id="tab-payments" class="tab-content">
+
+        <div class="section">
+            <h2 class="section-title">💳 Payment & Revenue Analytics</h2>
+            <div class="grid-3">
+                <div class="stat-row">
+                    <span class="stat-label">Total Revenue (All Orders)</span>
+                    <span class="stat-value">₨90,668,946</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Paid Amount</span>
+                    <span class="stat-value" style="color: var(--success);">₨89,619,559</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Pending Revenue</span>
+                    <span class="stat-value" style="color: var(--warning);">₨0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Payment Completion Rate</span>
+                    <span class="stat-value">96.8%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Average Order Value</span>
+                    <span class="stat-value">₨954,410</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">7-Day Revenue</span>
+                    <span class="stat-value">₨89,619,559</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Previous 7-Day Revenue</span>
+                    <span class="stat-value">₨0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Revenue Trend</span>
+                    <span class="stat-value">
+                        <span class="badge badge-success">📈 +100.0%</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="chart-container">
+                <h3 class="chart-title">Payment Status Distribution</h3>
+                <canvas id="paymentStatusPieChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">Payment Methods Used</h3>
+                <canvas id="paymentMethodChart"></canvas>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="chart-container" style="height: 400px;">
+                <h3 class="chart-title">Revenue by Payment Method</h3>
+                <canvas id="revenueByMethodChart"></canvas>
+            </div>
+            <div class="chart-container" style="height: 400px;">
+                <h3 class="chart-title">Daily Revenue (Last 14 Days)</h3>
+                <canvas id="dailyRevenueChart"></canvas>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="section">
+                <h3 class="section-title">🏆 Top Paying Doctors</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Clinic</th>
+                            <th>Tier</th>
+                            <th>Orders</th>
+                            <th>Total Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                <tr>
+                    <td>42001.0</td>
+                    <td>N/A</td>
+                    <td><span class="badge badge-info">N/A</span></td>
+                    <td>33</td>
+                    <td>₨61,446,075</td>
+                </tr>
+                <tr>
+                    <td>1002.0</td>
+                    <td>N/A</td>
+                    <td><span class="badge badge-info">N/A</span></td>
+                    <td>39</td>
+                    <td>₨21,719,266</td>
+                </tr>
+                <tr>
+                    <td>100000.0</td>
+                    <td>N/A</td>
+                    <td><span class="badge badge-info">N/A</span></td>
+                    <td>12</td>
+                    <td>₨5,295,656</td>
+                </tr>
+                <tr>
+                    <td>42000.0</td>
+                    <td>N/A</td>
+                    <td><span class="badge badge-info">N/A</span></td>
+                    <td>4</td>
+                    <td>₨121,871</td>
+                </tr>
+                <tr>
+                    <td>100001.0</td>
+                    <td>N/A</td>
+                    <td><span class="badge badge-info">N/A</span></td>
+                    <td>2</td>
+                    <td>₨36,373</td>
+                </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="section">
+                <h3 class="section-title">⏱ Recent Payments</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                <tr>
+                    <td>ORD-1759049517</td>
+                    <td>₨104</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-22</td>
+                </tr>
+                <tr>
+                    <td>ORD-1759049510</td>
+                    <td>₨492,853</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-22</td>
+                </tr>
+                <tr>
+                    <td>ORD-1759049512</td>
+                    <td>₨36,963,696</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-22</td>
+                </tr>
+                <tr>
+                    <td>ORD-1759049513</td>
+                    <td>₨500,000</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-22</td>
+                </tr>
+                <tr>
+                    <td>ORD-1759049511</td>
+                    <td>₨24,246</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-22</td>
+                </tr>
+                <tr>
+                    <td>ORD-1759049507</td>
+                    <td>₨4,500,000</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-21</td>
+                </tr>
+                <tr>
+                    <td>ORD-1759049508</td>
+                    <td>₨12,123</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-21</td>
+                </tr>
+                <tr>
+                    <td>ORD-1759049509</td>
+                    <td>₨123,213</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-21</td>
+                </tr>
+                <tr>
+                    <td>ORD-1759049503</td>
+                    <td>₨4,500,000</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-21</td>
+                </tr>
+                <tr>
+                    <td>ORD-1759049506</td>
+                    <td>₨123,213</td>
+                    <td><span class="badge badge-success">payfast_online</span></td>
+                    <td>2026-01-21</td>
+                </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+            // Payment Status Pie Chart
+            new Chart(document.getElementById('paymentStatusPieChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ["paid"],
+                    datasets: [{
+                        data: [92],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#6366f1', '#06b6d4']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#f8fafc' } } }
+                }
+            });
+
+            // Payment Methods Chart
+            new Chart(document.getElementById('paymentMethodChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ["payfast_online"],
+                    datasets: [{
+                        data: [95],
+                        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#f8fafc' } } }
+                }
+            });
+
+            // Revenue by Method Bar Chart
+            new Chart(document.getElementById('revenueByMethodChart'), {
+                type: 'bar',
+                data: {
+                    labels: ["payfast_online"],
+                    datasets: [{
+                        label: 'Revenue (₨)',
+                        data: [89619765.08],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            ticks: { color: '#94a3b8', callback: function(value) { return '₨' + value.toLocaleString(); } },
+                            grid: { color: '#334155' }
+                        },
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // Daily Revenue Line Chart
+            new Chart(document.getElementById('dailyRevenueChart'), {
+                type: 'line',
+                data: {
+                    labels: ["2026-01-22", "2026-01-21", "2026-01-20", "2025-12-28", "2025-12-27", "2025-12-26", "2025-12-25"],
+                    datasets: [{
+                        label: 'Daily Revenue (₨)',
+                        data: [37980899.59, 17394071.81, 17192469.32, 8609013.66, 3147289.13, 2647987.51, 2647827.76],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#10b981',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            ticks: { color: '#94a3b8', callback: function(value) { return '₨' + value.toLocaleString(); } },
+                            grid: { color: '#334155' }
+                        },
+                        x: { ticks: { color: '#94a3b8', maxRotation: 45 }, grid: { display: false } }
+                    }
+                }
+            });
+        </script>
+        </div>
+        <div id="tab-research" class="tab-content">
+
+        <div class="section">
+            <h2 class="section-title">📄 Research & Engagement Overview</h2>
+            <div class="grid-3">
+                <div class="stat-row"><span class="stat-label">Total Papers</span><span class="stat-value">12</span></div>
+                <div class="stat-row"><span class="stat-label">Approved Papers</span><span class="stat-value">2</span></div>
+                <div class="stat-row"><span class="stat-label">Pending Papers</span><span class="stat-value">10</span></div>
+                <div class="stat-row"><span class="stat-label">Total Views</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Total Upvotes</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Unique Viewers</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Avg Views/Paper</span><span class="stat-value">0.0</span></div>
+                <div class="stat-row"><span class="stat-label">Engagement Rate</span><span class="stat-value">0.0%</span></div>
+                <div class="stat-row"><span class="stat-label">Certificates</span><span class="stat-value">0</span></div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="section">
+                <h3 class="section-title">📄 Top Papers by Views</h3>
+                <table>
+                    <thead><tr><th>Title</th><th>Views</th><th>Upvotes</th></tr></thead>
+                    <tbody>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>[research"</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr></tbody>
+                </table>
+            </div>
+            <div class="section">
+                <h3 class="section-title">🏆 Leaderboard Top Performers</h3>
+                <table>
+                    <thead><tr><th>Rank</th><th>Doctor</th><th>Tier</th><th>Sales</th></tr></thead>
+                    <tbody><tr><td colspan="4">No data available</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+        <div id="tab-ads" class="tab-content">
+
+        <div class="section">
+            <h2 class="section-title">📺 Advertisement Overview</h2>
+            <div class="grid-3">
+                <div class="stat-row"><span class="stat-label">Total Ads</span><span class="stat-value">22</span></div>
+                <div class="stat-row"><span class="stat-label">Active Ads</span><span class="stat-value">1</span></div>
+                <div class="stat-row"><span class="stat-label">Pending Ads</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Completed Ads</span><span class="stat-value">21</span></div>
+                <div class="stat-row"><span class="stat-label">Video Ads</span><span class="stat-value">22</span></div>
+                <div class="stat-row"><span class="stat-label">Banner Ads</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Total Revenue</span><span class="stat-value">₨21,690</span></div>
+                <div class="stat-row"><span class="stat-label">Paid Revenue</span><span class="stat-value">₨9,160</span></div>
+                <div class="stat-row"><span class="stat-label">Total Impressions</span><span class="stat-value">419</span></div>
+                <div class="stat-row"><span class="stat-label">Total Clicks</span><span class="stat-value">2,283</span></div>
+                <div class="stat-row"><span class="stat-label">Total Views</span><span class="stat-value">2</span></div>
+                <div class="stat-row"><span class="stat-label">CTR</span><span class="stat-value">544.87%</span></div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="chart-container">
+                <h3 class="chart-title">Ad Status Distribution</h3>
+                <canvas id="adStatusChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">Ad Type Distribution</h3>
+                <canvas id="adTypeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3 class="section-title">🏆 Top Ads by Views</h3>
+            <table>
+                <thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Views</th><th>Clicks</th></tr></thead>
+                <tbody>
+                <tr>
+                    <td>sdfsdfdaf</td>
+                    <td>nan</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>2</td>
+                    <td>162</td>
+                </tr>
+                <tr>
+                    <td>sdasd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>sdfsd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>0</td>
+                    <td>62</td>
+                </tr>
+                <tr>
+                    <td>Dhdh</td>
+                    <td>video</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>Ghh</td>
+                    <td>video</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>0</td>
+                    <td>56</td>
+                </tr>
+                <tr>
+                    <td>fsfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>0</td>
+                    <td>176</td>
+                </tr>
+                <tr>
+                    <td>Gg</td>
+                    <td>video</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>0</td>
+                    <td>62</td>
+                </tr>
+                <tr>
+                    <td>dfsdf</td>
+                    <td>video</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>0</td>
+                    <td>1,033</td>
+                </tr>
+                <tr>
+                    <td>Shsbd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>0</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>Xbd</td>
+                    <td>video</td>
+                    <td><span class="badge badge-warning">completed</span></td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr></tbody>
+            </table>
+        </div>
+
+        <script>
+            new Chart(document.getElementById('adStatusChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ["completed", "active"],
+                    datasets: [{ data: [21, 1], backgroundColor: ['#10b981', '#f59e0b', '#6366f1', '#ef4444'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#f8fafc' } } } }
+            });
+
+            new Chart(document.getElementById('adTypeChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ["video", "image"],
+                    datasets: [{ data: [17, 3], backgroundColor: ['#6366f1', '#10b981', '#f59e0b'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#f8fafc' } } } }
+            });
+        </script>
+        </div>
+        <div id="tab-financial" class="tab-content">
+
+        <div class="section">
+            <h2 class="section-title">💰 Financial & System Overview</h2>
+            <div class="grid-3">
+                <div class="stat-row"><span class="stat-label">Total Wallets</span><span class="stat-value">2</span></div>
+                <div class="stat-row"><span class="stat-label">Total Wallet Balance</span><span class="stat-value">₨0</span></div>
+                <div class="stat-row"><span class="stat-label">Avg Wallet Balance</span><span class="stat-value">₨0</span></div>
+                <div class="stat-row"><span class="stat-label">Debt Records</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Total Debt</span><span class="stat-value">₨0</span></div>
+                <div class="stat-row"><span class="stat-label">Notifications</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Emails Sent</span><span class="stat-value">749</span></div>
+                <div class="stat-row"><span class="stat-label">OTP Codes</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Teams</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Team Members</span><span class="stat-value">0</span></div>
+                <div class="stat-row"><span class="stat-label">Badges</span><span class="stat-value">3</span></div>
+                <div class="stat-row"><span class="stat-label">AI Models</span><span class="stat-value">2</span></div>
+            </div>
+        </div>
+        </div>
+        <div id="tab-business-kpi" class="tab-content">
+
+        <style>
+            .kpi-tooltip {
+                position: relative;
+                cursor: help;
+            }
+            .kpi-tooltip .tooltip-text {
+                visibility: hidden;
+                width: 250px;
+                background-color: #1e293b;
+                color: #f1f5f9;
+                text-align: left;
+                border-radius: 8px;
+                padding: 12px;
+                position: absolute;
+                z-index: 100;
+                bottom: 125%;
+                left: 50%;
+                margin-left: -125px;
+                opacity: 0;
+                transition: opacity 0.3s;
+                font-size: 0.85rem;
+                line-height: 1.4;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+                border: 1px solid #334155;
+            }
+            .kpi-tooltip .tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -8px;
+                border-width: 8px;
+                border-style: solid;
+                border-color: #1e293b transparent transparent transparent;
+            }
+            .kpi-tooltip:hover .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
+            .kpi-description {
+                font-size: 0.75rem;
+                color: var(--text-muted);
+                margin-top: 4px;
+                line-height: 1.3;
+            }
+            .pending-alert {
+                background: linear-gradient(135deg, #f59e0b22 0%, #ef444422 100%);
+                border: 1px solid #f59e0b;
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin: 1.5rem 0;
+            }
+            .pending-alert h4 {
+                color: #f59e0b;
+                margin: 0 0 0.5rem 0;
+                font-size: 1.1rem;
+            }
+            .pending-bar {
+                background: #334155;
+                border-radius: 8px;
+                height: 24px;
+                overflow: hidden;
+                margin: 0.75rem 0;
+            }
+            .pending-bar-fill {
+                height: 100%;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 0.8rem;
+                transition: width 0.5s ease;
+            }
+            .pending-bar-collected {
+                background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            }
+            .pending-bar-pending {
+                background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%);
+            }
+        </style>
+
+        <div class="section">
+            <h2 class="section-title">📊 Business KPIs & Trajectories</h2>
+            <p style="color: var(--text-muted); margin-bottom: 0.5rem;">
+                <strong>What is this?</strong> Key Performance Indicators (KPIs) show how well your business is performing.
+                These numbers help you understand sales, payments, and growth at a glance.
+            </p>
+            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">
+                📊 Data Source: downloaded_export |
+                📦 Orders Analyzed: 95 |
+                🎯 Trajectory: <span class="badge badge-info">➡️ Insufficient Data</span>
+            </p>
+
+            <!-- Payment Status Alert -->
+            <div class="pending-alert">
+                <h4>💰 Payment Collection Status</h4>
+                <p style="margin: 0; color: #94a3b8;">
+                    Shows how much money has been collected vs. still pending from customers.
+                </p>
+                <div class="pending-bar">
+                    <div class="pending-bar-fill pending-bar-collected" style="width: 98.8%;">
+                        ✓ Collected: ₨89,619,765
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #94a3b8;">
+                    <span>💵 <strong style="color: #10b981;">Collected:</strong> ₨89,619,765 (98.8%)</span>
+                    <span>⏳ <strong style="color: #f59e0b;">Pending:</strong> ₨0 (0.0%)</span>
+                    <span>💰 <strong>Total:</strong> ₨90,668,946</span>
+                </div>
+            </div>
+
+            <!-- Executive KPI Cards with Tooltips -->
+            <div class="executive-summary" style="margin-bottom: 2rem;">
+                <div class="kpi-card success kpi-tooltip">
+                    <span class="tooltip-text">
+                        <strong>Total Revenue</strong><br>
+                        The total value of all orders placed. This is the gross income before any deductions or expenses.
+                    </span>
+                    <div class="icon">💰</div>
+                    <div class="value">₨90,668,946</div>
+                    <div class="label">Total Revenue</div>
+                    <div class="kpi-description">All orders value</div>
+                </div>
+                <div class="kpi-card primary kpi-tooltip">
+                    <span class="tooltip-text">
+                        <strong>Total Collected</strong><br>
+                        Money actually received from customers. This is the cash in hand that has been paid.
+                    </span>
+                    <div class="icon">💵</div>
+                    <div class="value">₨89,619,765</div>
+                    <div class="label">Total Collected</div>
+                    <div class="kpi-description">Payments received</div>
+                </div>
+                <div class="kpi-card warning kpi-tooltip">
+                    <span class="tooltip-text">
+                        <strong>Pending Amount</strong><br>
+                        Money customers still owe. This needs to be collected. Lower is better!
+                    </span>
+                    <div class="icon">⏳</div>
+                    <div class="value">₨0</div>
+                    <div class="label">Pending Amount</div>
+                    <div class="kpi-description">0.0% of total</div>
+                </div>
+                <div class="kpi-card info kpi-tooltip">
+                    <span class="tooltip-text">
+                        <strong>Collection Rate</strong><br>
+                        Percentage of revenue actually collected. 100% means all payments received. Higher is better!
+                    </span>
+                    <div class="icon">📈</div>
+                    <div class="value">98.8%</div>
+                    <div class="label">Collection Rate</div>
+                    <div class="kpi-description">% payments received</div>
+                </div>
+                <div class="kpi-card success kpi-tooltip">
+                    <span class="tooltip-text">
+                        <strong>Profit Margin</strong><br>
+                        Estimated percentage of revenue that becomes profit after costs. Higher means more profitable!
+                    </span>
+                    <div class="icon">📊</div>
+                    <div class="value">28.8%</div>
+                    <div class="label">Est. Profit Margin</div>
+                    <div class="kpi-description">Profit per sale</div>
+                </div>
+                <div class="kpi-card primary kpi-tooltip">
+                    <span class="tooltip-text">
+                        <strong>Average Order Value</strong><br>
+                        Average amount spent per order. Higher value means customers buy more per purchase.
+                    </span>
+                    <div class="icon">🛒</div>
+                    <div class="value">₨954,410</div>
+                    <div class="label">Avg Order Value</div>
+                    <div class="kpi-description">Per order average</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Growth & Projections -->
+        <div class="section">
+            <h3 class="section-title">🚀 Growth Metrics & Projections</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">
+                <strong>What is this?</strong> These metrics show how your business is growing compared to last month,
+                and predict future revenue based on current trends.
+            </p>
+            <div class="grid-3">
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Sales Growth (MoM)</strong><br>
+                        How much sales increased/decreased compared to last month. Positive = growth, Negative = decline.
+                    </span>
+                    <span class="stat-label">📈 Sales Growth (MoM)</span>
+                    <span class="stat-value"><span class="badge badge-success">📈 +300.9%</span></span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Order Growth (MoM)</strong><br>
+                        Change in number of orders from last month. More orders = more customers buying.
+                    </span>
+                    <span class="stat-label">📦 Order Growth (MoM)</span>
+                    <span class="stat-value">-36.2%</span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Avg Monthly Growth Rate</strong><br>
+                        Average growth rate over all months. Shows overall business trajectory.
+                    </span>
+                    <span class="stat-label">📊 Avg Monthly Growth</span>
+                    <span class="stat-value">0.0%</span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Projected Monthly Revenue</strong><br>
+                        Estimated revenue for next month based on current growth trends.
+                    </span>
+                    <span class="stat-label">🎯 Projected Monthly</span>
+                    <span class="stat-value" style="color: var(--primary);">₨0</span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Projected Quarterly Revenue</strong><br>
+                        Estimated revenue for next 3 months combined.
+                    </span>
+                    <span class="stat-label">📅 Projected Quarterly</span>
+                    <span class="stat-value" style="color: var(--primary);">₨0</span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Projected Annual Revenue</strong><br>
+                        Estimated total revenue for the full year at current growth rate.
+                    </span>
+                    <span class="stat-label">📆 Projected Annual</span>
+                    <span class="stat-value" style="color: var(--success);">₨0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Revenue Trajectory Chart -->
+        <div class="chart-container" style="height: 400px; margin-bottom: 1.5rem;">
+            <h3 class="chart-title">📈 Monthly Revenue Trajectory</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin: -0.5rem 0 1rem 0;">
+                Shows monthly sales (blue) vs actual payments collected (green). The gap between lines indicates pending payments.
+            </p>
+            <canvas id="monthlyRevenueTrajectory"></canvas>
+        </div>
+
+        <div class="grid-2">
+            <!-- Monthly Orders Trend -->
+            <div class="chart-container" style="height: 350px;">
+                <h3 class="chart-title">📦 Monthly Orders Trend</h3>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin: -0.5rem 0 0.5rem 0;">
+                    Number of orders placed each month. Higher bars = more customer orders.
+                </p>
+                <canvas id="monthlyOrdersTrend"></canvas>
+            </div>
+            <!-- Weekly Revenue Trend -->
+            <div class="chart-container" style="height: 350px;">
+                <h3 class="chart-title">📊 Weekly Revenue (Last 12 Weeks)</h3>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin: -0.5rem 0 0.5rem 0;">
+                    Recent weekly performance. Helps identify short-term trends and patterns.
+                </p>
+                <canvas id="weeklyRevenueTrend"></canvas>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <!-- Product Categories -->
+            <div class="chart-container" style="height: 350px;">
+                <h3 class="chart-title">🏷️ Revenue by Product Category</h3>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin: -0.5rem 0 0.5rem 0;">
+                    Which product types generate the most revenue.
+                </p>
+                <canvas id="productCategoriesChart"></canvas>
+            </div>
+            <!-- Payment Methods -->
+            <div class="chart-container" style="height: 350px;">
+                <h3 class="chart-title">💳 Revenue by Payment Method</h3>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin: -0.5rem 0 0.5rem 0;">
+                    How customers prefer to pay for their orders.
+                </p>
+                <canvas id="paymentMethodsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Product Trajectory Chart -->
+        <div class="chart-container" style="height: 400px; margin-top: 1.5rem; margin-bottom: 1.5rem;">
+            <h3 class="chart-title">📊 Top Products - Sales Trajectory Over Time</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin: -0.5rem 0 1rem 0;">
+                Track how your top 5 products perform month-by-month. Rising lines indicate growing product demand.
+            </p>
+            <canvas id="productTrajectoryChart"></canvas>
+        </div>
+
+        <!-- Top Products Table -->
+        <div class="section" style="margin-top: 1.5rem;">
+            <h3 class="section-title">🏆 Top Products by Revenue</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+                Your best-selling products ranked by total revenue generated. Focus on these products for maximum impact.
+            </p>
+            <table>
+                <thead>
+                    <tr><th>Product</th><th>Revenue</th><th>Qty Sold</th><th>Orders</th></tr>
+                </thead>
+                <tbody>
+
+                <tr>
+                    <td>TENTH PRODUCT </td>
+                    <td>₨49,284,929</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>Blood Pressure Monitor</td>
+                    <td>₨38,500,000</td>
+                    <td>27</td>
+                    <td>27</td>
+                </tr>
+                <tr>
+                    <td>TESTING PRODUCT </td>
+                    <td>₨1,355,345</td>
+                    <td>6</td>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <td>test</td>
+                    <td>₨1,108,919</td>
+                    <td>9</td>
+                    <td>9</td>
+                </tr>
+                <tr>
+                    <td>Testing product </td>
+                    <td>₨387,942</td>
+                    <td>12</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>Checking product Twelev</td>
+                    <td>₨24,624</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>Digital Thermometer</td>
+                    <td>₨5,432</td>
+                    <td>19</td>
+                    <td>19</td>
+                </tr>
+                <tr>
+                    <td>Medical Gloves - Latex Free</td>
+                    <td>₨1,222</td>
+                    <td>12</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>First Aid Kit - Complete</td>
+                    <td>₨301</td>
+                    <td>3</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>Surgical Masks - N95</td>
+                    <td>₨228</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Cost & Efficiency Estimates -->
+        <div class="section" style="margin-top: 1.5rem;">
+            <h3 class="section-title">💼 Estimated Costs & Efficiency</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+                <strong>Note:</strong> These are estimated values based on industry standard percentages.
+                Actual costs may vary. COGS = Cost of Goods Sold (product cost).
+            </p>
+            <div class="grid-3">
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Cost of Goods Sold (COGS)</strong><br>
+                        The direct cost of products sold. Estimated at 50% of revenue. This is what you pay for the products.
+                    </span>
+                    <span class="stat-label">📦 Est. Cost of Goods (50%)</span>
+                    <span class="stat-value" style="color: var(--danger);">₨45,334,473</span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Operating Expenses</strong><br>
+                        Day-to-day business costs like rent, salaries, utilities. Estimated at 20% of revenue.
+                    </span>
+                    <span class="stat-label">🏢 Est. Operating Expenses (20%)</span>
+                    <span class="stat-value" style="color: var(--warning);">₨18,133,789</span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Net Profit</strong><br>
+                        Money left after all costs. This is what the business actually earns. Higher = better!
+                    </span>
+                    <span class="stat-label">💵 Est. Net Profit (30%)</span>
+                    <span class="stat-value" style="color: var(--success);">₨26,151,503</span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Total Doctors/Clients</strong><br>
+                        Number of unique customers (doctors) who have placed orders.
+                    </span>
+                    <span class="stat-label">👨‍⚕️ Total Doctors/Clients</span>
+                    <span class="stat-value">2</span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Client Acquisition Cost (CAC)</strong><br>
+                        Average cost to acquire one customer. Calculated as marketing spend ÷ number of clients. Lower = more efficient!
+                    </span>
+                    <span class="stat-label">💰 Client Acquisition Cost</span>
+                    <span class="stat-value">₨6,800,171</span>
+                </div>
+                <div class="stat-row kpi-tooltip" style="position: relative;">
+                    <span class="tooltip-text" style="bottom: 100%; left: 0; margin-left: 0;">
+                        <strong>Total Orders</strong><br>
+                        Total number of orders placed by all customers.
+                    </span>
+                    <span class="stat-label">📦 Total Orders</span>
+                    <span class="stat-value">95</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Glossary -->
+        <div class="section" style="margin-top: 1.5rem; background: #1e293b; border-radius: 12px; padding: 1.5rem;">
+            <h3 class="section-title" style="margin-top: 0;">📖 KPI Glossary - Quick Reference</h3>
+            <div class="grid-2" style="gap: 1rem;">
+                <div style="font-size: 0.9rem; line-height: 1.8;">
+                    <p><strong style="color: #10b981;">💰 Revenue</strong> = Total value of all orders (before collecting)</p>
+                    <p><strong style="color: #10b981;">💵 Collected</strong> = Actual money received from customers</p>
+                    <p><strong style="color: #f59e0b;">⏳ Pending</strong> = Money customers still owe you</p>
+                    <p><strong style="color: #6366f1;">📈 Collection Rate</strong> = % of revenue actually collected</p>
+                </div>
+                <div style="font-size: 0.9rem; line-height: 1.8;">
+                    <p><strong style="color: #10b981;">📊 Profit Margin</strong> = % of revenue that becomes profit</p>
+                    <p><strong style="color: #6366f1;">🛒 Avg Order Value</strong> = Average amount per order</p>
+                    <p><strong style="color: #f59e0b;">💰 CAC</strong> = Cost to acquire one new customer</p>
+                    <p><strong style="color: #10b981;">📈 Growth (MoM)</strong> = Month-over-Month change %</p>
+                </div>
+            </div>
+            <p style="margin-top: 1rem; color: #94a3b8; font-size: 0.85rem;">
+                💡 <strong>Tip:</strong> Hover over any KPI card or metric for a detailed explanation!
+            </p>
+        </div>
+
+        <script>
+            // Monthly Revenue Trajectory Chart
+            new Chart(document.getElementById('monthlyRevenueTrajectory'), {
+                type: 'line',
+                data: {
+                    labels: ["Dec 2025", "Jan 2026"],
+                    datasets: [
+                        {
+                            label: 'Total Sales (₨)',
+                            data: [18100956.35, 72567989.97],
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#6366f1',
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Amount Collected (₨)',
+                            data: [17052118.06, 72567647.02],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { color: '#f8fafc' } }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#94a3b8', callback: function(value) { return '₨' + (value/1000000).toFixed(1) + 'M'; } },
+                            grid: { color: '#334155' }
+                        },
+                        x: { ticks: { color: '#94a3b8', maxRotation: 45 }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // Monthly Orders Trend
+            new Chart(document.getElementById('monthlyOrdersTrend'), {
+                type: 'bar',
+                data: {
+                    labels: ["Dec 2025", "Jan 2026"],
+                    datasets: [{
+                        label: 'Orders',
+                        data: [58, 37],
+                        backgroundColor: '#8b5cf6',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#94a3b8', maxRotation: 45 }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // Weekly Revenue Trend
+            new Chart(document.getElementById('weeklyRevenueTrend'), {
+                type: 'line',
+                data: {
+                    labels: ["2025-12-22", "2026-01-19"],
+                    datasets: [{
+                        label: 'Weekly Revenue (₨)',
+                        data: [18100956.35, 72567989.97],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            ticks: { color: '#94a3b8', callback: function(value) { return '₨' + (value/1000000).toFixed(1) + 'M'; } },
+                            grid: { color: '#334155' }
+                        },
+                        x: { ticks: { color: '#94a3b8', maxRotation: 45 }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // Product Categories Chart
+            new Chart(document.getElementById('productCategoriesChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ["Other Products", "Medical Products"],
+                    datasets: [{
+                        data: [90667724.79, 1221.53],
+                        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#f8fafc' } } }
+                }
+            });
+
+            // Payment Methods Chart
+            new Chart(document.getElementById('paymentMethodsChart'), {
+                type: 'bar',
+                data: {
+                    labels: ["payfast_online"],
+                    datasets: [{
+                        label: 'Revenue (₨)',
+                        data: [89619765.08],
+                        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            ticks: { color: '#94a3b8', callback: function(value) { return '₨' + (value/1000000).toFixed(1) + 'M'; } },
+                            grid: { color: '#334155' }
+                        },
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // Product Trajectory Chart (Top 5 products over time)
+            new Chart(document.getElementById('productTrajectoryChart'), {
+                type: 'line',
+                data: {
+                    labels: ["2025-12", "2026-01"],
+                    datasets: [{"label": "TENTH PRODUCT ", "data": [0.0, 49284928.52], "borderColor": "#6366f1", "backgroundColor": "rgba(99, 102, 241, 0.1)", "fill": false, "tension": 0.4, "borderWidth": 2}, {"label": "Blood Pressure Monitor", "data": [16500000.0, 22000000.0], "borderColor": "#10b981", "backgroundColor": "rgba(16, 185, 129, 0.1)", "fill": false, "tension": 0.4, "borderWidth": 2}, {"label": "TESTING PRODUCT ", "data": [739279.26, 616066.05], "borderColor": "#f59e0b", "backgroundColor": "rgba(245, 158, 11, 0.1)", "fill": false, "tension": 0.4, "borderWidth": 2}, {"label": "test", "data": [492852.92, 616066.15], "borderColor": "#ef4444", "backgroundColor": "rgba(239, 68, 68, 0.1)", "fill": false, "tension": 0.4, "borderWidth": 2}, {"label": "Testing product ", "data": [339449.60000000003, 48492.8], "borderColor": "#8b5cf6", "backgroundColor": "rgba(139, 92, 246, 0.1)", "fill": false, "tension": 0.4, "borderWidth": 2}]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { color: '#f8fafc', boxWidth: 12, padding: 15 }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: function(value) {
+                                    if (value >= 1000000) return '₨' + (value/1000000).toFixed(1) + 'M';
+                                    if (value >= 1000) return '₨' + (value/1000).toFixed(0) + 'K';
+                                    return '₨' + value;
+                                }
+                            },
+                            grid: { color: '#334155' }
+                        },
+                        x: { ticks: { color: '#94a3b8', maxRotation: 45 }, grid: { display: false } }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        </script>
+        </div>
+        <div id="tab-fin-tracking" class="tab-content">
+
+        <div class="section">
+            <h2 class="section-title">💹 Financial Tracking (Manual Entry)</h2>
+            <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                <h3>Financial Tracking Not Configured</h3>
+                <p>This section displays data from the manual Financial Tracking Google Sheet.</p>
+                <p style="margin-top: 1rem;">To set up:</p>
+                <ol style="text-align: left; max-width: 500px; margin: 1rem auto;">
+                    <li>Create a Google Sheet from the template</li>
+                    <li>Import <code>output/Q_Financial_Tracking_MockData.csv</code></li>
+                    <li>Share with the service account</li>
+                    <li>Update <code>FINANCIAL_TRACKING_SPREADSHEET_ID</code> in config</li>
+                </ol>
+            </div>
+        </div>
+        </div>
+        <div id="tab-trends" class="tab-content">
+
+            <div class="section">
+                <h2>📈 Historical Trends</h2>
+                <div class="info-card">
+                    <p>📊 Historical data not yet available.</p>
+                    <p>Run the report daily to build up historical data for trend analysis.</p>
+                    <p>Trend analysis requires at least 7 days of data.</p>
+                </div>
+            </div>
+        </div>
+        <div id="tab-forecast" class="tab-content">
+
+            <div class="section">
+                <h2>🔮 Forecast & Predictions</h2>
+                <div class="info-card">
+                    <p>🔮 Forecasting requires at least 14 days of historical data.</p>
+                    <p>Continue running the report daily to enable predictions.</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="footer">
+            <p>Business Intelligence Report - Generated by AestheticRxNetworkIntelligentBot</p>
+            <p>2026-04-24 13:00:39</p>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabId) {
+            var tabContents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            var navTabs = document.getElementsByClassName('nav-tab');
+            for (var i = 0; i < navTabs.length; i++) {
+                navTabs[i].classList.remove('active');
+            }
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>

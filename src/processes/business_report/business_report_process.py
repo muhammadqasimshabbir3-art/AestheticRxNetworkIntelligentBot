@@ -208,8 +208,10 @@ class BusinessReportProcess:
         logger.info("  → Analyzing payments and revenue trends...")
         self._payment_analyzer = PaymentAnalyzer(self._data_loader.data_frames)
         self.payment_analytics = self._payment_analyzer.analyze()
-        logger.info(f"  ✓ Revenue: {self.payment_analytics.get('total_paid_amount', 0):,.2f}, "
-                    f"Completion: {self.payment_analytics.get('payment_completion_rate', 0)}%")
+        logger.info(
+            f"  ✓ Revenue: {self.payment_analytics.get('total_paid_amount', 0):,.2f}, "
+            f"Completion: {self.payment_analytics.get('payment_completion_rate', 0)}%"
+        )
 
         # Research Analytics
         logger.info("  → Analyzing research and engagement...")
@@ -243,8 +245,10 @@ class BusinessReportProcess:
         )
         self.business_kpi_analytics = self._business_kpi_analyzer.analyze()
         if self.business_kpi_analytics.get("has_data"):
-            logger.info(f"  ✓ Business KPIs: Revenue={self.business_kpi_analytics.get('total_revenue', 0):,.0f}, "
-                        f"ROI={self.business_kpi_analytics.get('roi_percent', 0):.1f}%")
+            logger.info(
+                f"  ✓ Business KPIs: Revenue={self.business_kpi_analytics.get('total_revenue', 0):,.0f}, "
+                f"ROI={self.business_kpi_analytics.get('roi_percent', 0):.1f}%"
+            )
 
         logger.info("✓ All analyzers completed")
 
@@ -441,9 +445,7 @@ class BusinessReportProcess:
             )
 
             # Generate the file URL
-            self._uploaded_file_url = (
-                f"https://drive.google.com/file/d/{self._uploaded_file_id}/view"
-            )
+            self._uploaded_file_url = f"https://drive.google.com/file/d/{self._uploaded_file_id}/view"
 
             logger.info("✓ Report uploaded to Google Drive")
             logger.info(f"  File ID: {self._uploaded_file_id}")
@@ -467,4 +469,3 @@ class BusinessReportProcess:
     def uploaded_file_url(self) -> str | None:
         """Get the Google Drive URL of the uploaded report."""
         return self._uploaded_file_url
-

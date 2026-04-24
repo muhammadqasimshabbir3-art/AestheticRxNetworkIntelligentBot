@@ -1,30 +1,27 @@
 ---
 # This is your manifest.
-# It's our source of truth defining the process we've agreed to automate for the client
-# supervisor allows us to associate functions
-uid: QWAB
-name: QwebsiteAutomationBot
-description: "Website Automation Bot"
-author: TA Team
-source: https://bitbucket.org/thoughtfulautomation/qwebsiteautomationbot/src/master/
-
+#  It's our source of truth defining the process we've agreed to automate for the client
+#  supervisor allows us to associate functions
+# Agent runtime: Supervisor (module thoughtful.supervisor) requires dependency `thoughtful>=4.0.1` in pyproject.toml.
+uid: ED1_EXAMPLE_DW
+name: ED1 - Example Digitalworker
+description: |-
+  A tiny example DW
+author:
+  Author Name
+source:
+  source url
 workflow:
-  - step_id: "1"
-    title: Initialize Components
-    description: Initialize process components and validate environment setup
+  - step_id: "first_step"
+    title: First Step
+    description: This is the first step
     step_type: sequential
     steps:
-      - step_id: "1.1"
-        title: Initialize Process
-        description: Set up the process and initialize reporting components
+      - step_id: "step_one_child"
+        title: Child Step
+        description: This is the first step's sub-step
         step_type: sequential
-
-  - step_id: "2"
-    title: Execute Main Workflow
-    description: Perform the main automation workflow
-    step_type: sequential
-
-  - step_id: "3"
-    title: Finalize Process
-    description: Complete process execution and cleanup resources
+  - step_id: "second_step"
+    title: Second Step
+    description: This is the second step
     step_type: sequential

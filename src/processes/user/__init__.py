@@ -1,4 +1,4 @@
-"""UserManagement module for QwebsiteAutomationBot.
+"""UserManagement module for AestheticRxNetworkIntelligentBot.
 
 This module provides user management functionality including:
 - Fetching user data from API

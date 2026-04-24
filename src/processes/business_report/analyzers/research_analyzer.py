@@ -258,4 +258,3 @@ class ResearchAnalyzer:
         by_date = views_with_date.groupby("date").size()
 
         return {str(k): int(v) for k, v in by_date.items()}
-

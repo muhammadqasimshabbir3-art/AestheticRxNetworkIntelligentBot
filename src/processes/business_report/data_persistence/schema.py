@@ -171,4 +171,3 @@ METRICS_COLUMN_MAPPING = {
     "research_views": ["total_views"],
     "research_upvotes": ["total_upvotes"],
 }
-

@@ -132,7 +132,7 @@ def install_bitwarden_cli():
             return False
 
         bw_binary = None
-        for root, dirs, files in os.walk(extract_dir):
+        for root, _, files in os.walk(extract_dir):
             for file in files:
                 if file == f"bw{exe_ext}":
                     bw_binary = os.path.join(root, file)
@@ -155,7 +155,7 @@ def install_bitwarden_cli():
         install_dir = None
         if system == "windows":
             for path in [
-                os.path.join(os.environ.get("ProgramFiles", ""), "Bitwarden CLI"),
+                os.path.join(os.environ.get("PROGRAMFILES", ""), "Bitwarden CLI"),
                 os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Bitwarden CLI"),
             ]:
                 if os.path.exists(os.path.dirname(path)) or path.startswith(os.environ.get("LOCALAPPDATA", "")):

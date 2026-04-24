@@ -170,9 +170,7 @@ class ForecastEngine:
         result["historical_data"] = self._extract_historical_data(df, days=14)
 
         # Create trajectory chart data (actual + forecast combined)
-        result["trajectory_chart_data"] = self._create_trajectory_chart_data(
-            df, result["forecasts_by_metric"], horizon
-        )
+        result["trajectory_chart_data"] = self._create_trajectory_chart_data(df, result["forecasts_by_metric"], horizon)
 
         # Calculate monthly projections
         result["projections"] = self._calculate_projections(df)
@@ -259,14 +257,16 @@ class ForecastEngine:
             # Widen confidence interval as we go further
             interval_width = std_residual * z_score * np.sqrt(1 + i * 0.1)
 
-            forecasts.append(Forecast(
-                target_date=target,
-                predicted_value=max(0, round(pred, 2)),
-                confidence_lower=max(0, round(pred - interval_width, 2)),
-                confidence_upper=round(pred + interval_width, 2),
-                confidence_level=self.DEFAULT_CONFIDENCE,
-                model_used="holt_winters",
-            ))
+            forecasts.append(
+                Forecast(
+                    target_date=target,
+                    predicted_value=max(0, round(pred, 2)),
+                    confidence_lower=max(0, round(pred - interval_width, 2)),
+                    confidence_upper=round(pred + interval_width, 2),
+                    confidence_level=self.DEFAULT_CONFIDENCE,
+                    model_used="holt_winters",
+                )
+            )
 
         return MetricForecast(
             metric_name=metric_name,
@@ -314,14 +314,16 @@ class ForecastEngine:
             target = today + timedelta(days=i + 1)
             interval_width = std_residual * z_score * np.sqrt(1 + i * 0.1)
 
-            forecasts.append(Forecast(
-                target_date=target,
-                predicted_value=max(0, round(pred, 2)),
-                confidence_lower=max(0, round(pred - interval_width, 2)),
-                confidence_upper=round(pred + interval_width, 2),
-                confidence_level=self.DEFAULT_CONFIDENCE,
-                model_used="linear_regression",
-            ))
+            forecasts.append(
+                Forecast(
+                    target_date=target,
+                    predicted_value=max(0, round(pred, 2)),
+                    confidence_lower=max(0, round(pred - interval_width, 2)),
+                    confidence_upper=round(pred + interval_width, 2),
+                    confidence_level=self.DEFAULT_CONFIDENCE,
+                    model_used="linear_regression",
+                )
+            )
 
         return MetricForecast(
             metric_name=metric_name,
@@ -368,14 +370,16 @@ class ForecastEngine:
             target = today + timedelta(days=i + 1)
             interval_width = std * z_score * np.sqrt(1 + i * 0.1)
 
-            forecasts.append(Forecast(
-                target_date=target,
-                predicted_value=max(0, round(pred, 2)),
-                confidence_lower=max(0, round(pred - interval_width, 2)),
-                confidence_upper=round(pred + interval_width, 2),
-                confidence_level=self.DEFAULT_CONFIDENCE,
-                model_used="moving_average",
-            ))
+            forecasts.append(
+                Forecast(
+                    target_date=target,
+                    predicted_value=max(0, round(pred, 2)),
+                    confidence_lower=max(0, round(pred - interval_width, 2)),
+                    confidence_upper=round(pred + interval_width, 2),
+                    confidence_level=self.DEFAULT_CONFIDENCE,
+                    model_used="moving_average",
+                )
+            )
 
         return MetricForecast(
             metric_name=metric_name,
@@ -455,10 +459,12 @@ class ForecastEngine:
                 else:
                     date_str = str(idx)
 
-                data_points.append({
-                    "date": date_str,
-                    "value": round(float(value), 2) if not pd.isna(value) else 0,
-                })
+                data_points.append(
+                    {
+                        "date": date_str,
+                        "value": round(float(value), 2) if not pd.isna(value) else 0,
+                    }
+                )
 
             historical[metric] = {
                 "data": data_points,
@@ -694,4 +700,3 @@ class ForecastEngine:
             return [self._forecast_to_dict(f) for f in forecast.forecasts]
 
         return None
-

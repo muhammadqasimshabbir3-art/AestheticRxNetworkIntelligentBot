@@ -42,12 +42,12 @@ class _GoogleDriveAuth:
         self._service_account: dict | None = None
 
     def _load_service_account(self) -> None:
-        """Load service account credentials from Bitwarden."""
-        logger.info("Getting Google Drive credentials from Bitwarden...")
+        """Load service account credentials from environment variables."""
+        logger.info("Getting Google Drive credentials from environment variables...")
         creds = get_google_credentials()
 
         if not creds:
-            raise GoogleDriveError("Google credentials not found in Bitwarden")
+            raise GoogleDriveError("Google credentials not found in environment variables")
 
         # Credentials can be JSON string or dict
         if isinstance(creds.get("service_account_json"), str):
@@ -93,7 +93,7 @@ class _GoogleDriveAuth:
 
         # Sign with private key
         message = f"{header_b64}.{payload_b64}".encode()
-        # Handle escaped newlines (common when stored in Bitwarden)
+        # Handle escaped newlines (common when stored in environment variables)
         private_key_str = self._service_account["private_key"]
         if "\\n" in private_key_str:
             private_key_str = private_key_str.replace("\\n", "\n")

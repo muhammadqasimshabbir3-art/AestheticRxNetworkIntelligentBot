@@ -25,8 +25,8 @@ class TestSheetHandler:
     def sheet_handler(self, mock_sheets_api, mock_drive_api):
         """Create a SheetHandler with mocked APIs."""
         with (
-            patch("orderManagement.sheet_handler.GoogleSheetsAPI") as mock_sheets_class,
-            patch("orderManagement.sheet_handler.GoogleDriveAPI") as mock_drive_class,
+            patch("processes.order.sheet_handler.GoogleSheetsAPI") as mock_sheets_class,
+            patch("processes.order.sheet_handler.GoogleDriveAPI") as mock_drive_class,
         ):
             mock_sheets_class.return_value = mock_sheets_api
             mock_drive_class.return_value = mock_drive_api
@@ -119,8 +119,8 @@ class TestSheetHandlerDuplicates:
     def sheet_handler(self, mock_sheets_api):
         """Create a SheetHandler with mocked APIs."""
         with (
-            patch("orderManagement.sheet_handler.GoogleSheetsAPI") as mock_sheets_class,
-            patch("orderManagement.sheet_handler.GoogleDriveAPI"),
+            patch("processes.order.sheet_handler.GoogleSheetsAPI") as mock_sheets_class,
+            patch("processes.order.sheet_handler.GoogleDriveAPI"),
         ):
             mock_sheets_class.return_value = mock_sheets_api
 
@@ -200,8 +200,8 @@ class TestSheetHandlerUpdates:
     def sheet_handler(self, mock_sheets_api):
         """Create a SheetHandler with mocked APIs."""
         with (
-            patch("orderManagement.sheet_handler.GoogleSheetsAPI") as mock_sheets_class,
-            patch("orderManagement.sheet_handler.GoogleDriveAPI"),
+            patch("processes.order.sheet_handler.GoogleSheetsAPI") as mock_sheets_class,
+            patch("processes.order.sheet_handler.GoogleDriveAPI"),
         ):
             mock_sheets_class.return_value = mock_sheets_api
 
@@ -254,8 +254,8 @@ class TestSheetHandlerAppend:
     def sheet_handler(self, mock_sheets_api):
         """Create a SheetHandler with mocked APIs."""
         with (
-            patch("orderManagement.sheet_handler.GoogleSheetsAPI") as mock_sheets_class,
-            patch("orderManagement.sheet_handler.GoogleDriveAPI"),
+            patch("processes.order.sheet_handler.GoogleSheetsAPI") as mock_sheets_class,
+            patch("processes.order.sheet_handler.GoogleDriveAPI"),
         ):
             mock_sheets_class.return_value = mock_sheets_api
 

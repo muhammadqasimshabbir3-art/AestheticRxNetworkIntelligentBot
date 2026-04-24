@@ -69,10 +69,14 @@ class HistoricalLoader:
         today = date.today()
 
         # Check cache
-        if not force_refresh and self._cached_data and self._cache_date == today:
-            if self._cached_data.days_available >= days:
-                logger.debug("Using cached historical data")
-                return self._cached_data
+        if (
+            not force_refresh
+            and self._cached_data
+            and self._cache_date == today
+            and self._cached_data.days_available >= days
+        ):
+            logger.debug("Using cached historical data")
+            return self._cached_data
 
         logger.info(f"Loading historical data for last {days} days...")
 
@@ -296,4 +300,3 @@ class HistoricalLoader:
             "month_to_date": self.get_month_to_date_metrics(),
             "previous_month": self.get_previous_month_metrics(),
         }
-

@@ -275,7 +275,7 @@ def create_financial_tracking_sheet(
                 data.append(row)
 
     total_rows = len(data) - 1  # Exclude header
-    logger.info(f"  Preparing {total_rows} rows ({len(years)} years × 12 months × 3 record types)")
+    logger.info(f"  Preparing {total_rows} rows ({len(years)} years x 12 months x 3 record types)")
 
     # Write data to sheet
     sheets_api.write_data(
@@ -363,7 +363,7 @@ def setup_financial_tracking() -> dict:
         logger.info("1. Open Google Sheets: https://sheets.google.com")
         logger.info("2. Create a new blank spreadsheet")
         logger.info("3. Name it: Q_Financial_Tracking")
-        logger.info("4. Share it with: googledrive@qwebsite.iam.gserviceaccount.com")
+        logger.info("4. Share it with: googledrive@aestheticrxnetwork.iam.gserviceaccount.com")
         logger.info("   (Give Editor access)")
         logger.info("5. Copy the spreadsheet ID from the URL")
         logger.info("   (The ID is in: docs.google.com/spreadsheets/d/[ID_HERE]/edit)")
@@ -427,7 +427,7 @@ def populate_financial_sheet(
                 data.append(row)
 
     total_rows = len(data) - 1
-    logger.info(f"Preparing {total_rows} rows ({len(years)} years × 12 months × 3 record types)")
+    logger.info(f"Preparing {total_rows} rows ({len(years)} years x 12 months x 3 record types)")
 
     # Write data to sheet
     sheets_api.write_data(
@@ -540,8 +540,14 @@ def generate_mock_data_row(year: int, month_idx: int, record_type: str) -> list:
     other_exp_target = round(30000 * growth_rate, 2)
     other_exp_actual = round(other_exp_target * variance * random.uniform(0.7, 1.3), 2)
     te_calculated = round(
-        operating_exp_actual + marketing_exp_actual + product_costs_actual +
-        salaries_actual + delivery_actual + regulatory_actual + other_exp_actual, 2
+        operating_exp_actual
+        + marketing_exp_actual
+        + product_costs_actual
+        + salaries_actual
+        + delivery_actual
+        + regulatory_actual
+        + other_exp_actual,
+        2,
     )
 
     # Profit
@@ -621,47 +627,74 @@ def generate_mock_data_row(year: int, month_idx: int, record_type: str) -> list:
 
     # Build the row in correct column order
     row = [
-        year, month_name, timestamp, record_type, special_notes,  # Basic info (5)
+        year,
+        month_name,
+        timestamp,
+        record_type,
+        special_notes,  # Basic info (5)
         # Sales (6)
         ts_calculated,  # TS_Target (using calculated as target for simplicity)
-        medical_sales_target, medical_sales_actual,
-        beauty_sales_target, beauty_sales_actual,
+        medical_sales_target,
+        medical_sales_actual,
+        beauty_sales_target,
+        beauty_sales_actual,
         ts_calculated,
         # Investment (10)
         ti_calculated,  # TI_Target
         ti_calculated,  # TI_Calculated
-        founder_inv_target, founder_inv_actual,
-        cofounder_inv_target, cofounder_inv_actual,
-        investor_inv_target, investor_inv_actual,
-        importer_inv_target, importer_inv_actual,
+        founder_inv_target,
+        founder_inv_actual,
+        cofounder_inv_target,
+        cofounder_inv_actual,
+        investor_inv_target,
+        investor_inv_actual,
+        importer_inv_target,
+        importer_inv_actual,
         # Profit & Clients (4)
-        tp_target, tp_actual,
-        tnc_target, tnc_actual,
+        tp_target,
+        tp_actual,
+        tnc_target,
+        tnc_actual,
         # Contributions (4)
-        cfc_target, cfc_actual,
-        pfc_target, pfc_actual,
+        cfc_target,
+        cfc_actual,
+        pfc_target,
+        pfc_actual,
         # Borrowed Products (5)
-        tbpc_target, tbpc_actual,
-        tbpp_target, tbpp_actual,
+        tbpc_target,
+        tbpc_actual,
+        tbpp_target,
+        tbpp_actual,
         rbpp_calculated,
         # Expenses (15)
         te_calculated,  # TE_Target
-        operating_exp_target, operating_exp_actual,
-        marketing_exp_target, marketing_exp_actual,
-        product_costs_target, product_costs_actual,
-        salaries_target, salaries_actual,
-        delivery_target, delivery_actual,
-        regulatory_target, regulatory_actual,
-        other_exp_target, other_exp_actual,
+        operating_exp_target,
+        operating_exp_actual,
+        marketing_exp_target,
+        marketing_exp_actual,
+        product_costs_target,
+        product_costs_actual,
+        salaries_target,
+        salaries_actual,
+        delivery_target,
+        delivery_actual,
+        regulatory_target,
+        regulatory_actual,
+        other_exp_target,
+        other_exp_actual,
         te_calculated,
         # Doctor Prizes (6)
         pupmpd_calculated,  # PUPMPD_Target
-        prizes_gifts_target, prizes_gifts_actual,
-        prizes_research_target, prizes_research_actual,
+        prizes_gifts_target,
+        prizes_gifts_actual,
+        prizes_research_target,
+        prizes_research_actual,
         pupmpd_calculated,
         # Capital (4)
-        tcmc_target, tcmc_calculated,
-        tcmcci_target, tcmcci_actual,
+        tcmc_target,
+        tcmc_calculated,
+        tcmcci_target,
+        tcmcci_actual,
         # Calculated Metrics (8)
         tnppm_calculated,
         roi_percent,
@@ -672,19 +705,34 @@ def generate_mock_data_row(year: int, month_idx: int, record_type: str) -> list:
         sales_growth,
         client_growth,
         # Previous Month Data (20)
-        ncpmt, ncpmd,
+        ncpmt,
+        ncpmd,
         tipm,
-        founder_inv_pm, cofounder_inv_pm, investor_inv_pm, importer_inv_pm,
-        cfcpm, pfcpm,
-        tbpcpm, tbpppm,
-        tppm, tnppm_pm,
-        tpmrp, trpmrp,
+        founder_inv_pm,
+        cofounder_inv_pm,
+        investor_inv_pm,
+        importer_inv_pm,
+        cfcpm,
+        pfcpm,
+        tbpcpm,
+        tbpppm,
+        tppm,
+        tnppm_pm,
+        tpmrp,
+        trpmrp,
         mspm,
         rpupmpdpm,
         tepm,
-        operating_pm, marketing_pm, product_costs_pm, salaries_pm, delivery_pm, regulatory_pm, other_pm,
+        operating_pm,
+        marketing_pm,
+        product_costs_pm,
+        salaries_pm,
+        delivery_pm,
+        regulatory_pm,
+        other_pm,
         # Special (2)
-        legislation_status, special_notes,
+        legislation_status,
+        special_notes,
     ]
 
     return row
@@ -818,4 +866,3 @@ if __name__ == "__main__":
             print(f"\n✅ Spreadsheet ID: {result['spreadsheet_id']}")
             print(f"URL: {result['url']}")
             print(f"Total columns: {result['headers_count']}")
-

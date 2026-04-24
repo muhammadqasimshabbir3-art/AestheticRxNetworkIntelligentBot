@@ -168,7 +168,7 @@ class TestReportGeneration:
         assert "</html>" in content
         assert "<head>" in content
         assert "<body>" in content
-        assert "QwebsiteAutomationBot" in content
+        assert "AestheticRxNetworkIntelligentBot" in content
 
     @pytest.mark.unit
     def test_generate_report_contains_update_payment_section(self, report_generator, tmp_path):

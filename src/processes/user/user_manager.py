@@ -8,10 +8,9 @@ This module handles:
 - Adding new users to the sheet
 """
 
-
+from libraries.aestheticrxnetwork_api import AestheticRxNetworkAPI
 from libraries.google_sheets import GoogleSheetsAPI
 from libraries.logger import logger
-from libraries.qwebsite_api import QWebsiteAPI
 
 
 class UserManager:
@@ -34,7 +33,7 @@ class UserManager:
         logger.info("Initializing User Manager...")
 
         # Initialize APIs
-        self._api: QWebsiteAPI | None = None
+        self._api: AestheticRxNetworkAPI | None = None
         self._sheets_api: GoogleSheetsAPI | None = None
 
         # Data storage
@@ -55,10 +54,10 @@ class UserManager:
         logger.info("User Manager initialized")
 
     @property
-    def api(self) -> QWebsiteAPI:
-        """Get or create QWebsiteAPI instance."""
+    def api(self) -> AestheticRxNetworkAPI:
+        """Get or create AestheticRxNetworkAPI instance."""
         if self._api is None:
-            self._api = QWebsiteAPI()
+            self._api = AestheticRxNetworkAPI()
         return self._api
 
     @property
